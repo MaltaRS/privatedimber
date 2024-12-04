@@ -46,12 +46,6 @@
             "newArchEnabled": true
           }
         }
-      ],
-      [
-        "expo-audio",
-        {
-          "microphonePermission": "Permita que aplicativo acesse seu microfone."
-        }
       ]
     ],
     "experiments": {
