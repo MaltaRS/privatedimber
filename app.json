@@ -1,0 +1,69 @@
+{
+  "expo": {
+    "name": "Dimber",
+    "slug": "Dimber",
+    "version": "1.0.0",
+    "orientation": "portrait",
+    "icon": "./assets/icons/icon.png",
+    "scheme": "myapp",
+    "userInterfaceStyle": "automatic",
+    "splash": {
+      "image": "./assets/images/splash.png",
+      "resizeMode": "cover",
+      "backgroundColor": "#01A8FF"
+    },
+    "ios": {
+      "supportsTablet": true
+    },
+    "android": {
+      "adaptiveIcon": {
+        "foregroundImage": "./assets/icons/adaptive-icon.png",
+        "backgroundColor": "#01A8FF"
+      },
+      "package": "com.crysiis.Dimber",
+      "permissions": [
+        "INTERNET",
+        "ACCESS_WIFI_STATE",
+        "ACCESS_NETWORK_STATE",
+        "CHANGE_WIFI_STATE",
+        "NEARBY_WIFI_DEVICES"
+      ]
+    },
+    "web": {
+      "bundler": "metro",
+      "output": "static",
+      "favicon": "./assets/images/favicon.png"
+    },
+    "plugins": [
+      "expo-router",
+      [
+        "expo-build-properties",
+        {
+          "ios": {
+            "newArchEnabled": true
+          },
+          "android": {
+            "newArchEnabled": true
+          }
+        }
+      ],
+      [
+        "expo-audio",
+        {
+          "microphonePermission": "Permita que aplicativo acesse seu microfone."
+        }
+      ]
+    ],
+    "experiments": {
+      "typedRoutes": true
+    },
+    "extra": {
+      "router": {
+        "origin": false
+      },
+      "eas": {
+        "projectId": "308f65cd-3385-49e0-9ac3-f5f30ef41fb5"
+      }
+    }
+  }
+}

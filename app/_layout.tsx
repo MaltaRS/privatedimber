@@ -1,0 +1,103 @@
+import { useEffect } from "react";
+
+import { Box, GluestackUIProvider, Spinner } from "@/gluestackComponents";
+
+import { useFonts as useFontsExpo } from "expo-font";
+
+import {
+    PlusJakartaSans_400Regular,
+    PlusJakartaSans_500Medium,
+    PlusJakartaSans_600SemiBold,
+    PlusJakartaSans_700Bold,
+    useFonts,
+} from "@expo-google-fonts/plus-jakarta-sans";
+
+import { Stack } from "expo-router";
+import * as SplashScreen from "expo-splash-screen";
+
+import "react-native-reanimated";
+import "react-native-gesture-handler";
+
+import { AuthProvider, useAuth } from "@/Context/AuthProvider";
+import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
+import { SocketProvider } from "@/Context/SocketProvider";
+
+SplashScreen.preventAutoHideAsync();
+
+function RootLayout() {
+    const [loaded] = useFonts({
+        PlusJakartaSans_400Regular,
+        PlusJakartaSans_500Medium,
+        PlusJakartaSans_600SemiBold,
+        PlusJakartaSans_700Bold,
+    });
+
+    const [loadedExpo] = useFontsExpo({
+        NovaBold: require("../assets/fonts/static/ProxNova/proxBold.otf"),
+        NovaRegular: require("../assets/fonts/static/ProxNova/proxRegular.otf"),
+        NovaSemiBold: require("../assets/fonts/static/ProxNova/proxSemiBold.otf"),
+        NovaMedium: require("../assets/fonts/static/ProxNova/proxMedium.otf"),
+        Arial: require("../assets/fonts/static/Arial/arial.ttf"),
+        ArialBold: require("../assets/fonts/static/Arial/arialBold.ttf"),
+    });
+
+    const { isAuthenticated, loading } = useAuth();
+
+    useEffect(() => {
+        if (loaded && !loading && loadedExpo) {
+            SplashScreen.hideAsync();
+        }
+    }, [loaded, loading, loadedExpo]);
+
+    if (!loaded || loading || !loadedExpo) {
+        return (
+            <GluestackUIProvider>
+                <Box
+                    flex={1}
+                    bg="white"
+                    justifyContent="center"
+                    alignItems="center"
+                >
+                    <Spinner size="large" />
+                </Box>
+            </GluestackUIProvider>
+        );
+    }
+
+    return (
+        <GluestackUIProvider>
+            <Stack
+                screenOptions={{
+                    headerShown: false,
+                    contentStyle: {
+                        backgroundColor: "transparent",
+                    },
+                    animation: "fade_from_bottom",
+                    animationDuration: 400,
+                }}
+                initialRouteName={
+                    !isAuthenticated ? "(tabs)/explore" : "(auth)/index"
+                }
+            >
+                <Stack.Screen name="(tabs)" />
+                <Stack.Screen name="(auth)/index" />
+                <Stack.Screen name="(auth)/signup" />
+                <Stack.Screen name="notifications" />
+            </Stack>
+        </GluestackUIProvider>
+    );
+}
+
+export default function App() {
+    const queryClient = new QueryClient();
+
+    return (
+        <QueryClientProvider client={queryClient}>
+            <SocketProvider>
+                <AuthProvider>
+                    <RootLayout />
+                </AuthProvider>
+            </SocketProvider>
+        </QueryClientProvider>
+    );
+}
