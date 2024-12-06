@@ -43,7 +43,7 @@ const userProfileSchema = z
 
 type CreateUserForm = z.infer<typeof userProfileSchema> & {};
 
-const ProfileScreen = () => {
+const ConfigScreen = () => {
     const { user } = useAuth();
 
     const { control, setValue } = useForm<CreateUserForm>({
@@ -185,4 +185,4 @@ const ProfileScreen = () => {
         </BaseContainer>
     );
 };
-export default ProfileScreen;
+export default ConfigScreen;

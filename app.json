@@ -7,13 +7,14 @@
     "icon": "./assets/icons/icon.png",
     "scheme": "myapp",
     "userInterfaceStyle": "automatic",
+    "newArchEnabled": true,
     "splash": {
       "image": "./assets/images/splash.png",
-      "resizeMode": "cover",
-      "backgroundColor": "#01A8FF"
+      "backgroundColor": "#01A8FF",
+      "imageWidth": 150
     },
     "ios": {
-      "supportsTablet": true
+      "supportsTablet": false
     },
     "android": {
       "adaptiveIcon": {
@@ -36,15 +37,14 @@
     },
     "plugins": [
       "expo-router",
+      "expo-font",
+      "expo-secure-store",
       [
-        "expo-build-properties",
+        "expo-camera",
         {
-          "ios": {
-            "newArchEnabled": true
-          },
-          "android": {
-            "newArchEnabled": true
-          }
+          "cameraPermission": "Permita que a dimber acesse sua câmera",
+          "microphonePermission": "Permita que a dimber acesse seu microfone",
+          "recordAudioAndroid": true
         }
       ]
     ],

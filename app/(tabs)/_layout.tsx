@@ -1,82 +1,111 @@
-import { Tabs } from "expo-router";
+import {
+    Tabs,
+    TabList,
+    TabTrigger,
+    TabSlot,
+    TabTriggerProps,
+} from "expo-router/ui";
 
-import { Colors } from "@/constants/Colors";
+import { Box, HStack, Pressable } from "@/gluestackComponents";
 
-import { Avatar, AvatarFallbackText, AvatarImage } from "@/gluestackComponents";
-
-import { MagnifyingGlass } from "phosphor-react-native";
-
-import ChatIcon from "@/assets/icons/appIcons/chatIcon.svg";
-import Connection from "@/assets/icons/appIcons/connection.svg";
+import DimberLogoWhite from "@/assets/icons/dimberLogoWhite.svg";
 
 import { useAuth } from "@/Context/AuthProvider";
+import { TabButton } from "@/components/tabs/TabButton";
+
+export type TabName = "chats" | "explore" | "wallet" | "config";
+
+export type TabProps = {
+    name: TabName;
+    href: TabTriggerProps["href"];
+};
 
 export default function TabLayout() {
     const { user } = useAuth();
 
+    const tabs: TabProps[] = [
+        {
+            name: "explore",
+            href: "/explore",
+        },
+        {
+            name: "chats",
+            href: "/chats",
+        },
+        {
+            name: "chats",
+            href: "/",
+        },
+        {
+            name: "wallet",
+            href: "/wallet",
+        },
+        {
+            name: "config",
+            href: "/config",
+        },
+    ];
+
     return (
-        <Tabs
-            screenOptions={{
-                tabBarActiveTintColor: Colors.primaryDefault,
-                tabBarInactiveTintColor: "#6B7280",
-                headerShown: false,
-                tabBarShowLabel: false,
-                tabBarHideOnKeyboard: true,
-            }}
-        >
-            <Tabs.Screen
-                name="index"
-                options={{
-                    title: "Chats",
-                    tabBarIcon: ({ color, focused }) => (
-                        <ChatIcon stroke={color} />
-                    ),
-                }}
-            />
-            <Tabs.Screen
-                name="explore"
-                options={{
-                    title: "Explore",
-                    tabBarIcon: ({ color, focused }) => (
-                        <MagnifyingGlass
-                            size={26}
-                            color={color}
-                            weight={focused ? "bold" : "regular"}
-                        />
-                    ),
-                }}
-            />
-            <Tabs.Screen
-                name="chats"
-                options={{
-                    title: "Chats",
-                    tabBarIcon: ({ color, focused }) => (
-                        <Connection stroke={color} />
-                    ),
-                }}
-            />
-            <Tabs.Screen
-                name="profile"
-                options={{
-                    title: "Profile",
-                    tabBarIcon: ({ color, focused }) => (
-                        <Avatar width={28} height={28}>
-                            <AvatarFallbackText size="sm" rounded="$lg">
-                                {user?.name ?? ""}
-                            </AvatarFallbackText>
-                            {user?.icon && (
-                                <AvatarImage
-                                    rounded="$full"
-                                    source={{
-                                        uri: user.icon,
-                                    }}
-                                    alt={`Foto de perfil de ${user.name}`}
-                                />
-                            )}
-                        </Avatar>
-                    ),
-                }}
-            />
+        <Tabs>
+            <TabSlot />
+            <TabList asChild>
+                <HStack
+                    py="$4"
+                    px="$10"
+                    borderTopStartRadius={16}
+                    borderTopEndRadius={16}
+                    bg="$white"
+                    sx={{
+                        shadowColor: "#000",
+                        shadowOffset: { width: 0, height: 2 },
+                        shadowOpacity: 0.25,
+                        shadowRadius: 3.84,
+                        elevation: 30,
+                    }}
+                    alignItems="center"
+                    position="relative"
+                >
+                    <Box
+                        position="absolute"
+                        top={0}
+                        left="$1/2"
+                        transform={[{ translateX: "5%" }]}
+                        elevation={120}
+                        bg="$gray200"
+                        h={36}
+                        w={72}
+                        borderBottomLeftRadius="$full"
+                        borderBottomRightRadius="$full"
+                    />
+                    {tabs.map((tab, i) =>
+                        i === 2 ? (
+                            <Pressable
+                                key={i}
+                                mt="-$16"
+                                bgColor="$primaryDefault"
+                                rounded="$full"
+                                w={56}
+                                h={56}
+                                elevation={120}
+                                alignItems="center"
+                                justifyContent="center"
+                            >
+                                <DimberLogoWhite width={32} height={32} />
+                            </Pressable>
+                        ) : (
+                            <TabTrigger
+                                key={i}
+                                name={tab.name}
+                                href={tab.href}
+                                asChild
+                            >
+                                <TabButton icon={tab.name} user={user} />
+                            </TabTrigger>
+                        ),
+                    )}
+                </HStack>
+            </TabList>
         </Tabs>
     );
 }

@@ -79,7 +79,7 @@ const ExplorePrice = ({ price }: { price: string }) => (
 const ExploreChatCount = ({ chatCount }: { chatCount: number }) => (
     <Box
         rounded="$sm"
-        bgColor="#F3F4F6"
+        bgColor="$gray200"
         py="$1"
         px="$3"
         justifyContent="center"
@@ -101,7 +101,7 @@ const ExploreLikeButton = ({
 }) => (
     <Pressable
         rounded="$sm"
-        bgColor="#F3F4F6"
+        bgColor="$gray200"
         py="$1"
         px="$3"
         justifyContent="center"

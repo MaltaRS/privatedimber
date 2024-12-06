@@ -31,7 +31,7 @@ export const CategoryTabs = ({
                                     ? type === "darkBlue"
                                         ? "$primaryDefault"
                                         : "#00A8FF25"
-                                    : "#F3F4F6"
+                                    : "$gray200"
                             }
                             rounded="$full"
                             px="$5"

@@ -1,4 +1,4 @@
-import { useEffect } from "react";
+import { useCallback, useEffect, useState } from "react";
 
 import { Box, GluestackUIProvider, Spinner } from "@/gluestackComponents";
 
@@ -23,6 +23,11 @@ import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { SocketProvider } from "@/Context/SocketProvider";
 
 SplashScreen.preventAutoHideAsync();
+
+SplashScreen.setOptions({
+    duration: 1000,
+    fade: true,
+});
 
 function RootLayout() {
     const [loaded] = useFonts({
@@ -75,9 +80,7 @@ function RootLayout() {
                     animation: "fade_from_bottom",
                     animationDuration: 400,
                 }}
-                initialRouteName={
-                    !isAuthenticated ? "(tabs)/explore" : "(auth)/index"
-                }
+                initialRouteName={isAuthenticated ? "(tabs)" : "(auth)/index"}
             >
                 <Stack.Screen name="(tabs)" />
                 <Stack.Screen name="(auth)/index" />

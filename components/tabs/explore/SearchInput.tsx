@@ -220,8 +220,9 @@ export const SearchInput = ({
                     bgColor="#E5E7EB"
                     size="xl"
                     borderWidth={0}
+                    alignItems="center"
                 >
-                    <InputSlot bgColor="#E5E7EB" pl="$3" pt="$1">
+                    <InputSlot bgColor="#E5E7EB" pl="$5" pt="$1">
                         <InputIcon>
                             <MagnifyingGlass size={20} color="#6B7280" />
                         </InputIcon>

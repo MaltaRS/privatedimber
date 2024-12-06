@@ -67,7 +67,7 @@ export const Message = ({
                     </Avatar>
                 )}
                 <Box
-                    bgColor={isLoggedUser ? "$gray100" : "$primaryDefault"}
+                    bgColor={isLoggedUser ? "$gray200" : "$primaryDefault"}
                     px="$4"
                     py="$2"
                     rounded="$xl"

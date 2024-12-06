@@ -4,7 +4,8 @@ import { ScrollView } from "react-native";
 
 import { useLocalSearchParams, useRouter } from "expo-router";
 
-import { CaretLeft, Chats } from "phosphor-react-native";
+import { Chats } from "phosphor-react-native";
+import { MoveLeft } from "lucide-react-native";
 
 import {
     Avatar,
@@ -13,6 +14,7 @@ import {
     Box,
     Divider,
     HStack,
+    ImageBackground,
     Pressable,
     Spinner,
     Text,
@@ -28,6 +30,7 @@ import { useSocket } from "@/Context/SocketProvider";
 import { Message } from "@/components/tabs/conversations/Message";
 import { BaseContainer } from "@/components/BaseContainer";
 import { SendMessageForm } from "@/components/chats/SendMessageForm";
+import { Colors } from "@/constants/Colors";
 
 export type DimberMessage = {
     id: string;
@@ -166,7 +169,7 @@ const ChatsScreen = () => {
                         router.back();
                     }}
                 >
-                    <CaretLeft size={24} />
+                    <MoveLeft size={24} color={Colors.gray700} />
                 </Pressable>
                 <HStack gap="$3" alignItems="center">
                     {isLoading && <Spinner size="small" />}
@@ -196,7 +199,7 @@ const ChatsScreen = () => {
                                 <Text
                                     fontSize={15}
                                     fontFamily="$arialHeading"
-                                    color="$primaryDefault"
+                                    color="$black"
                                 >
                                     R$ 100,00
                                 </Text>
@@ -213,62 +216,79 @@ const ChatsScreen = () => {
                         setFormActive={setFormActive}
                     />
                 ) : (
-                    <VStack px="$3" flex={1}>
-                        {!contactConversation && isLoading ? (
-                            <VStack
-                                alignItems="center"
-                                justifyContent="center"
-                                flex={1}
-                            >
-                                <Spinner size="large" />
-                            </VStack>
-                        ) : !contactConversation ? (
-                            <VStack
-                                alignItems="center"
-                                justifyContent="center"
-                                flex={1}
-                                mb="$4"
-                            >
-                                <Chats size={30} color="#6B7280" />
-                                <Box>
-                                    <Text fontSize="$lg" color="#6B7280">
-                                        Nenhuma mensagem encontrada
-                                    </Text>
-                                </Box>
-                            </VStack>
-                        ) : (
-                            <ScrollView
-                                ref={scrollViewRef}
-                                showsVerticalScrollIndicator={false}
-                            >
-                                {contact &&
-                                    contactConversation.messages.map(
-                                        (message, index) => (
+                    <VStack flex={1}>
+                        <ImageBackground
+                            source={require("@/assets/images/chatBackground.png")}
+                            w="$full"
+                            h="$full"
+                            resizeMode="cover"
+                            zIndex={2}
+                        >
+                            {!contactConversation && isLoading ? (
+                                <VStack
+                                    px="$3"
+                                    alignItems="center"
+                                    justifyContent="center"
+                                    flex={1}
+                                >
+                                    <Spinner size="large" />
+                                </VStack>
+                            ) : !contactConversation ? (
+                                <VStack
+                                    px="$3"
+                                    alignItems="center"
+                                    justifyContent="center"
+                                    flex={1}
+                                    mb="$4"
+                                >
+                                    <Chats size={30} color="#6B7280" />
+                                    <Box>
+                                        <Text fontSize="$lg" color="#6B7280">
+                                            Nenhuma mensagem encontrada
+                                        </Text>
+                                    </Box>
+                                </VStack>
+                            ) : (
+                                <ScrollView
+                                    ref={scrollViewRef}
+                                    showsVerticalScrollIndicator={false}
+                                    contentContainerStyle={{
+                                        zIndex: 3,
+                                        paddingHorizontal: 12,
+                                    }}
+                                >
+                                    {contact &&
+                                        contactConversation.messages.map(
+                                            (message, index) => (
+                                                <Message
+                                                    key={index}
+                                                    senderId={message.senderId}
+                                                    content={message.content}
+                                                    contact={contact}
+                                                    isFirst={index === 0}
+                                                />
+                                            ),
+                                        )}
+                                    {appMessages.map(
+                                        (
+                                            message: DimberMessage,
+                                            index: number,
+                                        ) => (
                                             <Message
                                                 key={index}
                                                 senderId={message.senderId}
                                                 content={message.content}
-                                                contact={contact}
+                                                contact={contact!}
                                                 isFirst={index === 0}
+                                                dimberMessage={{
+                                                    buttons: message.buttons,
+                                                }}
                                             />
                                         ),
                                     )}
-                                {appMessages.map(
-                                    (message: DimberMessage, index: number) => (
-                                        <Message
-                                            key={index}
-                                            senderId={message.senderId}
-                                            content={message.content}
-                                            contact={contact!}
-                                            isFirst={index === 0}
-                                            dimberMessage={{
-                                                buttons: message.buttons,
-                                            }}
-                                        />
-                                    ),
-                                )}
-                            </ScrollView>
-                        )}
+                                </ScrollView>
+                            )}
+                        </ImageBackground>
                     </VStack>
                 )}
             </VStack>

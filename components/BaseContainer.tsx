@@ -22,7 +22,7 @@ export const BaseContainer = ({
             pt="$10"
             px="$3"
             flex={1}
-            bgColor="$white"
+            bgColor="$gray100"
             zIndex={1}
             {...props}
         >

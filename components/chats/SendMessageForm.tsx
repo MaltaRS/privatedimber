@@ -19,6 +19,9 @@ import { z } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { Controller, useForm } from "react-hook-form";
 
+import * as ImagePicker from "expo-image-picker";
+import { useState } from "react";
+
 type SendMessageFormProps = {
     sendMessage: (message: string) => void;
     setFormActive: (value: boolean) => void;
@@ -49,6 +52,26 @@ export const SendMessageForm = ({
     } = useForm<SendMessageData>({
         resolver: zodResolver(SendMessageSchema),
     });
+
+    const OpenImageSelector = async () => {
+        const { status } =
+            await ImagePicker.requestMediaLibraryPermissionsAsync();
+        if (status !== "granted") {
+            alert("Desculpe, precisamos da permissão para acessar suas fotos.");
+            return;
+        }
+
+        const result = await ImagePicker.launchImageLibraryAsync({
+            mediaTypes: ["images", "livePhotos"],
+            allowsEditing: true,
+            aspect: [1, 1],
+            quality: 1,
+        });
+
+        if (!result.canceled) {
+            console.log(result.assets[0].uri);
+        }
+    };
 
     const HandleSendMessage = async (data: SendMessageData) => {
         sendMessage(`*${data.title}*\n\n${data.content}`);
