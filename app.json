@@ -8,11 +8,6 @@
     "scheme": "myapp",
     "userInterfaceStyle": "automatic",
     "newArchEnabled": true,
-    "splash": {
-      "image": "./assets/images/splash.png",
-      "backgroundColor": "#01A8FF",
-      "imageWidth": 150
-    },
     "ios": {
       "supportsTablet": false
     },
@@ -45,6 +40,20 @@
           "cameraPermission": "Permita que a dimber acesse sua câmera",
           "microphonePermission": "Permita que a dimber acesse seu microfone",
           "recordAudioAndroid": true
+        }
+      ],
+      [
+        "expo-document-picker",
+        {
+          "iCloudContainerEnvironment": "Production"
+        }
+      ],
+      [
+        "expo-splash-screen",
+        {
+          "backgroundColor": "#01A8FF",
+          "image": "./assets/images/splash.png",
+          "imageWidth": 120
         }
       ]
     ],

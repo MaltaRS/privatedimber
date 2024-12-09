@@ -45,37 +45,12 @@ export const ChatCard = ({
             queryFn: () => findConversationById(chat.id),
         });
 
-        await queryClient.setQueryData(
-            ["conversations"],
-            (oldConversations: any) => {
-                if (!oldConversations) return [];
-
-                const updatedConversations: Conversation[] = [
-                    ...oldConversations,
-                ];
-                const chatIndex = updatedConversations.findIndex(
-                    (chat) => chat.id === chat.id,
-                );
-
-                const chat = updatedConversations[chatIndex];
-
-                if (chatIndex > -1) {
-                    updatedConversations[chatIndex] = {
-                        ...chat,
-                        messages: [chat.messages[chat.messages.length - 1]],
-                    };
-                }
-
-                return updatedConversations;
-            },
-        );
-
         router.push(`/(conversations)/${chat.id}`);
     };
 
     const newMessages = chat.messages;
 
-    const lastMessage = newMessages[newMessages.length - 1].content;
+    const lastMessage = newMessages[newMessages.length - 1]?.content ?? "";
 
     return (
         <Pressable

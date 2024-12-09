@@ -1,3 +1,7 @@
+import { useState } from "react";
+
+import { useRouter } from "expo-router";
+
 import {
     HStack,
     Input,
@@ -15,12 +19,14 @@ import { Paperclip } from "phosphor-react-native";
 import Camera from "@/assets/icons/appIcons/camera.svg";
 import ImageSquare from "@/assets/icons/appIcons/imageSquare.svg";
 
-import { z } from "zod";
-import { zodResolver } from "@hookform/resolvers/zod";
 import { Controller, useForm } from "react-hook-form";
 
+import { zodResolver } from "@hookform/resolvers/zod";
+import { z } from "zod";
+
+import * as DocumentPicker from "expo-document-picker";
 import * as ImagePicker from "expo-image-picker";
-import { useState } from "react";
+import { useCameraPermissions } from "expo-camera";
 
 type SendMessageFormProps = {
     sendMessage: (message: string) => void;
@@ -44,6 +50,8 @@ export const SendMessageForm = ({
     sendMessage,
     setFormActive,
 }: SendMessageFormProps) => {
+    const router = useRouter();
+
     const {
         control,
         handleSubmit,
@@ -52,6 +60,8 @@ export const SendMessageForm = ({
     } = useForm<SendMessageData>({
         resolver: zodResolver(SendMessageSchema),
     });
+
+    const [permission, requestPermission] = useCameraPermissions();
 
     const OpenImageSelector = async () => {
         const { status } =
@@ -62,7 +72,7 @@ export const SendMessageForm = ({
         }
 
         const result = await ImagePicker.launchImageLibraryAsync({
-            mediaTypes: ["images", "livePhotos"],
+            mediaTypes: ["images", "livePhotos", "videos"],
             allowsEditing: true,
             aspect: [1, 1],
             quality: 1,
@@ -70,6 +80,25 @@ export const SendMessageForm = ({
 
         if (!result.canceled) {
             console.log(result.assets[0].uri);
+        }
+    };
+
+    const OpenDocumentPicker = async () => {
+        const result = await DocumentPicker.getDocumentAsync({
+            type: "*/*",
+            copyToCacheDirectory: false,
+        });
+
+        if (!result.canceled) {
+            console.log(result.assets[0].uri);
+        }
+    };
+
+    const OpenCamera = async () => {
+        if (!permission?.granted) {
+            requestPermission();
+        } else {
+            router.push("/camera");
         }
     };
 
@@ -150,9 +179,15 @@ export const SendMessageForm = ({
                 alignItems="center"
             >
                 <HStack gap="$3" pl="$2">
-                    <Paperclip size={22} color="#374151" />
-                    <ImageSquare width={20} height={20} color="#374151" />
-                    <Camera width={22} height={22} />
+                    <Pressable onPress={OpenDocumentPicker}>
+                        <Paperclip size={22} color="#374151" />
+                    </Pressable>
+                    <Pressable onPress={OpenImageSelector}>
+                        <ImageSquare width={20} height={20} color="#374151" />
+                    </Pressable>
+                    <Pressable onPress={OpenCamera}>
+                        <Camera width={22} height={22} />
+                    </Pressable>
                 </HStack>
                 <Pressable
                     backgroundColor="$primaryDefault"
