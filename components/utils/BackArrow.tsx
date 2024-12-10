@@ -44,7 +44,7 @@ export const BackLeft = ({ step, setSteps }: BackLeftProps) => {
             justifyContent="center"
             rounded="$full"
             w="$12"
-            bgColor="$gray100"
+            bgColor="$gray200"
             onPress={HandleGoBack}
         >
             <ArrowLeft size={20} />

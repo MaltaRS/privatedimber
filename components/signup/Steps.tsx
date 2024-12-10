@@ -33,6 +33,11 @@ import api from "@/utils/api";
 
 import * as ImagePicker from "expo-image-picker";
 
+import { useMutation } from "@tanstack/react-query";
+
+import { VerifyOtpCode } from "@/connection/auth/PendingUserConnection";
+import OTPCodeInput from "./OtpCodeInput";
+
 export const StepEmail = ({
     setGlobalLoading,
     setGlobalError,
@@ -107,7 +112,7 @@ export const StepEmail = ({
     return (
         <>
             <Heading size="xl">Qual o seu email?</Heading>
-            <Text fontFamily="$arialBody" lineHeight="$md">
+            <Text fontFamily="$arialBody" lineHeight="$md" mb="$3">
                 Insira seu email para contato. Ninguém terá acesso a essa
                 informação.
             </Text>
@@ -159,12 +164,21 @@ export const StepEmail = ({
     );
 };
 
-export const StepEmailCode = () => {
-    const {
-        control,
-        formState: { errors },
-        watch,
-    } = useFormContext();
+export const StepEmailCode = ({
+    setGlobalError,
+}: {
+    setGlobalError?: Dispatch<SetStateAction<boolean>>;
+}) => {
+    const { watch } = useFormContext();
+
+    const [disabled, setDisabled] = useState(false);
+    const [code, setCode] = useState("");
+    const [error, setError] = useState("");
+    const [success, setSuccess] = useState(false);
+
+    const { mutateAsync: verifyOtpCode } = useMutation({
+        mutationFn: VerifyOtpCode,
+    });
 
     const [timeLeft, setTimeLeft] = useState(300);
 
@@ -178,52 +192,80 @@ export const StepEmailCode = () => {
         return () => clearInterval(timerId);
     }, [timeLeft]);
 
+    useEffect(() => {
+        if (setGlobalError) {
+            setGlobalError(true);
+        }
+    }, []);
+
     const formatTime = (seconds: number) => {
         const minutes = Math.floor(seconds / 60);
         const remainingSeconds = seconds % 60;
         return `${minutes}:${remainingSeconds < 10 ? "0" : ""}${remainingSeconds}`;
     };
 
+    const handleChangeCode = (code: string) => {
+        setCode(code);
+        if (code.length === 6) {
+            checkOtpCode(code);
+        }
+    };
+
+    const checkOtpCode = async (code: string) => {
+        setDisabled(true);
+
+        try {
+            const response = await verifyOtpCode({
+                email: watch("email"),
+                code,
+            });
+
+            if (response.success) {
+                if (setGlobalError) setGlobalError(false);
+                setError("");
+                setSuccess(true);
+            } else {
+                setError(
+                    response.message ?? "Erro ao verificar, tente novamente!",
+                );
+                setDisabled(false);
+            }
+        } catch (error: any) {
+            console.error(error.request?._response);
+            console.error("Erro ao verificar código de verificação", error);
+            setError("Erro ao verificar código de verificação");
+            setDisabled(false);
+        }
+    };
+
     return (
         <>
             <Heading size="xl">Confirme sua conta</Heading>
-            <Text fontFamily="$arialBody" lineHeight="$md">
+            <Text fontFamily="$arialBody" lineHeight="$md" mb="$3">
                 Enviamos um código de 6 digitos para o email {watch("email")}.
                 Verifique sua caixa de entrada.
             </Text>
-            <Controller
-                control={control}
-                name="code"
-                render={({
-                    field: { onBlur, onChange, ref, value, disabled },
-                }) => (
-                    <Input
-                        variant="underlined"
-                        size="lg"
-                        isDisabled={disabled}
-                        isInvalid={!!errors.email_code}
-                        $invalid-borderColor="$negative"
-                    >
-                        <InputField
-                            placeholder="Código de verificação"
-                            onChangeText={onChange}
-                            onBlur={onBlur}
-                            value={value}
-                            ref={ref}
-                            keyboardType="numeric"
-                        />
-                    </Input>
-                )}
+            <OTPCodeInput
+                code={code}
+                setCode={handleChangeCode}
+                numDigits={6}
+                disabled={disabled}
             />
-            {errors.code?.message &&
-                typeof errors.code.message === "string" && (
-                    <Text color="$negative" fontSize="$md" mt="-$2">
-                        {errors.code.message}
-                    </Text>
-                )}
+            {success && (
+                <Text color="$positive" fontSize="$md" mt="$2">
+                    Código verificado com sucesso!
+                </Text>
+            )}
+            {error && (
+                <Text color="$negative" fontSize="$md" mt="$2">
+                    {error}
+                </Text>
+            )}
             <Text>
                 O codigo expira em:{" "}
                 <Text color="$primaryDefault">{formatTime(timeLeft)}</Text>
+                {"  "}
+                minutos
             </Text>
         </>
     );
@@ -238,7 +280,7 @@ export const StepName = () => {
     return (
         <>
             <Heading size="xl">Qual o seu nome?</Heading>
-            <Text fontFamily="$arialBody" lineHeight="$md">
+            <Text fontFamily="$arialBody" lineHeight="$md" mb="$3">
                 Ele ficará visível para que outras pessoas possam encontrar
                 você.
             </Text>
@@ -284,7 +326,7 @@ export const StepAccountType = () => {
     return (
         <VStack space="lg">
             <Heading size="xl">Qual tipo de conta deseja?</Heading>
-            <Text fontFamily="$arialBody" lineHeight="$md">
+            <Text fontFamily="$arialBody" lineHeight="$md" mb="$3">
                 Escolha o tipo de conta que deseja usar para se comunicar.
             </Text>
             <ScrollView
@@ -419,7 +461,7 @@ export const StepPassword = () => {
     return (
         <>
             <Heading size="xl">Crie uma senha</Heading>
-            <Text fontFamily="$arialBody" lineHeight="$md">
+            <Text fontFamily="$arialBody" lineHeight="$md" mb="$3">
                 Escolha uma senha forte com pelo menos 6 caracteres, incluindo
                 números e letras.
             </Text>
@@ -609,7 +651,7 @@ export const StepUsername = ({
     return (
         <>
             <Heading size="xl">Escolha um nome de usuário</Heading>
-            <Text fontFamily="$arialBody" lineHeight="$md">
+            <Text fontFamily="$arialBody" lineHeight="$md" mb="$3">
                 Escolha um nome de usuário que será usado para te identificar.
             </Text>
             <Controller

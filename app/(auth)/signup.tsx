@@ -31,14 +31,31 @@ import {
 
 import { Alert, Pressable } from "react-native";
 
+import { storage } from "@/utils/firebaseConfig";
 import api from "@/utils/api";
 
 import { z } from "zod";
 
 import { ref, uploadBytes, getDownloadURL } from "firebase/storage";
 
-import { storage } from "@/utils/firebaseConfig";
 import { useAuth } from "@/Context/AuthProvider";
+
+import { useMutation } from "@tanstack/react-query";
+
+import { CreatePendingUser } from "@/connection/auth/PendingUserConnection";
+
+import { toast } from "burnt";
+
+const createPendingFormSchema = z.object({
+    email: z
+        .string({ required_error: "O email é obrigatório." })
+        .email("O email é inválido."),
+    code: z
+        .string({
+            required_error: "O código de verificação é obrigatório.",
+        })
+        .max(6, "O código deve ter 6 caracteres."),
+});
 
 const createUserFormSchema = z
     .object({
@@ -96,6 +113,10 @@ export type Step = {
 
 const SignUp = () => {
     const router = useRouter();
+
+    const { mutateAsync: createPendingUser } = useMutation({
+        mutationFn: CreatePendingUser,
+    });
 
     const formProps = useForm<CreateUserForm>({
         resolver: zodResolver(createUserFormSchema),
@@ -156,6 +177,31 @@ const SignUp = () => {
         activeStep: 0,
     });
 
+    const sendVerificationEmail = async (): Promise<boolean> => {
+        setIsGlobalLoading(true);
+
+        const email = getValues("email");
+
+        const codeSended = await createPendingUser(email);
+
+        if (!codeSended) {
+            setIsGlobalLoading(false);
+            toast({
+                title: "Erro",
+                message: "Ocorreu um erro ao enviar o código de verificação.",
+                duration: 5000,
+                haptic: "error",
+                from: "top",
+                preset: "error",
+            });
+            return false;
+        }
+
+        setIsGlobalLoading(false);
+
+        return true;
+    };
+
     const HandleChangeStep = async () => {
         if (isGlobalLoading || globalError) return;
 
@@ -178,6 +224,10 @@ const SignUp = () => {
             }
 
             formProps.clearErrors("confirm_password");
+        } else if (fields.includes("email")) {
+            const success = await sendVerificationEmail();
+
+            if (!success) return;
         }
 
         const activeStep = steps.activeStep + 1;
@@ -254,7 +304,7 @@ const SignUp = () => {
     return (
         <BaseContainer
             justifyContent="space-between"
-            mb={
+            pb={
                 steps.activeStep === 1 ||
                 steps.activeStep === steps.steps.length - 1
                     ? "$6"
@@ -286,6 +336,9 @@ const SignUp = () => {
                                 setPreviewImage={setPreviewImage}
                                 previewImage={previewImage}
                             />
+                        ) : steps.steps[steps.activeStep].fields.length ===
+                          0 ? (
+                            <StepEmailCode setGlobalError={setGlobalError} />
                         ) : (
                             steps.steps[steps.activeStep].component
                         )}
@@ -303,14 +356,14 @@ const SignUp = () => {
                 {steps.activeStep === 0 && <Terms />}
                 <Button
                     mt="$4"
-                    onPress={(e) => {
+                    onPress={() => {
                         if (steps.activeStep === steps.steps.length - 1) {
                             handleSubmit(OnSubmit)();
                         } else {
                             HandleChangeStep();
                         }
                     }}
-                    isDisabled={isGlobalLoading}
+                    isDisabled={isGlobalLoading || globalError}
                 >
                     {isGlobalLoading && (
                         <ButtonIcon>
@@ -326,7 +379,7 @@ const SignUp = () => {
                     )}
                 </Button>
                 {steps.activeStep === 1 && (
-                    <Pressable onPress={HandleChangeStep}>
+                    <Pressable onPress={sendVerificationEmail}>
                         <Text
                             textAlign="center"
                             color="$primaryDefault"
