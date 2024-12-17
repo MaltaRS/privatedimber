@@ -1,10 +1,12 @@
-import { useState } from "react";
+import { useCallback, useEffect, useMemo, useState } from "react";
 
 import { useRouter } from "expo-router";
 
 import {
+    Box,
     ButtonIcon,
     ButtonText,
+    HStack,
     Spinner,
     Text,
     VStack,
@@ -46,16 +48,7 @@ import { CreatePendingUser } from "@/connection/auth/PendingUserConnection";
 
 import { toast } from "burnt";
 
-const createPendingFormSchema = z.object({
-    email: z
-        .string({ required_error: "O email é obrigatório." })
-        .email("O email é inválido."),
-    code: z
-        .string({
-            required_error: "O código de verificação é obrigatório.",
-        })
-        .max(6, "O código deve ter 6 caracteres."),
-});
+import { SecureStoreUnencrypted } from "@/utils/SecureStorage";
 
 const createUserFormSchema = z
     .object({
@@ -114,6 +107,13 @@ export type Step = {
 const SignUp = () => {
     const router = useRouter();
 
+    const [revalidateEmail, setRevalidateEmail] = useState(false);
+
+    let verifiedEmail = useMemo(
+        () => SecureStoreUnencrypted.getItem("verified_email"),
+        [revalidateEmail],
+    );
+
     const { mutateAsync: createPendingUser } = useMutation({
         mutationFn: CreatePendingUser,
     });
@@ -123,6 +123,7 @@ const SignUp = () => {
         shouldUnregister: false,
         reValidateMode: "onBlur",
         defaultValues: {
+            email: verifiedEmail ?? "",
             type: "REGULAR",
         },
     });
@@ -140,7 +141,7 @@ const SignUp = () => {
         steps: [
             {
                 component: <StepEmail />,
-                active: false,
+                active: verifiedEmail ? false : true,
                 fields: ["email"],
             },
             {
@@ -150,7 +151,7 @@ const SignUp = () => {
             },
             {
                 component: <StepPassword />,
-                active: false,
+                active: verifiedEmail ? true : false,
                 fields: ["password"],
             },
             {
@@ -174,10 +175,24 @@ const SignUp = () => {
                 fields: ["bio", "icon"],
             },
         ],
-        activeStep: 0,
+        activeStep: verifiedEmail ? 2 : 0,
     });
 
-    const sendVerificationEmail = async (): Promise<boolean> => {
+    // step email code timer
+
+    const [timeLeft, setTimeLeft] = useState(0);
+
+    useEffect(() => {
+        if (timeLeft === 0) return;
+
+        const timerId = setInterval(() => {
+            setTimeLeft((prevTime) => prevTime - 1);
+        }, 1000);
+
+        return () => clearInterval(timerId);
+    }, [timeLeft]);
+
+    const sendVerificationEmail = useCallback(async (): Promise<boolean> => {
         setIsGlobalLoading(true);
 
         const email = getValues("email");
@@ -199,11 +214,13 @@ const SignUp = () => {
 
         setIsGlobalLoading(false);
 
-        return true;
-    };
+        setTimeLeft(300);
 
-    const HandleChangeStep = async () => {
-        if (isGlobalLoading || globalError) return;
+        return true;
+    }, [createPendingUser, getValues]);
+
+    const HandleChangeStep = useCallback(async () => {
+        if (isGlobalLoading) return;
 
         const fields = steps.steps[steps.activeStep].fields;
 
@@ -228,6 +245,8 @@ const SignUp = () => {
             const success = await sendVerificationEmail();
 
             if (!success) return;
+        } else if (fields.length === 0) {
+            setTimeLeft(0);
         }
 
         const activeStep = steps.activeStep + 1;
@@ -238,9 +257,16 @@ const SignUp = () => {
             })),
             activeStep,
         });
-    };
+    }, [
+        formProps,
+        getValues,
+        isGlobalLoading,
+        sendVerificationEmail,
+        steps.activeStep,
+        steps.steps,
+    ]);
 
-    const uploadImageToFirebase = async (uri: string) => {
+    const uploadImageToFirebase = useCallback(async (uri: string) => {
         const blob = await new Promise<Blob>((resolve, reject) => {
             const xhr = new XMLHttpRequest();
             xhr.onload = function () {
@@ -263,7 +289,7 @@ const SignUp = () => {
         blob.close();
 
         return await getDownloadURL(storageRef);
-    };
+    }, []);
 
     const OnSubmit = async (data: CreateUserForm) => {
         setIsGlobalLoading(true);
@@ -301,6 +327,11 @@ const SignUp = () => {
         }
     };
 
+    const resendCodeTiming = useMemo(
+        () => (120 + (timeLeft - 300) <= 0 ? 0 : 120 + (timeLeft - 300)),
+        [timeLeft],
+    );
+
     return (
         <BaseContainer
             justifyContent="space-between"
@@ -312,7 +343,26 @@ const SignUp = () => {
             }
         >
             <VStack gap="$4">
-                <BackLeft step={steps.activeStep} setSteps={setSteps} />
+                <HStack alignItems="center" justifyContent="space-between">
+                    <BackLeft
+                        step={steps.activeStep}
+                        setSteps={setSteps}
+                        verifiedEmail={!!verifiedEmail}
+                    />
+                    <HStack gap="$1">
+                        {steps.steps.map((step, index) => (
+                            <Box
+                                key={index}
+                                bgColor={
+                                    step.active ? "$primaryDefault" : "$gray300"
+                                }
+                                w={step.active ? "$3" : "$2"}
+                                h="$2"
+                                borderRadius={step.active ? "$lg" : "$full"}
+                            />
+                        ))}
+                    </HStack>
+                </HStack>
                 <VStack gap="$4">
                     <FormProvider {...formProps}>
                         {steps.steps[steps.activeStep].fields.includes(
@@ -338,7 +388,11 @@ const SignUp = () => {
                             />
                         ) : steps.steps[steps.activeStep].fields.length ===
                           0 ? (
-                            <StepEmailCode setGlobalError={setGlobalError} />
+                            <StepEmailCode
+                                setGlobalError={setGlobalError}
+                                handleChangeStep={HandleChangeStep}
+                                revalidateEmail={setRevalidateEmail}
+                            />
                         ) : (
                             steps.steps[steps.activeStep].component
                         )}
@@ -379,14 +433,25 @@ const SignUp = () => {
                     )}
                 </Button>
                 {steps.activeStep === 1 && (
-                    <Pressable onPress={sendVerificationEmail}>
+                    <Pressable
+                        onPress={sendVerificationEmail}
+                        disabled={resendCodeTiming !== 0}
+                    >
                         <Text
                             textAlign="center"
-                            color="$primaryDefault"
+                            color={
+                                resendCodeTiming === 0
+                                    ? "$primaryDefault"
+                                    : "$gray400"
+                            }
                             textDecorationColor="$primaryDefault"
                             textDecorationLine="underline"
+                            disabled={resendCodeTiming !== 0}
                         >
-                            Enviar código novamente
+                            Reenviar código{" "}
+                            {resendCodeTiming !== 0
+                                ? `${resendCodeTiming}s`
+                                : ""}
                         </Text>
                     </Pressable>
                 )}

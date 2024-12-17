@@ -80,7 +80,7 @@ const ConfigScreen = () => {
 
     return (
         <BaseContainer
-            statusBarColor="#F8F8F9"
+            statusBarColor="#E5E7EB"
             statusBarStyle="dark"
             position="relative"
         >

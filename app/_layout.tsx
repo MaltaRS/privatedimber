@@ -25,7 +25,7 @@ import { SocketProvider } from "@/Context/SocketProvider";
 SplashScreen.preventAutoHideAsync();
 
 SplashScreen.setOptions({
-    duration: 1000,
+    duration: 500,
     fade: true,
 });
 

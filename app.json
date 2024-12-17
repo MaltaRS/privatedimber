@@ -55,6 +55,12 @@
           "image": "./assets/images/splash.png",
           "imageWidth": 120
         }
+      ],
+      [
+        "@stripe/stripe-react-native",
+        {
+          "enableGooglePay": true
+        }
       ]
     ],
     "experiments": {

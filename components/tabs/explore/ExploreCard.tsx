@@ -4,15 +4,16 @@ import {
     Avatar,
     AvatarFallbackText,
     AvatarImage,
-    Box,
     Card,
     HStack,
     Text,
     VStack,
     Pressable,
+    Box,
 } from "@/gluestackComponents";
+import { ArrowUp, Heart } from "lucide-react-native";
 
-import { SealCheck, Tag, ChatCircleDots, Heart } from "phosphor-react-native";
+import { SealCheck } from "phosphor-react-native";
 
 export type ExploreCardProps = {
     id: string;
@@ -21,78 +22,70 @@ export type ExploreCardProps = {
     tags: string[];
     price: string;
     isChecked: boolean;
-    chatCount: number;
     liked: boolean;
     onLike: (id: string) => void;
     onPress: () => void;
 };
 
-const ExploreAvatar = ({
+const CardAvatar = ({
     name,
     imageLink,
+    liked,
+    onLike,
 }: {
     name: string;
     imageLink: string;
+    liked: boolean;
+    onLike: () => void;
 }) => (
-    <Avatar size="xl" rounded="$lg">
-        <AvatarFallbackText>{name}</AvatarFallbackText>
+    <Avatar w="$full" height={180} rounded={24} position="relative">
+        <AvatarFallbackText fontSize={60}>{name}</AvatarFallbackText>
         <AvatarImage
-            rounded="$lg"
+            rounded={24}
             source={{
                 uri: imageLink,
             }}
             alt={`Foto de perfil de ${name}`}
         />
+        <ImageLikeButton liked={liked} onLike={onLike} />
     </Avatar>
 );
 
-const ExploreTags = ({ tags }: { tags: string[] }) => (
-    <HStack gap="$1" flexWrap="wrap">
+const CardTags = ({ tags }: { tags: string[] }) => (
+    <Text size="sm" flexWrap="wrap" color="$gray800">
         {tags
             .filter((_, i) => i <= 1)
-            .map((tag, index) => (
-                <Box
-                    key={index}
-                    py={2}
-                    px="$2"
-                    borderWidth={1}
-                    borderColor="#9CA3AF"
-                    rounded="$full"
-                >
-                    <Text textAlign="center" size="sm" color="#9CA3AF">
-                        {tag}
-                    </Text>
-                </Box>
-            ))}
-    </HStack>
+            .map((tag, index) => tag + (index === 1 ? "" : ", "))}
+    </Text>
 );
 
-const ExplorePrice = ({ price }: { price: string }) => (
-    <HStack gap="$2">
-        <Tag size={20} color="#111827" />
-        <Text size="sm" color="#111827" fontWeight="bold">
+const CardPrice = ({ price }: { price: string }) => (
+    <HStack gap="$2" mt="$2" alignItems="center">
+        <Text
+            fontSize={20}
+            fontFamily="$heading"
+            color="#111827"
+            fontWeight="bold"
+        >
             {price}
         </Text>
+        <HStack
+            p={2}
+            px="$1"
+            bgColor="$gray200"
+            rounded="$sm"
+            alignItems="center"
+            gap="$1"
+        >
+            <ArrowUp size={16} color={Colors.gray700} />
+            <Text fontSize={17} color="$gray700" fontWeight="bold">
+                25%
+            </Text>
+        </HStack>
     </HStack>
 );
 
-const ExploreChatCount = ({ chatCount }: { chatCount: number }) => (
-    <Box
-        rounded="$sm"
-        bgColor="$gray200"
-        py="$1"
-        px="$3"
-        justifyContent="center"
-        alignItems="center"
-    >
-        <ChatCircleDots size={18} color="#9CA3AF" />
-        <Text size="sm" color="#9CA3AF">
-            {chatCount}
-        </Text>
-    </Box>
-);
-
-const ExploreLikeButton = ({
+const ImageLikeButton = ({
     liked,
     onLike,
 }: {
@@ -100,16 +93,22 @@ const ExploreLikeButton = ({
     onLike: () => void;
 }) => (
     <Pressable
-        rounded="$sm"
-        bgColor="$gray200"
-        py="$1"
-        px="$3"
+        rounded="$full"
+        bgColor="#F8F8F950"
+        py="$2"
+        px="$2"
         justifyContent="center"
         alignItems="center"
         onPress={onLike}
-        flex={1}
+        position="absolute"
+        bottom={8}
+        right={8}
     >
-        <Heart size={22} color="#FF6378" weight={liked ? "fill" : "regular"} />
+        <Heart
+            size={25}
+            color={liked ? "#FF6378" : "#fff"}
+            fill={liked ? "#FF6378" : "none"}
+        />
     </Pressable>
 );
 
@@ -120,49 +119,41 @@ export const ExploreCard = ({
     isChecked,
     tags,
     price,
-    chatCount,
     liked,
     onLike,
     onPress,
 }: ExploreCardProps) => {
     return (
-        <Pressable onPress={onPress}>
+        <Pressable onPress={onPress} w="47.5%">
             <Card variant="ghost" p="$0">
-                <HStack justifyContent="space-between" alignItems="center">
-                    <HStack gap="$4">
-                        <ExploreAvatar name={name} imageLink={icon} />
-                        <VStack
+                <VStack alignItems="center">
+                    <CardAvatar
+                        name={name}
+                        imageLink={icon}
+                        liked={liked}
+                        onLike={() => onLike(id)}
+                    />
+                    <VStack gap="$1" p="$2" w="$full">
+                        <HStack
+                            alignItems="center"
                             gap="$1"
-                            justifyContent="space-between"
-                            width="55%"
-                            maxWidth="55%"
+                            justifyContent="flex-start"
                         >
-                            <VStack maxWidth="$full">
-                                <HStack alignItems="center" gap="$1">
-                                    <Text size="lg" fontWeight="$bold">
-                                        {name}
-                                    </Text>
-                                    {isChecked && (
-                                        <SealCheck
-                                            size={20}
-                                            color={Colors.primaryDefault}
-                                            weight="fill"
-                                        />
-                                    )}
-                                </HStack>
-                                <ExploreTags tags={tags} />
-                            </VStack>
-                            <ExplorePrice price={price} />
-                        </VStack>
-                    </HStack>
-                    <VStack gap={9} alignItems="stretch">
-                        <ExploreChatCount chatCount={chatCount} />
-                        <ExploreLikeButton
-                            liked={liked}
-                            onLike={() => onLike(id)}
-                        />
+                            <Text size="lg" color="#000" fontWeight="$bold">
+                                {name}
+                            </Text>
+                            {isChecked && (
+                                <SealCheck
+                                    size={20}
+                                    color={Colors.primaryDefault}
+                                    weight="fill"
+                                />
+                            )}
+                        </HStack>
+                        <CardTags tags={["Empresária", "Investidora"]} />
+                        <CardPrice price={price} />
                     </VStack>
-                </HStack>
+                </VStack>
             </Card>
         </Pressable>
     );

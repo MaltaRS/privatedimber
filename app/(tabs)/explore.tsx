@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import React, { useEffect, useState } from "react";
 import { Keyboard } from "react-native";
 
 import { useRouter } from "expo-router";
@@ -9,9 +9,6 @@ import {
     VStack,
     Text,
     Spinner,
-    Toast,
-    ToastTitle,
-    ToastDescription,
     useToast,
 } from "@/gluestackComponents";
 
@@ -118,6 +115,8 @@ const ExploreScreen = () => {
     };
 
     const HandleLike = async (id: string) => {
+        console.log("HandleLike: ", id);
+
         if (linkingIds.includes(id)) {
             return;
         }
@@ -284,10 +283,10 @@ const ExploreScreen = () => {
                             </VStack>
                         )}
                     </VStack>
-                    <VStack gap="$3" flex={1} py="$2" bgColor="#12212">
+                    <VStack gap="$3" flex={1} pt="$2" bgColor="#12212">
                         <Text
                             fontFamily="$heading"
-                            size="xl"
+                            size="2xl"
                             color="#000"
                             fontWeight="$bold"
                         >
@@ -313,7 +312,7 @@ const ExploreScreen = () => {
                             </VStack>
                         ) : !loadingStates.popularUsers ? (
                             <ScrollView showsVerticalScrollIndicator={false}>
-                                <VStack gap="$4">
+                                <HStack gap="$4" flexWrap="wrap">
                                     {cards.map((item, index) => (
                                         <ExploreCard
                                             key={index}
@@ -323,7 +322,6 @@ const ExploreScreen = () => {
                                             tags={item.tags ?? []}
                                             price={item.price ?? "R$ 100,00"}
                                             isChecked={item.isChecked ?? false}
-                                            chatCount={item.chatCount ?? 0}
                                             liked={item.liked ?? false}
                                             onLike={(id) => HandleLike(id)}
                                             onPress={() =>
@@ -331,7 +329,7 @@ const ExploreScreen = () => {
                                             }
                                         />
                                     ))}
-                                </VStack>
+                                </HStack>
                             </ScrollView>
                         ) : (
                             <VStack

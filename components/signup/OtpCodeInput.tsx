@@ -1,6 +1,7 @@
-import { Colors } from "@/constants/Colors";
 import React, { useRef } from "react";
 import { View, TextInput, StyleSheet } from "react-native";
+import * as Clipboard from "expo-clipboard";
+import { Colors } from "@/constants/Colors";
 
 type OTPInputProps = {
     code: string;
@@ -9,19 +10,34 @@ type OTPInputProps = {
     disabled?: boolean;
 };
 
-const OTPInput: React.FC<OTPInputProps> = ({
+const OTPInput = ({
     code,
     setCode,
     numDigits = 6,
     disabled = false,
-}) => {
+}: OTPInputProps) => {
     const inputsRef = useRef<(TextInput | null)[]>([]);
 
-    const handleChange = (text: string, index: number) => {
+    const handleChange = async (text: string, index: number) => {
         if (disabled) return;
 
+        if (text.length > 1) {
+            const clipboardText = await Clipboard.getStringAsync();
+            if (clipboardText && clipboardText.length >= numDigits) {
+                const newCode = clipboardText.slice(0, numDigits).toUpperCase();
+                setCode(newCode);
+
+                inputsRef.current.forEach((input, idx) => {
+                    if (input) {
+                        input.setNativeProps({ text: newCode[idx] || "" });
+                    }
+                });
+                return;
+            }
+        }
+
         const newCode = code.split("");
-        newCode[index] = text;
+        newCode[index] = text[0] || "";
         setCode(newCode.join("").toUpperCase());
 
         if (text && index < numDigits - 1) {
@@ -43,8 +59,7 @@ const OTPInput: React.FC<OTPInputProps> = ({
                 <TextInput
                     key={`otp-${index}`}
                     style={[styles.input, disabled && styles.disabledInput]}
-                    keyboardType="default"
-                    maxLength={1}
+                    maxLength={numDigits}
                     ref={(el) => (inputsRef.current[index] = el)}
                     value={code[index] || ""}
                     onChangeText={(text) => handleChange(text, index)}
