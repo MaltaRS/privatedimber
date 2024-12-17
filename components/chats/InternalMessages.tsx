@@ -60,7 +60,7 @@ export const InternalMessages = ({
             setInternalMessage({
                 text: {
                     content: "Conversa finalizada",
-                    color: "$primaryDefault",
+                    color: "$negative",
                     fontSize: 17,
                 },
                 buttons: [],

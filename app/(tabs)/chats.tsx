@@ -164,8 +164,6 @@ const ChatsScreen = () => {
         socket.on("newMessage", HandleNewMessage);
 
         socket.on(`conversationCreated_${user.id}`, (newConversation) => {
-            console.log("Nova conversa criada:", newConversation);
-
             queryClient.setQueryData(
                 ["conversations"],
                 (oldConversations: any) => {

@@ -169,14 +169,12 @@ const ExploreScreen = () => {
     };
 
     const CreateConversation = async (participantId: string) => {
-        console.log("CreateConversation: ", participantId);
         if (!socket) return;
 
         socket.emit(
             "CreateConversation",
             { participantId },
             (response: any) => {
-                console.log("CreateConversation response: ", response);
                 if (response.error) {
                     console.error(
                         "Error creating conversation: ",

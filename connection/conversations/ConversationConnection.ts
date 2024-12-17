@@ -34,6 +34,8 @@ export type MessagesPayload = {
     answersCount: number;
     contactAnswersCount: number;
     isCreator: boolean;
+    needReply: boolean;
+    isFinished: boolean;
 };
 
 export const findConversations = async () => {
