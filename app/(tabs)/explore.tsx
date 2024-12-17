@@ -45,7 +45,6 @@ import * as Burnt from "burnt";
 
 const ExploreScreen = () => {
     const router = useRouter();
-    const toast = useToast();
     const queryClient = useQueryClient();
 
     const { socket } = useSocket();
@@ -170,6 +169,7 @@ const ExploreScreen = () => {
     };
 
     const CreateConversation = async (participantId: string) => {
+        console.log("CreateConversation: ", participantId);
         if (!socket) return;
 
         socket.emit(
@@ -243,15 +243,6 @@ const ExploreScreen = () => {
                                     fontFamily="$heading"
                                     fontSize={18}
                                     color="#000"
-                                    onPress={() => {
-                                        Burnt.toast({
-                                            title: "Favoritos",
-                                            haptic: "success",
-                                            duration: 3,
-                                            preset: "done",
-                                            from: "top",
-                                        });
-                                    }}
                                 >
                                     Favoritos
                                 </Text>

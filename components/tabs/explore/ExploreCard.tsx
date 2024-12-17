@@ -150,7 +150,7 @@ export const ExploreCard = ({
                                 />
                             )}
                         </HStack>
-                        <CardTags tags={["Empresária", "Investidora"]} />
+                        <CardTags tags={["Atleta", "Investidor"]} />
                         <CardPrice price={price} />
                     </VStack>
                 </VStack>

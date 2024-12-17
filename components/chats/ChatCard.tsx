@@ -1,3 +1,5 @@
+import React from "react";
+
 import { useRouter } from "expo-router";
 
 import {
@@ -19,6 +21,7 @@ import {
 
 import { useQueryClient } from "@tanstack/react-query";
 import { formatMessageTime } from "@/utils/dateFormat";
+
 import { MessageText } from "./MessageText";
 
 export type ChatCardProps = {

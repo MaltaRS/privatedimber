@@ -16,6 +16,7 @@ type InternalMessagesProps = {
     gaveRightAnswer: () => void;
     finishChat: () => void;
     isCreator: boolean;
+    isFinished: boolean;
     contactName: string | undefined;
 };
 
@@ -41,6 +42,7 @@ export const InternalMessages = ({
     gaveRightAnswer,
     finishChat,
     isCreator,
+    isFinished,
     contactName,
 }: InternalMessagesProps) => {
     const [internalMessage, setInternalMessage] = useState<InternalMessage>({
@@ -54,7 +56,18 @@ export const InternalMessages = ({
     });
 
     useEffect(() => {
-        if (needReplyMessage && isCreator) {
+        if (isFinished) {
+            setInternalMessage({
+                text: {
+                    content: "Conversa finalizada",
+                    color: "$primaryDefault",
+                    fontSize: 17,
+                },
+                buttons: [],
+                active: true,
+            });
+            return;
+        } else if (needReplyMessage && isCreator) {
             setInternalMessage({
                 text: {
                     content: "Aguardando resposta",
@@ -115,6 +128,7 @@ export const InternalMessages = ({
         asnwersCount,
         messages,
         isCreator,
+        isFinished,
         contactName,
         contactAnswersCount,
         gaveRightAnswer,
@@ -129,7 +143,12 @@ export const InternalMessages = ({
                 justifyContent="center"
                 alignContent="center"
             >
-                <VStack maxWidth="82%" bgColor="$white" rounded="$xl" p="$2">
+                <VStack
+                    maxWidth="82%"
+                    bgColor="$white"
+                    rounded="$xl"
+                    p={internalMessage.buttons.length > 0 ? "$2" : "$3"}
+                >
                     <Text
                         textAlign="center"
                         fontFamily="$arialHeading"

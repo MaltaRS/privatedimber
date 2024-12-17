@@ -27,8 +27,6 @@ export const Message = ({
     read,
     user,
 }: MessageProps) => {
-    console.log(user?.id, senderId);
-
     const isLoggedUser = senderId === user?.id;
 
     return (

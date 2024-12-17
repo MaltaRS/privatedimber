@@ -45,27 +45,32 @@ const ChatsScreen = () => {
     const { socket } = useSocket();
     const { user } = useAuth();
 
-    const [formActive, setFormActive] = useState(false);
-
-    const [message, setMessage] = useState("");
-
     const { conversationParams } = useLocalSearchParams<{
         conversationParams: string[];
     }>();
 
     let [conversationId, needReply] = conversationParams;
 
-    const [needReplyMessage, setNeedReplyMessage] = useState(
-        needReply === "true",
-    );
-
-    const scrollViewRef = useRef<ScrollView | null>(null);
-
     const { data: contactConversation, isLoading } = useQuery({
         queryKey: ["conversationMessage", conversationId],
         queryFn: () => findConversationById(conversationId),
         staleTime: Infinity,
     });
+
+    const [formActive, setFormActive] = useState(
+        contactConversation?.messages.length === 0 &&
+            contactConversation?.isCreator,
+    );
+
+    const [message, setMessage] = useState("");
+
+    const [needReplyMessage, setNeedReplyMessage] = useState(
+        needReply === "true",
+    );
+
+    const [isFinished, setIsFinished] = useState(false);
+
+    const scrollViewRef = useRef<ScrollView | null>(null);
 
     const handleNewMessage = useCallback(
         (newMessage: any) => {
@@ -128,9 +133,15 @@ const ChatsScreen = () => {
             handleNewAnswerRight(conversationId),
         );
 
+        socket.on("conversationFinished", () => {
+            setIsFinished(true);
+        });
+
         return () => {
             socket.off("newMessage", handleNewMessage);
             socket.emit("leaveConversation", { conversationId });
+            socket.off(`newAnswerRight_${user?.id}`, handleNewAnswerRight);
+            socket.off("conversationFinished");
         };
     }, [socket, conversationId, handleNewMessage, handleNewAnswerRight, user]);
 
@@ -160,6 +171,8 @@ const ChatsScreen = () => {
             if (!socket) return;
 
             socket.emit("finishConversation", { conversationId });
+
+            setIsFinished(true);
         },
         [socket],
     );
@@ -314,75 +327,77 @@ const ChatsScreen = () => {
                                         isCreator={
                                             contactConversation.isCreator
                                         }
+                                        isFinished={isFinished}
                                         contactName={contact?.name}
                                     />
                                 </ScrollView>
                             )}
-                            {(contactConversation?.answersCount ?? 1) > 0 &&
+                            {(((contactConversation?.answersCount ?? 1) > 0 &&
                                 (contactConversation?.messages.length ?? 0) >
-                                    0 && (
-                                    <HStack
-                                        bgColor="$gray100"
-                                        px="$2"
-                                        py="$3"
-                                        zIndex={4}
-                                        justifyContent="space-between"
+                                    0) ||
+                                isFinished) && (
+                                <HStack
+                                    bgColor="$gray100"
+                                    px="$2"
+                                    py="$3"
+                                    zIndex={4}
+                                    justifyContent="space-between"
+                                    alignItems="center"
+                                    borderTopWidth={0.5}
+                                    borderTopColor="$gray300"
+                                    gap="$2"
+                                >
+                                    <Box
+                                        p="$2"
+                                        bgColor="$white"
+                                        rounded="$full"
                                         alignItems="center"
-                                        borderTopWidth={0.5}
-                                        borderTopColor="$gray300"
-                                        gap="$2"
+                                        justifyContent="center"
                                     >
-                                        <Box
-                                            p="$2"
+                                        <Plus
+                                            size={24}
+                                            color={Colors.gray700}
+                                        />
+                                    </Box>
+                                    <Input
+                                        flex={1}
+                                        variant="rounded"
+                                        bgColor="$white"
+                                        size="xl"
+                                        borderWidth={0}
+                                        alignItems="center"
+                                    >
+                                        <InputField
+                                            pl="$5"
                                             bgColor="$white"
-                                            rounded="$full"
-                                            alignItems="center"
-                                            justifyContent="center"
-                                        >
-                                            <Plus
-                                                size={24}
-                                                color={Colors.gray700}
-                                            />
-                                        </Box>
-                                        <Input
-                                            flex={1}
-                                            variant="rounded"
-                                            bgColor="$white"
-                                            size="xl"
-                                            borderWidth={0}
-                                            alignItems="center"
-                                        >
-                                            <InputField
-                                                pl="$5"
-                                                bgColor="$white"
-                                                placeholder="Mensagem..."
-                                                placeholderTextColor="#6B7280"
-                                                size="lg"
-                                                value={message}
-                                                onChangeText={setMessage}
-                                            />
-                                            <InputSlot>
-                                                <Pressable
-                                                    rounded="$full"
-                                                    px="$4"
-                                                    py="$2"
-                                                    mr="$1"
-                                                    bgColor="$primaryDefault"
-                                                    onPress={() => {
-                                                        sendMessage("oi");
-                                                    }}
+                                            placeholder="Mensagem..."
+                                            placeholderTextColor="#6B7280"
+                                            size="lg"
+                                            value={message}
+                                            onChangeText={setMessage}
+                                        />
+                                        <InputSlot>
+                                            <Pressable
+                                                rounded="$full"
+                                                px="$4"
+                                                py="$2"
+                                                mr="$1"
+                                                bgColor="$primaryDefault"
+                                                onPress={() => {
+                                                    sendMessage("oi");
+                                                }}
+                                            >
+                                                <Text
+                                                    color="white"
+                                                    fontWeight="$bold"
                                                 >
-                                                    <Text
-                                                        color="white"
-                                                        fontWeight="$bold"
-                                                    >
-                                                        Enviar
-                                                    </Text>
-                                                </Pressable>
-                                            </InputSlot>
-                                        </Input>
-                                    </HStack>
-                                )}
+                                                    Enviar
+                                                </Text>
+                                            </Pressable>
+                                        </InputSlot>
+                                    </Input>
+                                </HStack>
+                            )}
                         </ImageBackground>
                     </VStack>
                 )}
