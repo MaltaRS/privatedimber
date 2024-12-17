@@ -388,6 +388,7 @@ export const gluestackUIConfig = createConfig({
             primaryLight: "#89C4FF",
             primaryDefault: "#00A8FF",
             primaryDark: "#004C97",
+            chatBackground: "#DDF4FE",
             secondaryLight: "#EEF2FF",
             secondaryDefault: "#0A0D77",
             secondaryDark: "#0A5A62",

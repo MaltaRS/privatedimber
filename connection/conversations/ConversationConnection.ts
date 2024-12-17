@@ -11,6 +11,7 @@ export type Conversation = {
         verifiedAt: string | null;
     };
     createdAt: string;
+    needReply: boolean;
     messages: Message[];
 };
 
@@ -30,6 +31,9 @@ export type Message = {
 export type MessagesPayload = {
     contact: User;
     messages: Message[];
+    answersCount: number;
+    contactAnswersCount: number;
+    isCreator: boolean;
 };
 
 export const findConversations = async () => {

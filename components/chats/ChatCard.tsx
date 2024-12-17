@@ -45,7 +45,7 @@ export const ChatCard = ({
             queryFn: () => findConversationById(chat.id),
         });
 
-        router.push(`/(conversations)/${chat.id}`);
+        router.push(`/(conversations)/${chat.id}/${chat.needReply}`);
     };
 
     const newMessages = chat.messages;

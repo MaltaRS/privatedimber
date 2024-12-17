@@ -65,7 +65,7 @@ export const TabButton = forwardRef(
 
         return (
             <Pressable {...props}>
-                <Box alignItems="center">
+                <Box alignItems="center" p="$2">
                     {icons[icon] || null}
                     {isFocused && (
                         <Box

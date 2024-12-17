@@ -196,7 +196,7 @@ const ChatsScreen = () => {
 
     const filteredChats =
         queryChats?.filter((chat) =>
-            chat.participant.name
+            (chat.participant.name ?? "")
                 .toLowerCase()
                 .includes(searchTerm.toLowerCase()),
         ) ?? [];

@@ -38,3 +38,14 @@ export const formatMessageTime = (dateString: string) => {
         return "Data inválida";
     }
 };
+
+export const formatTime = (dateString: string) => {
+    try {
+        const date = parseISO(dateString);
+
+        return format(date, "HH:mm", { locale: ptBR });
+    } catch (error) {
+        console.error("Erro ao formatar data:", error);
+        return "Data inválida";
+    }
+};

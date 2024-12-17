@@ -2,15 +2,10 @@ import { Text } from "@/gluestackComponents";
 
 type MessageTextProps = {
     content: string;
-    primaryColor?: boolean;
     preview?: boolean;
 };
 
-export const MessageText = ({
-    content,
-    primaryColor = false,
-    preview = false,
-}: MessageTextProps) => {
+export const MessageText = ({ content, preview = false }: MessageTextProps) => {
     const parseMessageContent = (text: string) => {
         const regex = /\*(.*?)\*/g; // Captura texto entre *
         const parts = [];
@@ -48,20 +43,14 @@ export const MessageText = ({
     return (
         <Text
             size={preview ? "sm" : "md"}
-            color={primaryColor ? "$gray900" : preview ? "$gray800" : "$white"}
+            color={preview ? "$gray800" : "$gray900"}
             fontFamily="$arialBody"
         >
             {parsedContent.map((part, index) => (
                 <Text
                     key={index}
                     size={preview ? "sm" : "md"}
-                    color={
-                        primaryColor
-                            ? "$gray900"
-                            : preview
-                              ? "$gray800"
-                              : "$white"
-                    }
+                    color={preview ? "$gray800" : "$gray900"}
                     style={{
                         fontWeight: part.bold ? "bold" : "normal",
                     }}

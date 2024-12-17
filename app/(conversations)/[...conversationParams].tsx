@@ -1,20 +1,25 @@
-import { useCallback, useEffect, useRef, useState } from "react";
+import React, { useCallback, useEffect, useRef, useState } from "react";
 
 import { ScrollView } from "react-native";
 
 import { useLocalSearchParams, useRouter } from "expo-router";
 
 import { Chats } from "phosphor-react-native";
-import { MoveLeft } from "lucide-react-native";
+import { MoveLeft, Plus } from "lucide-react-native";
 
 import {
     Avatar,
     AvatarFallbackText,
     AvatarImage,
     Box,
+    Button,
+    ButtonText,
     Divider,
     HStack,
     ImageBackground,
+    Input,
+    InputField,
+    InputSlot,
     Pressable,
     Spinner,
     Text,
@@ -31,38 +36,32 @@ import { Message } from "@/components/tabs/conversations/Message";
 import { BaseContainer } from "@/components/BaseContainer";
 import { SendMessageForm } from "@/components/chats/SendMessageForm";
 import { Colors } from "@/constants/Colors";
-
-export type DimberMessage = {
-    id: string;
-    content: string;
-    createdAt: string;
-    senderId: string;
-    conversationId: string;
-    buttons: {
-        width: string;
-        text: string;
-        action: () => void;
-    }[];
-};
+import { useAuth } from "@/Context/AuthProvider";
+import { InternalMessages } from "@/components/chats/InternalMessages";
 
 const ChatsScreen = () => {
     const router = useRouter();
     const queryClient = useQueryClient();
     const { socket } = useSocket();
+    const { user } = useAuth();
 
     const [formActive, setFormActive] = useState(false);
 
-    const { conversationId } = useLocalSearchParams<{
-        conversationId: string;
+    const [message, setMessage] = useState("");
+
+    const { conversationParams } = useLocalSearchParams<{
+        conversationParams: string[];
     }>();
+
+    let [conversationId, needReply] = conversationParams;
+
+    const [needReplyMessage, setNeedReplyMessage] = useState(
+        needReply === "true",
+    );
 
     const scrollViewRef = useRef<ScrollView | null>(null);
 
-    const {
-        data: contactConversation,
-        isLoading,
-        isError,
-    } = useQuery({
+    const { data: contactConversation, isLoading } = useQuery({
         queryKey: ["conversationMessage", conversationId],
         queryFn: () => findConversationById(conversationId),
         staleTime: Infinity,
@@ -86,11 +85,36 @@ const ChatsScreen = () => {
                 },
             );
 
+            if (needReplyMessage) {
+                setNeedReplyMessage(false);
+            }
+
             if (scrollViewRef.current) {
                 scrollViewRef.current.scrollToEnd({ animated: true });
             }
         },
-        [conversationId, queryClient, scrollViewRef],
+        [conversationId, queryClient, scrollViewRef, needReplyMessage],
+    );
+
+    const handleNewAnswerRight = useCallback(
+        (conversationId: string) => {
+            queryClient.setQueryData(
+                ["conversationMessage", conversationId],
+                (oldData: any) => {
+                    if (oldData) {
+                        return {
+                            ...oldData,
+                            answersCount: oldData.answersCount + 1,
+                        };
+                    }
+                },
+            );
+
+            if (scrollViewRef.current) {
+                scrollViewRef.current.scrollToEnd({ animated: true });
+            }
+        },
+        [queryClient, scrollViewRef],
     );
 
     useEffect(() => {
@@ -100,11 +124,15 @@ const ChatsScreen = () => {
 
         socket.on("newMessage", handleNewMessage);
 
+        socket.on(`newAnswerRight_${user?.id}`, () =>
+            handleNewAnswerRight(conversationId),
+        );
+
         return () => {
             socket.off("newMessage", handleNewMessage);
             socket.emit("leaveConversation", { conversationId });
         };
-    }, [socket, conversationId, handleNewMessage]);
+    }, [socket, conversationId, handleNewMessage, handleNewAnswerRight, user]);
 
     const sendMessage = useCallback(
         async (content: string) => {
@@ -118,6 +146,24 @@ const ChatsScreen = () => {
         [socket, conversationId],
     );
 
+    const gaveAnswerRight = useCallback(
+        async (conversationId: string) => {
+            if (!socket) return;
+
+            socket.emit("giveAnswerRight", { conversationId });
+        },
+        [socket],
+    );
+
+    const finishConversation = useCallback(
+        async (conversationId: string) => {
+            if (!socket) return;
+
+            socket.emit("finishConversation", { conversationId });
+        },
+        [socket],
+    );
+
     useEffect(() => {
         if (scrollViewRef.current) {
             setTimeout(() => {
@@ -127,31 +173,6 @@ const ChatsScreen = () => {
     }, [contactConversation]);
 
     const contact = contactConversation?.contact;
-
-    const appMessages: DimberMessage[] = [
-        {
-            id: "1",
-            content:
-                "Deseja comprar o direito a uma resposta do famoso? Ao confirmar, será acrescentado um valor de *R$ 200,00* à sua conta.",
-            createdAt: "2021-09-01T12:00:00",
-            senderId: "2",
-            conversationId: conversationId,
-            buttons: [
-                {
-                    width: "50%",
-                    text: "Não, obrigado",
-                    action: () => {},
-                },
-                {
-                    width: "50%",
-                    text: "Sim, quero!",
-                    action: () => {
-                        setFormActive(true);
-                    },
-                },
-            ],
-        },
-    ];
 
     return (
         <BaseContainer px="$0">
@@ -264,30 +285,104 @@ const ChatsScreen = () => {
                                                     key={index}
                                                     senderId={message.senderId}
                                                     content={message.content}
+                                                    timestamp={
+                                                        message.deliveredAt ??
+                                                        message.createdAt
+                                                    }
+                                                    read={!!message.readAt}
                                                     contact={contact}
                                                     isFirst={index === 0}
+                                                    user={user}
                                                 />
                                             ),
                                         )}
-                                    {appMessages.map(
-                                        (
-                                            message: DimberMessage,
-                                            index: number,
-                                        ) => (
-                                            <Message
-                                                key={index}
-                                                senderId={message.senderId}
-                                                content={message.content}
-                                                contact={contact!}
-                                                isFirst={index === 0}
-                                                dimberMessage={{
-                                                    buttons: message.buttons,
-                                                }}
-                                            />
-                                        ),
-                                    )}
+                                    <InternalMessages
+                                        needReplyMessage={needReplyMessage}
+                                        asnwersCount={
+                                            contactConversation.answersCount
+                                        }
+                                        contactAnswersCount={
+                                            contactConversation.contactAnswersCount
+                                        }
+                                        messages={contactConversation.messages}
+                                        gaveRightAnswer={() =>
+                                            gaveAnswerRight(conversationId)
+                                        }
+                                        finishChat={() =>
+                                            finishConversation(conversationId)
+                                        }
+                                        isCreator={
+                                            contactConversation.isCreator
+                                        }
+                                        contactName={contact?.name}
+                                    />
                                 </ScrollView>
                             )}
+                            {(contactConversation?.answersCount ?? 1) > 0 &&
+                                (contactConversation?.messages.length ?? 0) >
+                                    0 && (
+                                    <HStack
+                                        bgColor="$gray100"
+                                        px="$2"
+                                        py="$3"
+                                        zIndex={4}
+                                        justifyContent="space-between"
+                                        alignItems="center"
+                                        borderTopWidth={0.5}
+                                        borderTopColor="$gray300"
+                                        gap="$2"
+                                    >
+                                        <Box
+                                            p="$2"
+                                            bgColor="$white"
+                                            rounded="$full"
+                                            alignItems="center"
+                                            justifyContent="center"
+                                        >
+                                            <Plus
+                                                size={24}
+                                                color={Colors.gray700}
+                                            />
+                                        </Box>
+                                        <Input
+                                            flex={1}
+                                            variant="rounded"
+                                            bgColor="$white"
+                                            size="xl"
+                                            borderWidth={0}
+                                            alignItems="center"
+                                        >
+                                            <InputField
+                                                pl="$5"
+                                                bgColor="$white"
+                                                placeholder="Mensagem..."
+                                                placeholderTextColor="#6B7280"
+                                                size="lg"
+                                                value={message}
+                                                onChangeText={setMessage}
+                                            />
+                                            <InputSlot>
+                                                <Pressable
+                                                    rounded="$full"
+                                                    px="$4"
+                                                    py="$2"
+                                                    mr="$1"
+                                                    bgColor="$primaryDefault"
+                                                    onPress={() => {
+                                                        sendMessage("oi");
+                                                    }}
+                                                >
+                                                    <Text
+                                                        color="white"
+                                                        fontWeight="$bold"
+                                                    >
+                                                        Enviar
+                                                    </Text>
+                                                </Pressable>
+                                            </InputSlot>
+                                        </Input>
+                                    </HStack>
+                                )}
                         </ImageBackground>
                     </VStack>
                 )}

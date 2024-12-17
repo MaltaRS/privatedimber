@@ -51,8 +51,8 @@ export default function TabLayout() {
             <TabSlot />
             <TabList asChild>
                 <HStack
-                    py="$4"
-                    px="$10"
+                    py="$2"
+                    px="$8"
                     borderTopStartRadius={16}
                     borderTopEndRadius={16}
                     bg="$white"
@@ -70,7 +70,7 @@ export default function TabLayout() {
                         position="absolute"
                         top={0}
                         left="$1/2"
-                        transform={[{ translateX: "5%" }]}
+                        transform={[{ translateX: "-6%" }]}
                         elevation={120}
                         bg="$gray200"
                         h={36}
