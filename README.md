@@ -3,6 +3,7 @@
 (caso não tenha o yarn instalado use: npm i -g yarn)
 
 - adicione o arquivo .env na raiz do projeto (pergunte a quem te passou o repositório);
+- adicione a pasta config com os arquivos de configuração do firebase (pergunte a quem te passou o repositório);
 
 - yarn - instalar dependencias;
 - yarn expo prebuild - gerar pastas nativas ios e android;

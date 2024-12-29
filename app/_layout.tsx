@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useState } from "react";
+import { useEffect } from "react";
 
 import { Box, GluestackUIProvider, Spinner } from "@/gluestackComponents";
 
@@ -21,6 +21,10 @@ import "react-native-gesture-handler";
 import { AuthProvider, useAuth } from "@/Context/AuthProvider";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { SocketProvider } from "@/Context/SocketProvider";
+
+import { GoogleSignin } from "@react-native-google-signin/google-signin";
+
+GoogleSignin.configure();
 
 SplashScreen.preventAutoHideAsync();
 

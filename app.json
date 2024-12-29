@@ -1,7 +1,7 @@
 {
   "expo": {
     "name": "Dimber",
-    "slug": "Dimber",
+    "slug": "dimber",
     "version": "1.0.0",
     "orientation": "portrait",
     "icon": "./assets/icons/icon.png",
@@ -9,20 +9,24 @@
     "userInterfaceStyle": "automatic",
     "newArchEnabled": true,
     "ios": {
+      "googleServicesFile": "./config/GoogleService-Info.plist",
       "supportsTablet": false
     },
     "android": {
+      "googleServicesFile": "./config/google-services.json",
       "adaptiveIcon": {
         "foregroundImage": "./assets/icons/adaptive-icon.png",
         "backgroundColor": "#01A8FF"
       },
-      "package": "com.crysiis.Dimber",
+      "package": "com.dimber.app",
       "permissions": [
         "INTERNET",
         "ACCESS_WIFI_STATE",
         "ACCESS_NETWORK_STATE",
         "CHANGE_WIFI_STATE",
-        "NEARBY_WIFI_DEVICES"
+        "NEARBY_WIFI_DEVICES",
+        "android.permission.CAMERA",
+        "android.permission.RECORD_AUDIO"
       ]
     },
     "web": {
@@ -34,6 +38,7 @@
       "expo-router",
       "expo-font",
       "expo-secure-store",
+      "@react-native-google-signin/google-signin",
       [
         "expo-camera",
         {
@@ -61,12 +66,6 @@
         {
           "enableGooglePay": true
         }
-      ],
-      [
-        "@react-native-google-signin/google-signin",
-        {
-          "iosUrlScheme": "com.googleusercontent.apps._some_id_here_"
-        }
       ]
     ],
     "experiments": {
@@ -77,8 +76,9 @@
         "origin": false
       },
       "eas": {
-        "projectId": "308f65cd-3385-49e0-9ac3-f5f30ef41fb5"
+        "projectId": "02f619b9-0bb5-4ff0-bf1f-d2a576975122"
       }
-    }
+    },
+    "owner": "dimber"
   }
 }
