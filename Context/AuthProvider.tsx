@@ -1,13 +1,14 @@
-import React, { createContext, useContext } from "react";
+import { createContext, useContext, useState } from "react";
 
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 
 import { SecureStoreEncrypted } from "@/utils/SecureStorage";
-import api, { setAuthorizationHeader } from "@/utils/api";
+import { removeAuthorizationHeader, setAuthorizationHeader } from "@/utils/api";
 
 import { useSocket } from "./SocketProvider";
 
 import { fetchUser } from "@/connection/auth/UserConnection";
+import { useRouter } from "expo-router";
 
 export type User = {
     id: string;
@@ -24,6 +25,7 @@ export type User = {
 type AuthContextData = {
     user: User | null | undefined;
     isAuthenticated: boolean;
+    isSigningOut: boolean;
     loading: boolean;
     signIn: (accessToken: string, refreshToken: string) => Promise<void>;
     signOut: () => Promise<void>;
@@ -34,19 +36,18 @@ const AuthContext = createContext<AuthContextData>({} as AuthContextData);
 export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({
     children,
 }) => {
+    const router = useRouter();
+
+    const [isSigningOut, setIsSigningOut] = useState(false);
+
     const queryClient = useQueryClient();
 
     const { recreateSocket } = useSocket();
 
-    const {
-        data: user,
-        isLoading,
-        isError,
-    } = useQuery<User | null>({
+    const { data: user, isLoading } = useQuery<User | null>({
         queryKey: ["authenticatedUser"],
         queryFn: fetchUser,
         retry: false,
-        staleTime: Infinity,
     });
 
     const signInMutation = useMutation({
@@ -68,19 +69,8 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({
             await recreateSocket();
             return user;
         },
-        onSuccess: (user: User) => {
+        onSuccess: async (user: User) => {
             queryClient.setQueryData(["authenticatedUser"], user);
-        },
-    });
-
-    const signOutMutation = useMutation({
-        mutationFn: async () => {
-            await api.post("/auth/logout");
-        },
-        onSuccess: () => {
-            SecureStoreEncrypted.deleteItem("accessToken");
-            SecureStoreEncrypted.deleteItem("refreshToken");
-            queryClient.setQueryData(["authenticatedUser"], null);
         },
     });
 
@@ -89,7 +79,16 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({
     };
 
     const signOut = async () => {
-        await signOutMutation.mutateAsync();
+        SecureStoreEncrypted.deleteItem("accessToken");
+        SecureStoreEncrypted.deleteItem("refreshToken");
+        await queryClient.setQueryData(["authenticatedUser"], null);
+
+        setIsSigningOut(true);
+
+        removeAuthorizationHeader();
+
+        // @ts-ignore
+        router.replace("(auth)/");
     };
 
     const isAuthenticated = !!user;
@@ -99,6 +98,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({
             value={{
                 user,
                 isAuthenticated,
+                isSigningOut,
                 loading: isLoading,
                 signIn,
                 signOut,

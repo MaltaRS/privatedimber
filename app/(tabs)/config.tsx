@@ -1,186 +1,157 @@
-import { useState } from "react";
-
 import {
     Avatar,
     AvatarFallbackText,
     AvatarImage,
     Box,
-    Input,
-    InputField,
+    HStack,
     Pressable,
+    ScrollView,
     Text,
-    Textarea,
-    TextareaInput,
     VStack,
 } from "@/gluestackComponents";
 
-import { Controller, useForm } from "react-hook-form";
-
 import { useAuth } from "@/Context/AuthProvider";
 
+import { ChevronRight } from "lucide-react-native";
+
+import { Colors } from "@/constants/Colors";
+
+import { ConfigCard } from "@/components/tabs/config/configCard";
 import { BaseContainer } from "@/components/BaseContainer";
 
-import { zodResolver } from "@hookform/resolvers/zod";
-import { z } from "zod";
-
-import * as ImagePicker from "expo-image-picker";
-
-import Arc from "@/assets/icons/arc.svg";
-
-const userProfileSchema = z
-    .object({
-        bio: z.string().optional(),
-        icon: z.string().optional(),
-        links: z.string().optional(),
-    })
-    .transform((data) => {
-        return {
-            bio: data.bio?.trim() ?? "",
-            links: data.links?.trim() ?? "",
-            icon: data.icon,
-        };
-    });
-
-type CreateUserForm = z.infer<typeof userProfileSchema> & {};
-
 const ConfigScreen = () => {
-    const { user } = useAuth();
-
-    const { control, setValue } = useForm<CreateUserForm>({
-        resolver: zodResolver(userProfileSchema),
-        shouldUnregister: false,
-        reValidateMode: "onBlur",
-        defaultValues: {
-            bio: user?.bio ?? "",
-            icon: user?.icon ?? "",
-        },
-    });
-
-    const [previewImage, setPreviewImage] = useState<string | null>(null);
-
-    const selectImage = async () => {
-        const { status } =
-            await ImagePicker.requestMediaLibraryPermissionsAsync();
-        if (status !== "granted") {
-            alert("Ops! Precisamos de permissão para acessar suas fotos.");
-        }
-
-        const result = await ImagePicker.launchImageLibraryAsync({
-            mediaTypes: ImagePicker.MediaTypeOptions.Images,
-            allowsEditing: true,
-            aspect: [1, 1],
-            quality: 0.5,
-        });
-
-        if (!result.canceled) {
-            if (setPreviewImage) setPreviewImage(result.assets[0].uri);
-            setValue("icon", result.assets[0].uri);
-        }
-    };
+    const { user, signOut } = useAuth();
 
     return (
-        <BaseContainer
-            statusBarColor="#E5E7EB"
-            statusBarStyle="dark"
-            position="relative"
-        >
-            <Box position="absolute" top="$0">
-                <Arc />
-            </Box>
-            <VStack gap="$6">
-                <VStack
-                    alignItems="center"
-                    justifyContent="center"
-                    mt="$2"
-                    gap="$6"
+        <BaseContainer bgColor="$gray50">
+            <VStack gap="$4">
+                <Text
+                    size="lg"
+                    textAlign="center"
+                    fontFamily="$heading"
+                    color="#000"
+                    lineHeight={24}
                 >
-                    <Pressable onPress={selectImage}>
-                        <Avatar size="xl">
-                            <AvatarFallbackText rounded="$lg">
-                                {user?.name ?? ".."}
-                            </AvatarFallbackText>
-                            {(previewImage || user?.icon) && (
-                                <AvatarImage
-                                    rounded="$full"
-                                    source={{
-                                        uri: previewImage ?? user?.icon,
-                                    }}
-                                    alt={`Foto de perfil de ${user?.name}`}
-                                />
-                            )}
-                        </Avatar>
-                    </Pressable>
-                    <VStack gap="$1">
-                        <Text
-                            fontFamily="$arialHeading"
-                            fontWeight="$bold"
-                            color="#000"
-                            size="xl"
-                            textAlign="center"
+                    Configurações
+                </Text>
+                <ScrollView
+                    showsVerticalScrollIndicator={false}
+                    contentContainerStyle={{
+                        paddingBottom: 46,
+                    }}
+                >
+                    <VStack p="$1" pt="$2" gap="$2">
+                        <HStack
+                            bgColor="#fff"
+                            px="$4"
+                            py="$3"
+                            borderRadius="$xl"
+                            alignItems="center"
+                            justifyContent="space-between"
+                            elevation={2}
                         >
-                            {user?.name}
-                        </Text>
-                        <Text
-                            fontFamily="$arialBody"
-                            color="#6B7280"
-                            size="md"
-                            textAlign="center"
-                        >
-                            @{user?.username}
-                        </Text>
-                    </VStack>
-                </VStack>
-                <VStack gap="$4">
-                    <VStack gap="$2">
-                        <Text fontWeight="$bold">Bio</Text>
-                        <Controller
-                            control={control}
-                            name="bio"
-                            render={({
-                                field: {
-                                    onBlur,
-                                    onChange,
-                                    ref,
-                                    value,
-                                    disabled,
-                                },
-                            }) => (
-                                <Textarea isDisabled={disabled}>
-                                    <TextareaInput
-                                        placeholder="Escreva uma breve descrição sobre você"
-                                        onChangeText={onChange}
-                                        onBlur={onBlur}
-                                        value={value}
-                                        ref={ref}
+                            <HStack gap="$5" alignItems="center">
+                                <Avatar width={56} height={56}>
+                                    <AvatarFallbackText>
+                                        {user?.name}
+                                    </AvatarFallbackText>
+                                    <AvatarImage
+                                        source={{
+                                            uri: user?.icon,
+                                        }}
+                                        alt={user?.name}
                                     />
-                                </Textarea>
-                            )}
+                                </Avatar>
+                                <VStack gap="$1">
+                                    <Text
+                                        size="lg"
+                                        fontFamily="$heading"
+                                        color="#000"
+                                        lineHeight={24}
+                                    >
+                                        {user?.name}
+                                    </Text>
+                                    <Text
+                                        fontSize={17}
+                                        color="#6B7280"
+                                        fontFamily="$novaBody"
+                                        lineHeight={20}
+                                    >
+                                        Ver perfil
+                                    </Text>
+                                </VStack>
+                            </HStack>
+                            <Box>
+                                <Pressable>
+                                    <ChevronRight
+                                        size={24}
+                                        color={Colors.gray500}
+                                        strokeWidth={3}
+                                    />
+                                </Pressable>
+                            </Box>
+                        </HStack>
+                        <Text
+                            my="$4"
+                            fontSize={21}
+                            fontFamily="$heading"
+                            color="#000"
+                            lineHeight={24}
+                        >
+                            Mensagens
+                        </Text>
+                        <ConfigCard
+                            items={[
+                                {
+                                    title: "Notificações",
+                                    href: "/config/messages",
+                                },
+                                {
+                                    title: "Definir valores",
+                                    href: "/config/values",
+                                },
+                                {
+                                    title: "Permissões",
+                                    href: "/config/permissions",
+                                },
+                                {
+                                    title: "Conversas",
+                                    href: "/config/conversas",
+                                },
+                            ]}
+                        />
+                        <Text
+                            my="$4"
+                            fontSize={21}
+                            fontFamily="$heading"
+                            color="#000"
+                            lineHeight={24}
+                        >
+                            Conta
+                        </Text>
+                        <ConfigCard
+                            items={[
+                                {
+                                    title: "Tipo de conta",
+                                    href: "/config/accountType",
+                                },
+                                {
+                                    title: "Privacidade",
+                                    href: "/config/privacy",
+                                },
+                                {
+                                    title: "Favoritos",
+                                    href: "/config/favorites",
+                                },
+                                {
+                                    title: "Sair",
+                                    color: "$negative",
+                                    action: signOut,
+                                },
+                            ]}
                         />
                     </VStack>
-                    <Text fontWeight="$bold">Links</Text>
-                    <Controller
-                        control={control}
-                        name="links"
-                        render={({
-                            field: { onBlur, onChange, ref, value, disabled },
-                        }) => (
-                            <Input
-                                variant="underlined"
-                                size="lg"
-                                isDisabled={disabled}
-                            >
-                                <InputField
-                                    placeholder="Adicione suas redes sociais"
-                                    onChangeText={onChange}
-                                    onBlur={onBlur}
-                                    value={value}
-                                    ref={ref}
-                                    multiline
-                                />
-                            </Input>
-                        )}
-                    />
-                </VStack>
+                </ScrollView>
             </VStack>
         </BaseContainer>
     );

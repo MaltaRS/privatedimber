@@ -60,6 +60,10 @@ export const setAuthorizationHeader = async () => {
     }
 };
 
+export const removeAuthorizationHeader = () => {
+    delete api.defaults.headers.common["Authorization"];
+};
+
 setAuthorizationHeader();
 
 export default api;

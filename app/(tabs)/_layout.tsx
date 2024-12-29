@@ -12,6 +12,7 @@ import DimberLogoWhite from "@/assets/icons/dimberLogoWhite.svg";
 
 import { useAuth } from "@/Context/AuthProvider";
 import { TabButton } from "@/components/tabs/TabButton";
+import { useKeyboardVisibility } from "@/hooks/KeyboardVisibilityHook";
 
 export type TabName = "chats" | "explore" | "wallet" | "config";
 
@@ -22,6 +23,8 @@ export type TabProps = {
 
 export default function TabLayout() {
     const { user } = useAuth();
+
+    const isKeyboardVisible = useKeyboardVisibility();
 
     const tabs: TabProps[] = [
         {
@@ -56,6 +59,7 @@ export default function TabLayout() {
                     borderTopStartRadius={16}
                     borderTopEndRadius={16}
                     bg="$white"
+                    elevation={3}
                     sx={{
                         shadowColor: "#000",
                         shadowOffset: { width: 0, height: 2 },
@@ -65,6 +69,7 @@ export default function TabLayout() {
                     }}
                     alignItems="center"
                     position="relative"
+                    display={isKeyboardVisible ? "none" : "flex"}
                 >
                     <Box
                         position="absolute"

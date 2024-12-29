@@ -51,6 +51,5 @@ export const findConversationById = async (conversationId: string) => {
 
     return {
         ...data,
-        messages: data.messages.reverse(),
     };
 };

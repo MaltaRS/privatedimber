@@ -1,6 +1,6 @@
 import { useState } from "react";
 
-import { Link, Redirect, useRouter } from "expo-router";
+import { Link, Redirect, useFocusEffect, useRouter } from "expo-router";
 
 import { Controller, useForm } from "react-hook-form";
 
@@ -10,7 +10,6 @@ import {
     Box,
     ButtonIcon,
     ButtonText,
-    Heading,
     Input,
     InputField,
     InputIcon,
@@ -66,7 +65,7 @@ const WelcomeScreen = () => {
         resolver: zodResolver(loginSchema),
     });
 
-    const { isAuthenticated, signIn } = useAuth();
+    const { user, isSigningOut, loading, signIn } = useAuth();
 
     const [showPasswordField, setShowPasswordField] = useState(false);
 
@@ -109,7 +108,11 @@ const WelcomeScreen = () => {
         }
     };
 
+    const isAuthenticated = !!user && !loading && !isSigningOut;
+
     if (isAuthenticated) {
+        console.log("redirecting isAuthenticated:", isAuthenticated);
+
         return <Redirect href="/(tabs)/explore" />;
     }
 
