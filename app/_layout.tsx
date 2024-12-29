@@ -23,8 +23,13 @@ import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { SocketProvider } from "@/Context/SocketProvider";
 
 import { GoogleSignin } from "@react-native-google-signin/google-signin";
+import { GoogleAuthProvider } from "@/Context/GoogleAuthProvider";
 
-GoogleSignin.configure();
+GoogleSignin.configure({
+    webClientId: process.env.EXPO_PUBLIC_GOOGLE_CLIENT_ID,
+    offlineAccess: true,
+    scopes: ["profile", "email"],
+});
 
 SplashScreen.preventAutoHideAsync();
 
@@ -102,7 +107,9 @@ export default function App() {
         <QueryClientProvider client={queryClient}>
             <SocketProvider>
                 <AuthProvider>
-                    <RootLayout />
+                    <GoogleAuthProvider>
+                        <RootLayout />
+                    </GoogleAuthProvider>
                 </AuthProvider>
             </SocketProvider>
         </QueryClientProvider>

@@ -50,6 +50,8 @@ import { toast } from "burnt";
 
 import { SecureStoreUnencrypted } from "@/utils/SecureStorage";
 
+import { useGoogleAuth } from "@/Context/GoogleAuthProvider";
+
 const createUserFormSchema = z
     .object({
         email: z
@@ -106,13 +108,22 @@ export type Step = {
 
 const SignUp = () => {
     const router = useRouter();
+    const { user } = useGoogleAuth();
 
     const [revalidateEmail, setRevalidateEmail] = useState(false);
 
-    let verifiedEmail = useMemo(
-        () => SecureStoreUnencrypted.getItem("verified_email"),
-        [revalidateEmail],
-    );
+    let verifiedEmail = useMemo(() => {
+        const manualEmailVerified =
+            SecureStoreUnencrypted.getItem("verified_email");
+
+        if (manualEmailVerified) {
+            return manualEmailVerified;
+        }
+
+        if (user) {
+            return user.email;
+        }
+    }, [revalidateEmail, user]);
 
     const { mutateAsync: createPendingUser } = useMutation({
         mutationFn: CreatePendingUser,

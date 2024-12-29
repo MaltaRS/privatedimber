@@ -19,15 +19,6 @@ import {
     VStack,
 } from "@/gluestackComponents";
 
-import {
-    GoogleSignin,
-    statusCodes,
-    isErrorWithCode,
-    isSuccessResponse,
-    isNoSavedCredentialFoundResponse,
-    isCancelledResponse,
-} from "@react-native-google-signin/google-signin";
-
 import { useKeyboardVisibility } from "@/hooks/KeyboardVisibilityHook";
 
 import DimberLogo from "@/assets/icons/dimberLogo.svg";
@@ -43,8 +34,7 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import api from "@/utils/api";
 
 import { useAuth } from "@/Context/AuthProvider";
-import { toast } from "burnt";
-import { SecureStoreUnencrypted } from "@/utils/SecureStorage";
+import { useGoogleAuth } from "@/Context/GoogleAuthProvider";
 
 const loginSchema = z.object({
     emailOrUsername: z
@@ -75,6 +65,8 @@ const WelcomeScreen = () => {
     } = useForm<LoginData>({
         resolver: zodResolver(loginSchema),
     });
+
+    const { user: googleUser, signIn: googleSignIn } = useGoogleAuth();
 
     const { user, isSigningOut, loading, signIn } = useAuth();
 
@@ -120,91 +112,17 @@ const WelcomeScreen = () => {
     };
 
     const HandleGoogleSignIn = async () => {
-        try {
-            await GoogleSignin.hasPlayServices();
-            const response = await GoogleSignin.signIn();
-
-            if (isSuccessResponse(response)) {
-                console.log(response.data);
-
-                const { user } = response.data;
-
-                try {
-                    const loginResponse = await api.post("/auth/token", {
-                        email: user.email,
-                        providerName: "google",
-                        providerToken: user.id,
-                    });
-
-                    const { access_token, refresh_token } = loginResponse.data;
-
-                    await signIn(access_token, refresh_token);
-                } catch (error: any) {
-                    SecureStoreUnencrypted.saveItem(
-                        "googleUser",
-                        JSON.stringify(user),
-                    );
-
-                    router.push("/(auth)/signup");
-                }
-            } else {
-                console.log("User cancelled the login flow");
-            }
-        } catch (error) {
-            console.error(error);
-            if (isErrorWithCode(error)) {
-                switch (error.code) {
-                    case statusCodes.IN_PROGRESS:
-                        toast({
-                            title: "Erro",
-                            message: "Já existe uma operação em andamento.",
-                            duration: 5000,
-                            haptic: "error",
-                            from: "top",
-                            preset: "error",
-                        });
-                        break;
-                    case statusCodes.PLAY_SERVICES_NOT_AVAILABLE:
-                        toast({
-                            title: "Erro",
-                            message:
-                                "Google Play Services não está disponível, tente criar uma conta sem o google.",
-                            duration: 5000,
-                            haptic: "error",
-                            from: "top",
-                            preset: "error",
-                        });
-                        break;
-                    default:
-                        toast({
-                            title: "Erro",
-                            message: `Um erro inesperado ocorreu. tente novamente mais tarde!, error: ${error}`,
-                            duration: 5000,
-                            haptic: "error",
-                            from: "top",
-                            preset: "error",
-                        });
-                        break;
-                }
-            } else {
-                toast({
-                    title: "Erro",
-                    message: `Um erro inesperado ocorreu. tente novamente mais tarde!, error: ${error}`,
-                    duration: 5000,
-                    haptic: "error",
-                    from: "top",
-                    preset: "error",
-                });
-            }
-        }
+        await googleSignIn();
     };
 
     const isAuthenticated = !!user && !loading && !isSigningOut;
 
     if (isAuthenticated) {
-        console.log("redirecting isAuthenticated:", isAuthenticated);
-
         return <Redirect href="/(tabs)/explore" />;
+    }
+
+    if (googleUser) {
+        return <Redirect href="/(auth)/signup" />;
     }
 
     return (

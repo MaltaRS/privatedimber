@@ -885,11 +885,6 @@
     "@babel/helper-string-parser" "^7.25.9"
     "@babel/helper-validator-identifier" "^7.25.9"
 
-"@bam.tech/react-native-app-security@^0.5.0":
-  version "0.5.0"
-  resolved "https://registry.yarnpkg.com/@bam.tech/react-native-app-security/-/react-native-app-security-0.5.0.tgz#0036113f92de61b2f0d415869372ee177ef2894c"
-  integrity sha512-0pjwdTtp6b4XU++Oj14wSJQvMFYRivlLa/nEukYqwT2k0bkdwKl9wEsm2RsKQRwJErSI4j64SmiNxM7cMN6i5A==
-
 "@bcoe/v8-coverage@^0.2.3":
   version "0.2.3"
   resolved "https://registry.yarnpkg.com/@bcoe/v8-coverage/-/v8-coverage-0.2.3.tgz#75a2e8b51cb758a7553d6804a5932d7aace75c39"
@@ -933,11 +928,6 @@
   version "8.57.1"
   resolved "https://registry.yarnpkg.com/@eslint/js/-/js-8.57.1.tgz#de633db3ec2ef6a3c89e2f19038063e8a122e2c2"
   integrity sha512-d9zaMRSTIKDLhctzH12MtXvJKSSUhaHcjV+2Z+GK+EEY7XKpP5yR4x+N3TAcHTcu963nIr+TMcCb4DBCYX1z6Q==
-
-"@expo-google-fonts/oswald@^0.2.3":
-  version "0.2.3"
-  resolved "https://registry.yarnpkg.com/@expo-google-fonts/oswald/-/oswald-0.2.3.tgz#5f9b2a9c6ee34b9735c92956061f0fde5dd2f4a3"
-  integrity sha512-LQhPBNx3UuS6Ug4pyyoqYA9KtxW9FlOixGhAUZm9kue/7IufaGPGd/VkXyy2TpdCIzvpRcDTXu+GRPwEKEzUSw==
 
 "@expo-google-fonts/plus-jakarta-sans@^0.2.3":
   version "0.2.3"
@@ -9838,11 +9828,6 @@ react-native-screens@~4.1.0:
   dependencies:
     react-freeze "^1.0.0"
     warn-once "^0.1.0"
-
-react-native-ssl-public-key-pinning@^1.2.4:
-  version "1.2.4"
-  resolved "https://registry.yarnpkg.com/react-native-ssl-public-key-pinning/-/react-native-ssl-public-key-pinning-1.2.4.tgz#1fdb8a29e82f025a5185f98e8215138b19b71f9a"
-  integrity sha512-vAt1iilv+6GRJeM+s3tCZUo/e/4jwwKzj8BcFK2P/5Se4UR8O8HK29CSJXhJ2me5oBWpYzEjQdG21aC/nDMFhw==
 
 react-native-svg-transformer@^1.5.0:
   version "1.5.0"

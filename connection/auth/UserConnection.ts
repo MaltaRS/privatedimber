@@ -7,8 +7,8 @@ export const fetchUser = async (): Promise<User | null> => {
         await setAuthorizationHeader();
         const response = await api.get<User>("/user");
         return response.data;
-    } catch (error: any) {
-        console.error("Erro ao buscar usuário:", error);
+        // eslint-disable-next-line @typescript-eslint/no-unused-vars
+    } catch (_) {
         return null;
     }
 };

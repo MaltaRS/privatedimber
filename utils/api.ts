@@ -45,8 +45,6 @@ api.interceptors.response.use(
                 return Promise.reject(refreshError);
             }
         }
-
-        console.error("Erro na requisição:", error);
         return Promise.reject(error);
     },
 );

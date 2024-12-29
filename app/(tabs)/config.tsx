@@ -10,6 +10,7 @@ import {
     VStack,
 } from "@/gluestackComponents";
 
+import { useGoogleAuth } from "@/Context/GoogleAuthProvider";
 import { useAuth } from "@/Context/AuthProvider";
 
 import { ChevronRight } from "lucide-react-native";
@@ -20,7 +21,9 @@ import { ConfigCard } from "@/components/tabs/config/configCard";
 import { BaseContainer } from "@/components/BaseContainer";
 
 const ConfigScreen = () => {
-    const { user, signOut } = useAuth();
+    const { user } = useAuth();
+
+    const { signOut } = useGoogleAuth();
 
     return (
         <BaseContainer bgColor="$gray50">

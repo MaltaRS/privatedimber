@@ -20,6 +20,7 @@ import { useRouter } from "expo-router";
 
 import { ArrowLeft, X } from "phosphor-react-native";
 import { SecureStoreUnencrypted } from "@/utils/SecureStorage";
+import { useGoogleAuth } from "@/Context/GoogleAuthProvider";
 
 type BackLeftProps = {
     step?: number;
@@ -29,14 +30,11 @@ type BackLeftProps = {
 
 export const BackLeft = ({ step, setSteps, verifiedEmail }: BackLeftProps) => {
     const router = useRouter();
+    const { user: googleUser, signOut } = useGoogleAuth();
 
     const [showConfirmation, setShowConfirmation] = useState(false);
 
-    console.log(showConfirmation);
-
     const verifyIfShouldGoBack = () => {
-        console.log(verifiedEmail, step);
-
         if (verifiedEmail && step === 2 && setSteps) {
             setShowConfirmation(true);
             return;
@@ -45,8 +43,10 @@ export const BackLeft = ({ step, setSteps, verifiedEmail }: BackLeftProps) => {
         HandleGoBack();
     };
 
-    const HandleGoBack = () => {
-        if (verifiedEmail && step === 2 && setSteps) {
+    const HandleGoBack = async () => {
+        const shouldSignOut = verifiedEmail && step === 2 && setSteps;
+
+        if (shouldSignOut && !googleUser) {
             SecureStoreUnencrypted.deleteItem("verified_email");
             setSteps((prev) => {
                 return {
@@ -59,6 +59,13 @@ export const BackLeft = ({ step, setSteps, verifiedEmail }: BackLeftProps) => {
                     activeStep: 0,
                 };
             });
+            return;
+        } else if (shouldSignOut && googleUser) {
+            await signOut();
+
+            // @ts-ignore
+            router.replace("(auth)/");
+
             return;
         }
 
@@ -115,7 +122,9 @@ export const BackLeft = ({ step, setSteps, verifiedEmail }: BackLeftProps) => {
                         </AlertDialogHeader>
                         <AlertDialogBody mb="$2">
                             <Text textAlign="center">
-                                Você realmente deseja alterar o email?
+                                {!!googleUser
+                                    ? "Você realmente deseja sair da sua conta Google?"
+                                    : "Você realmente deseja alterar o email?"}
                             </Text>
                         </AlertDialogBody>
                         <AlertDialogFooter>
