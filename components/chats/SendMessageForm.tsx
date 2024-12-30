@@ -160,7 +160,11 @@ export const SendMessageForm = ({
 
     const OpenCamera = async () => {
         if (!permission?.granted) {
-            requestPermission();
+            const result = await requestPermission();
+
+            if (result.granted) {
+                router.push("/camera");
+            }
         } else {
             router.push("/camera");
         }
