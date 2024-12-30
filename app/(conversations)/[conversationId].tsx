@@ -168,12 +168,24 @@ const ChatsScreen = () => {
     ]);
 
     const sendMessage = useCallback(
-        async (content: string) => {
-            if (!socket || content.trim() === "") return;
+        async ({
+            content,
+            image,
+            document,
+        }: {
+            content: string;
+            image?: string;
+            document?: string;
+        }) => {
+            console.log("sendMessage", content, image, document);
+
+            if (!socket || (content.trim() === "" && !image && !document))
+                return;
 
             socket.emit("sendMessage", {
                 conversationId: Number(conversationId),
                 content,
+                image: image ?? document ?? null,
             });
         },
         [socket, conversationId],
@@ -336,6 +348,8 @@ const ChatsScreen = () => {
                                                         message.createdAt
                                                     }
                                                     read={!!message.readAt}
+                                                    image={message.image}
+                                                    audio={message.audio}
                                                     contact={contact}
                                                     isFirst={index === 0}
                                                     user={user}
@@ -421,7 +435,9 @@ const ChatsScreen = () => {
                                                     mr="$1"
                                                     bgColor="$primaryDefault"
                                                     onPress={() => {
-                                                        sendMessage(message);
+                                                        sendMessage({
+                                                            content: message,
+                                                        });
                                                     }}
                                                 >
                                                     <Text

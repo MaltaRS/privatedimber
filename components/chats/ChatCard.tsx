@@ -53,7 +53,7 @@ export const ChatCard = ({
 
     const newMessages = chat.messages;
 
-    const lastMessage = newMessages[newMessages.length - 1]?.content ?? "";
+    const lastMessage = newMessages[newMessages.length - 1] ?? "";
 
     return (
         <Pressable
@@ -101,11 +101,19 @@ export const ChatCard = ({
                                     {newMessages.length} novas mensagens
                                 </Text>
                             </>
+                        ) : lastMessage.image ? (
+                            <Text
+                                fontFamily="$arialBody"
+                                size="sm"
+                                color="#6B7280"
+                            >
+                                Imagem
+                            </Text>
                         ) : (
                             <MessageText
                                 content={
                                     newMessages.length > 0
-                                        ? lastMessage
+                                        ? lastMessage.content
                                         : "Envie a primeira mensagem"
                                 }
                                 preview

@@ -22,6 +22,7 @@ export type Message = {
     content: string;
     image?: string;
     audio?: string;
+    document?: string;
     deliveredAt?: string;
     readAt?: string;
     expiresAt?: string;

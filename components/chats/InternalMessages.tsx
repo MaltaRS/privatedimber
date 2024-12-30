@@ -89,7 +89,7 @@ export const InternalMessages = ({
                 active: true,
             });
             return;
-        } else if (asnwersCount === 0 && isCreator) {
+        } else if (asnwersCount <= 0 && isCreator) {
             setInternalMessage({
                 text: {
                     content: "Aguardando resposta",

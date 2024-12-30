@@ -33,12 +33,9 @@ import {
 
 import { Alert, Pressable } from "react-native";
 
-import { storage } from "@/utils/firebaseConfig";
 import api from "@/utils/api";
 
 import { z } from "zod";
-
-import { ref, uploadBytes, getDownloadURL } from "firebase/storage";
 
 import { useAuth } from "@/Context/AuthProvider";
 
@@ -51,6 +48,7 @@ import { toast } from "burnt";
 import { SecureStoreUnencrypted } from "@/utils/SecureStorage";
 
 import { useGoogleAuth } from "@/Context/GoogleAuthProvider";
+import { uploadImageToFirebase } from "@/utils/firebaseFunctions";
 
 const createUserFormSchema = z
     .object({
@@ -277,31 +275,6 @@ const SignUp = () => {
         steps.steps,
     ]);
 
-    const uploadImageToFirebase = useCallback(async (uri: string) => {
-        const blob = await new Promise<Blob>((resolve, reject) => {
-            const xhr = new XMLHttpRequest();
-            xhr.onload = function () {
-                resolve(xhr.response);
-            };
-            xhr.onerror = function () {
-                reject(new Error("Erro ao fazer upload da imagem."));
-            };
-            xhr.responseType = "blob";
-            xhr.open("GET", uri, true);
-            xhr.send(null);
-        });
-
-        const filename = uri.substring(uri.lastIndexOf("/") + 1);
-        const storageRef = ref(storage, `profile_images/${filename}`);
-
-        await uploadBytes(storageRef, blob);
-
-        //@ts-ignore
-        blob.close();
-
-        return await getDownloadURL(storageRef);
-    }, []);
-
     const OnSubmit = async (data: CreateUserForm) => {
         setIsGlobalLoading(true);
 
@@ -309,7 +282,10 @@ const SignUp = () => {
             let imageUrl = data.icon;
 
             if (data.icon) {
-                imageUrl = await uploadImageToFirebase(data.icon);
+                imageUrl = await uploadImageToFirebase({
+                    uri: data.icon,
+                    storage_path: "profile_images/",
+                });
             }
 
             await api.post("/user", {

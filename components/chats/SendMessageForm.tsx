@@ -3,6 +3,13 @@ import { useState } from "react";
 import { useRouter } from "expo-router";
 
 import {
+    Actionsheet,
+    ActionsheetBackdrop,
+    ActionsheetContent,
+    ActionsheetDragIndicator,
+    ActionsheetDragIndicatorWrapper,
+    ActionsheetItem,
+    ButtonText,
     HStack,
     Input,
     InputField,
@@ -27,9 +34,21 @@ import { z } from "zod";
 import * as DocumentPicker from "expo-document-picker";
 import * as ImagePicker from "expo-image-picker";
 import { useCameraPermissions } from "expo-camera";
+import { Button } from "../ui/Button";
+import { ImagePreviewForm } from "./ImagePreviewForm";
+import { DocumentPreviewForm } from "./DocumentPreviewForm";
+import { uploadImageToFirebase } from "@/utils/firebaseFunctions";
 
 type SendMessageFormProps = {
-    sendMessage: (message: string) => void;
+    sendMessage: ({
+        content,
+        image,
+        document,
+    }: {
+        content: string;
+        image?: string;
+        document?: string;
+    }) => void;
     setFormActive: (value: boolean) => void;
 };
 
@@ -46,6 +65,20 @@ const SendMessageSchema = z.object({
 
 type SendMessageData = z.infer<typeof SendMessageSchema>;
 
+type AvailableFeature = "camera" | "image" | "document";
+
+export type ImageProps = {
+    uri: string;
+    size: number;
+    name: string;
+};
+
+export type DocumentProps = {
+    uri: string;
+    size: number;
+    name: string;
+};
+
 export const SendMessageForm = ({
     sendMessage,
     setFormActive,
@@ -61,7 +94,24 @@ export const SendMessageForm = ({
         resolver: zodResolver(SendMessageSchema),
     });
 
+    const [previewImagesToSend, setPreviewImagesToSend] = useState<
+        ImageProps[]
+    >([]);
+
+    const [previewDocumentsToSend, setPreviewDocumentsToSend] = useState<
+        DocumentProps[]
+    >([]);
+
+    const [needConfirmation, setNeedConfirmation] = useState(false);
+    const [permissionFor, setPermissionFor] = useState<
+        AvailableFeature[] | null
+    >(null);
+
     const [permission, requestPermission] = useCameraPermissions();
+
+    const handleClose = () => {
+        setNeedConfirmation(false);
+    };
 
     const OpenImageSelector = async () => {
         const { status } =
@@ -79,7 +129,14 @@ export const SendMessageForm = ({
         });
 
         if (!result.canceled) {
-            console.log(result.assets[0].uri);
+            setPreviewImagesToSend([
+                ...previewImagesToSend,
+                {
+                    uri: result.assets[0].uri,
+                    size: result.assets[0].fileSize ?? 0,
+                    name: result.assets[0].fileName ?? "",
+                },
+            ]);
         }
     };
 
@@ -90,7 +147,14 @@ export const SendMessageForm = ({
         });
 
         if (!result.canceled) {
-            console.log(result.assets[0].uri);
+            setPreviewDocumentsToSend([
+                ...previewDocumentsToSend,
+                {
+                    uri: result.assets[0].uri,
+                    size: result.assets[0].size ?? 0,
+                    name: result.assets[0].name,
+                },
+            ]);
         }
     };
 
@@ -102,13 +166,124 @@ export const SendMessageForm = ({
         }
     };
 
+    const ConfirmValidation = () => {
+        if (!permissionFor) return;
+
+        setNeedConfirmation(false);
+
+        const featureActions: Record<AvailableFeature, () => void> = {
+            camera: OpenCamera,
+            image: OpenImageSelector,
+            document: OpenDocumentPicker,
+        };
+
+        permissionFor.forEach((feature) => {
+            featureActions[feature]?.();
+        });
+    };
+
+    const ValidateFeature = ({
+        featureName,
+    }: {
+        featureName: AvailableFeature;
+    }) => {
+        setPermissionFor([featureName]);
+        setNeedConfirmation(true);
+    };
+
     const HandleSendMessage = async (data: SendMessageData) => {
-        sendMessage(`*${data.title}*\n\n${data.content}`);
+        sendMessage({
+            content: `*${data.title}*\n\n${data.content}`,
+        });
+
+        if (previewImagesToSend.length > 0) {
+            previewImagesToSend.forEach(async (image) => {
+                const imageUrl = await uploadImageToFirebase({
+                    uri: image.uri,
+                    storage_path: "conversation_images/",
+                });
+
+                sendMessage({
+                    content: "",
+                    image: imageUrl,
+                });
+            });
+        }
+
+        // if (previewDocumentsToSend.length > 0) {
+        //     previewDocumentsToSend.forEach((document) => {
+        //         sendMessage({
+        //             content: "",
+        //             document: document.uri,
+        //         });
+        //     });
+        // }
+
         setFormActive(false);
     };
 
+    const activePermissionNeededText =
+        permissionFor && permissionFor.length
+            ? permissionFor[permissionFor.length - 1] === "camera"
+                ? "vídeo"
+                : permissionFor[permissionFor.length - 1] === "image"
+                  ? "imagem"
+                  : "documento"
+            : "";
+
     return (
         <VStack mt="$4" flex={1}>
+            <Actionsheet
+                isOpen={needConfirmation}
+                onClose={handleClose}
+                zIndex={999}
+            >
+                <ActionsheetBackdrop bgColor="#000" />
+                <ActionsheetContent h="$72" zIndex={999} bgColor="white">
+                    <ActionsheetDragIndicatorWrapper>
+                        <ActionsheetDragIndicator bgColor="#000" />
+                    </ActionsheetDragIndicatorWrapper>
+                    <ActionsheetItem>
+                        <VStack pt="$2" gap="$2">
+                            <Text
+                                size="xl"
+                                color="#000"
+                                fontFamily="$heading"
+                                lineHeight={20}
+                            >
+                                Adicionar {activePermissionNeededText}
+                            </Text>
+                            <Text
+                                size="md"
+                                color="#374151"
+                                fontFamily="$arialBody"
+                                lineHeight={24}
+                            >
+                                Para incluir um arquivo (PDF ou documento) na
+                                sua mensagem, será cobrado um valor adicional de
+                                <Text fontWeight="$bold"> 10% </Text>
+                                sobre o valor original. Você poderá excluir o
+                                arquivo antes do envio da mensagem, se
+                                necessário. Deseja continuar?
+                            </Text>
+                            <Button mt="$4" onPress={ConfirmValidation}>
+                                <ButtonText textAlign="center" size="md">
+                                    Inserir {activePermissionNeededText}
+                                </ButtonText>
+                            </Button>
+                            <Text
+                                color="$primaryDefault"
+                                size="md"
+                                textAlign="center"
+                                fontWeight="$bold"
+                                mt="$2"
+                            >
+                                Cancelar
+                            </Text>
+                        </VStack>
+                    </ActionsheetItem>
+                </ActionsheetContent>
+            </Actionsheet>
             <ScrollView
                 showsVerticalScrollIndicator={false}
                 contentContainerStyle={{ flexGrow: 1 }}
@@ -142,6 +317,7 @@ export const SendMessageForm = ({
                         render={({ field: { onChange, value } }) => (
                             <Textarea
                                 flex={1}
+                                minHeight={200}
                                 borderWidth={0}
                                 isInvalid={!!errors.content}
                                 $invalid-borderColor="$negative"
@@ -150,6 +326,7 @@ export const SendMessageForm = ({
                                     placeholder="Mensagem:"
                                     py="$2"
                                     px="$0"
+                                    maxLength={840}
                                     fontSize="$lg"
                                     value={value}
                                     onChangeText={onChange}
@@ -167,6 +344,22 @@ export const SendMessageForm = ({
                     >
                         {(watch("content") ?? "").length}/840
                     </Text>
+                    {previewImagesToSend.map((image, index) => (
+                        <ImagePreviewForm
+                            key={image.name}
+                            image={image}
+                            index={index}
+                            setPreviewImages={setPreviewImagesToSend}
+                        />
+                    ))}
+                    {previewDocumentsToSend.map((document, index) => (
+                        <DocumentPreviewForm
+                            key={document.name}
+                            document={document}
+                            index={index}
+                            setPreviewDocuments={setPreviewDocumentsToSend}
+                        />
+                    ))}
                 </VStack>
             </ScrollView>
             <HStack
@@ -179,13 +372,25 @@ export const SendMessageForm = ({
                 alignItems="center"
             >
                 <HStack gap="$3" pl="$2">
-                    <Pressable onPress={OpenDocumentPicker}>
+                    <Pressable
+                        onPress={() =>
+                            ValidateFeature({ featureName: "document" })
+                        }
+                    >
                         <Paperclip size={22} color="#374151" />
                     </Pressable>
-                    <Pressable onPress={OpenImageSelector}>
+                    <Pressable
+                        onPress={() =>
+                            ValidateFeature({ featureName: "image" })
+                        }
+                    >
                         <ImageSquare width={20} height={20} color="#374151" />
                     </Pressable>
-                    <Pressable onPress={OpenCamera}>
+                    <Pressable
+                        onPress={() =>
+                            ValidateFeature({ featureName: "camera" })
+                        }
+                    >
                         <Camera width={22} height={22} />
                     </Pressable>
                 </HStack>

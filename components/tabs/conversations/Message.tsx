@@ -1,5 +1,5 @@
 import { User } from "@/Context/AuthProvider";
-import { HStack, Box, VStack, Text } from "@/gluestackComponents";
+import { HStack, Box, VStack, Text, Image } from "@/gluestackComponents";
 
 import { MessageText } from "@/components/chats/MessageText";
 import { formatTime } from "@/utils/dateFormat";
@@ -16,6 +16,8 @@ type MessageProps = {
     timestamp: string;
     read?: boolean;
     contact: User;
+    image: string | undefined;
+    audio: string | undefined;
     user: User | null | undefined;
 };
 
@@ -26,6 +28,8 @@ export const Message = ({
     timestamp,
     read,
     user,
+    image,
+    audio,
 }: MessageProps) => {
     const isLoggedUser = senderId === user?.id;
 
@@ -43,6 +47,14 @@ export const Message = ({
                 >
                     <HStack gap="$2" alignItems="flex-end">
                         <Box flexShrink={1} flexGrow={1}>
+                            {image && (
+                                <Image
+                                    source={{ uri: image }}
+                                    width={150}
+                                    height={150}
+                                    alt="image"
+                                />
+                            )}
                             <MessageText content={content} />
                         </Box>
                         <HStack gap="$1" flexShrink={0}>

@@ -32,7 +32,7 @@ export const formatMessageTime = (dateString: string) => {
             return format(date, "HH:mm", { locale: ptBR });
         }
 
-        return formatDistanceToNow(date, { addSuffix: true, locale: ptBR });
+        return format(date, "dd/MM/yyyy", { locale: ptBR });
     } catch (error) {
         console.error("Erro ao formatar data:", error);
         return "Data inválida";
