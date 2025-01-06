@@ -1,4 +1,10 @@
-import { format, formatDistanceToNow, isToday, parseISO } from "date-fns";
+import {
+    format,
+    formatDistanceToNow,
+    isToday,
+    isYesterday,
+    parseISO,
+} from "date-fns";
 import { ptBR } from "date-fns/locale";
 
 export const getRelativeTime = (date: string) => {
@@ -30,6 +36,10 @@ export const formatMessageTime = (dateString: string) => {
 
         if (isToday(date)) {
             return format(date, "HH:mm", { locale: ptBR });
+        }
+
+        if (isYesterday(date)) {
+            return "Ontem";
         }
 
         return format(date, "dd/MM/yyyy", { locale: ptBR });

@@ -1,4 +1,7 @@
+import { useEffect } from "react";
+
 import { useRouter } from "expo-router";
+
 import {
     Text,
     HStack,
@@ -9,12 +12,12 @@ import {
     Spinner,
 } from "@/gluestackComponents";
 
+import { MoveLeft } from "lucide-react-native";
+
+import { useNotifications } from "@/hooks/NotificationHook";
+
 import { NotificationCard } from "@/components/notifications/NotificationCard";
 import { BaseContainer } from "@/components/BaseContainer";
-
-import { CaretLeft } from "phosphor-react-native";
-import { useNotifications } from "@/hooks/NotificationHook";
-import { useEffect } from "react";
 
 const ChatsScreen = () => {
     const router = useRouter();
@@ -34,13 +37,22 @@ const ChatsScreen = () => {
 
     return (
         <BaseContainer>
-            <HStack gap="$6" justifyContent="center" position="relative">
+            <HStack
+                gap="$6"
+                pt="$1"
+                justifyContent="center"
+                alignItems="center"
+                position="relative"
+            >
                 <Pressable
                     onPress={() => router.back()}
                     position="absolute"
                     left="$0"
+                    rounded="$full"
+                    bgColor="$gray200"
+                    p="$2"
                 >
-                    <CaretLeft size={24} />
+                    <MoveLeft size={24} color="#555" />
                 </Pressable>
                 <Text fontFamily="$arialHeading" size="lg" color="#000">
                     Notificações

@@ -1,4 +1,4 @@
-import React, { useCallback, useEffect, useState } from "react";
+import React, { useState } from "react";
 import { useRouter } from "expo-router";
 
 import Ionicons from "@expo/vector-icons/Ionicons";
@@ -44,23 +44,14 @@ import { ChatCard } from "@/components/chats/ChatCard";
 import { BaseContainer } from "@/components/BaseContainer";
 import { MainTitle } from "@/components/MainTitle";
 
-import {
-    Conversation,
-    findConversations,
-    Message,
-} from "@/connection/conversations/ConversationConnection";
+import { findConversations } from "@/connection/conversations/ConversationConnection";
 
-import { useQuery, useQueryClient } from "@tanstack/react-query";
-
-import { useAuth } from "@/Context/AuthProvider";
-import { useSocket } from "@/Context/SocketProvider";
+import { useQuery } from "@tanstack/react-query";
+import { useOnlineUsersStore } from "@/stores/onlineUsersStore";
 
 const ChatsScreen = () => {
     const router = useRouter();
-    const queryClient = useQueryClient();
     const { notificationsCount } = useNotifications();
-    const { user } = useAuth();
-    const { socket } = useSocket();
 
     const { data: queryChats, isLoading } = useQuery({
         queryKey: ["conversations"],
@@ -71,122 +62,8 @@ const ChatsScreen = () => {
     const [selectedCategory, setSelectedCategory] = useState("Todas");
     const [idSelectedChat, setIdSelectedChat] = useState<string | null>(null);
 
-    const selectedChat = queryChats?.find((chat) => chat.id === idSelectedChat);
-
     const categories = ["Todas", "Não lidas", "Expiradas"];
-
-    const HandleNewMessage = useCallback(
-        (newMessage: Message) => {
-            console.log("newMessage", newMessage);
-
-            queryClient.setQueryData(
-                ["conversations"],
-                (oldConversations: any) => {
-                    if (!oldConversations) return [];
-
-                    const updatedConversations: Conversation[] = [
-                        ...oldConversations,
-                    ];
-                    const chatIndex = updatedConversations.findIndex(
-                        (chat) => chat.id === newMessage.conversationId,
-                    );
-
-                    if (chatIndex !== -1) {
-                        const isFromTheLoggedUser =
-                            newMessage.senderId === user?.id;
-
-                        const messagesArray: Message[] = [];
-
-                        if (isFromTheLoggedUser) {
-                            messagesArray.push(newMessage);
-                        } else {
-                            const lastMessageFromTheUserIndex =
-                                updatedConversations[chatIndex].messages
-                                    .slice()
-                                    .reverse()
-                                    .findIndex(
-                                        (message) =>
-                                            message.senderId === user?.id,
-                                    );
-
-                            if (lastMessageFromTheUserIndex !== -1) {
-                                const originalIndex =
-                                    updatedConversations[chatIndex].messages
-                                        .length -
-                                    (1 - lastMessageFromTheUserIndex);
-
-                                messagesArray.push(
-                                    ...updatedConversations[
-                                        chatIndex
-                                    ].messages.slice(originalIndex),
-                                    newMessage,
-                                );
-                            } else {
-                                messagesArray.push(
-                                    ...updatedConversations[chatIndex].messages,
-                                    newMessage,
-                                );
-                            }
-                        }
-
-                        updatedConversations[chatIndex] = {
-                            ...updatedConversations[chatIndex],
-                            messages: messagesArray,
-                        };
-
-                        const [updatedChat] = updatedConversations.splice(
-                            chatIndex,
-                            1,
-                        );
-                        updatedConversations.unshift(updatedChat);
-
-                        queryClient.invalidateQueries({
-                            queryKey: [
-                                "conversationMessage",
-                                newMessage.conversationId,
-                            ],
-                        });
-                    }
-                    return updatedConversations;
-                },
-            );
-        },
-        [queryClient, user?.id],
-    );
-
-    useEffect(() => {
-        if (!socket || !queryChats || !user) return;
-
-        queryChats.forEach((chat) => {
-            socket.emit("joinConversation", { conversationId: chat.id });
-        });
-
-        socket.on("newMessage", HandleNewMessage);
-
-        socket.on(`conversationCreated_${user.id}`, (newConversation) => {
-            queryClient.setQueryData(
-                ["conversations"],
-                (oldConversations: any) => {
-                    if (!oldConversations) return [newConversation];
-                    return [newConversation, ...oldConversations];
-                },
-            );
-
-            socket.emit("joinConversation", {
-                conversationId: newConversation.id,
-            });
-        });
-
-        return () => {
-            socket.off("newMessage", HandleNewMessage);
-
-            queryChats.forEach((chat) => {
-                socket.emit("leaveConversation", { conversationId: chat.id });
-            });
-
-            socket.off(`conversationCreated_${user.id}`);
-        };
-    }, [queryClient, HandleNewMessage, socket, queryChats, user]);
+    const selectedChat = queryChats?.find((chat) => chat.id === idSelectedChat);
 
     const handleSearch = (term: string) => {
         setSearchTerm(term);
@@ -194,10 +71,12 @@ const ChatsScreen = () => {
 
     const filteredChats =
         queryChats?.filter((chat) =>
-            (chat.participant.name ?? "")
+            (chat?.participant?.name ?? "")
                 .toLowerCase()
                 .includes(searchTerm.toLowerCase()),
         ) ?? [];
+
+    const onlineUsers = useOnlineUsersStore((state) => state.onlineUsers);
 
     return (
         <BaseContainer gap="$2">
@@ -262,18 +141,24 @@ const ChatsScreen = () => {
                     ) : (
                         <ScrollView showsVerticalScrollIndicator={false}>
                             <VStack mb="$2">
-                                {filteredChats.map((chat, index) => (
-                                    <ChatCard
-                                        key={index}
-                                        chat={chat}
-                                        name={chat.participant.name}
-                                        icon={chat.participant.icon}
-                                        isOnline={false}
-                                        onLongPress={() => {
-                                            setIdSelectedChat(chat.id);
-                                        }}
-                                    />
-                                ))}
+                                {filteredChats.map((chat, index) => {
+                                    const isOnline = onlineUsers.includes(
+                                        Number(chat.participant.id),
+                                    );
+
+                                    return (
+                                        <ChatCard
+                                            key={index}
+                                            chat={chat}
+                                            name={chat.participant.name}
+                                            icon={chat.participant.icon}
+                                            isOnline={isOnline}
+                                            onLongPress={() => {
+                                                setIdSelectedChat(chat.id);
+                                            }}
+                                        />
+                                    );
+                                })}
                             </VStack>
                         </ScrollView>
                     )}

@@ -20,11 +20,9 @@
       },
       "package": "com.dimber.app",
       "permissions": [
-        "INTERNET",
-        "ACCESS_WIFI_STATE",
-        "ACCESS_NETWORK_STATE",
-        "CHANGE_WIFI_STATE",
-        "NEARBY_WIFI_DEVICES",
+        "android.permission.INTERNET",
+        "android.permission.ACCESS_WIFI_STATE",
+        "android.permission.ACCESS_NETWORK_STATE",
         "android.permission.CAMERA",
         "android.permission.RECORD_AUDIO"
       ]

@@ -2,6 +2,7 @@ import { io, Socket } from "socket.io-client";
 import { DefaultEventsMap } from "@socket.io/component-emitter";
 import { SecureStoreEncrypted } from "./SecureStorage";
 import api from "./api";
+import { useOnlineUsersStore } from "@/stores/onlineUsersStore";
 
 let socket: Socket<DefaultEventsMap, DefaultEventsMap> | null = null;
 
@@ -56,6 +57,24 @@ const createSocket = async (): Promise<
                 socket.disconnect();
             }
         }
+    });
+
+    socket.on("initialOnlineUsers", (data: { userIds: number[] }) => {
+        const { onlineUsers, addOnlineUser } = useOnlineUsersStore.getState();
+
+        data.userIds.forEach((userId) => {
+            addOnlineUser(userId);
+        });
+    });
+
+    socket.on("userOnline", (data: { userId: number }) => {
+        useOnlineUsersStore.getState().addOnlineUser(data.userId);
+        console.log("userOnline:", data.userId);
+    });
+
+    socket.on("userOffline", (data: { userId: number }) => {
+        useOnlineUsersStore.getState().removeOnlineUser(data.userId);
+        console.log("userOffline:", data.userId);
     });
 
     return socket;

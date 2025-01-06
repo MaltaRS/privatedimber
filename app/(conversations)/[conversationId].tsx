@@ -1,4 +1,4 @@
-import React, { useCallback, useEffect, useRef, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 
 import { ScrollView } from "react-native";
 
@@ -24,28 +24,33 @@ import {
     VStack,
 } from "@/gluestackComponents";
 
-import { useQuery, useQueryClient } from "@tanstack/react-query";
+import { useMutation, useQuery } from "@tanstack/react-query";
 
 import { findConversationById } from "@/connection/conversations/ConversationConnection";
+import { createPaymentIntent } from "@/connection/stripe/StripeConnection";
 
-import { useSocket } from "@/Context/SocketProvider";
+import { Colors } from "@/constants/Colors";
 
+import { useAuth } from "@/Context/AuthProvider";
+import { useChatContext } from "@/Context/ChatProvider";
+
+import { InternalMessages } from "@/components/chats/InternalMessages";
+import { SendMessageForm } from "@/components/chats/SendMessageForm";
 import { Message } from "@/components/tabs/conversations/Message";
 import { BaseContainer } from "@/components/BaseContainer";
-import { SendMessageForm } from "@/components/chats/SendMessageForm";
-import { Colors } from "@/constants/Colors";
-import { useAuth } from "@/Context/AuthProvider";
-import { InternalMessages } from "@/components/chats/InternalMessages";
+
+import { toast } from "burnt";
+import { PaymentSheetComponent } from "@/components/payment";
 
 const ChatsScreen = () => {
     const router = useRouter();
-    const queryClient = useQueryClient();
-    const { socket } = useSocket();
     const { user } = useAuth();
 
     const { conversationId } = useLocalSearchParams<{
         conversationId: string;
     }>();
+
+    const [clientSecret, setClientSecret] = useState<string | null>(null);
 
     const { data: contactConversation, isLoading } = useQuery({
         queryKey: ["conversationMessage", conversationId],
@@ -53,169 +58,69 @@ const ChatsScreen = () => {
         staleTime: Infinity,
     });
 
+    const {
+        mutate: handleCreatePaymentIntent,
+        isPending: isCreatingPaymentIntent,
+    } = useMutation({
+        mutationFn: createPaymentIntent,
+        onSuccess: (data) => {
+            if (data.clientSecret) {
+                setClientSecret(data.clientSecret);
+            } else {
+                toast({
+                    title: "Não foi possível obter o clientSecret.",
+                    preset: "error",
+                });
+            }
+        },
+        onError: (err: any) => {
+            console.error("Erro ao criar Payment Intent:", err);
+            toast({
+                title: "Falha ao criar Payment Intent.",
+                preset: "error",
+            });
+        },
+    });
+
+    const {
+        joinConversation,
+        leaveConversation,
+        sendMessage,
+        gaveAnswerRight,
+        finishConversation,
+        markMessagesAsRead,
+    } = useChatContext();
+
     const [formActive, setFormActive] = useState(false);
 
     const [message, setMessage] = useState("");
 
     const scrollViewRef = useRef<ScrollView | null>(null);
 
-    const handleNewMessage = useCallback(
-        (newMessage: any) => {
-            queryClient.setQueryData(
-                ["conversationMessage", conversationId],
-                (oldData: any) => {
-                    const loggedUserMessage = newMessage.senderId === user?.id;
-
-                    if (oldData) {
-                        return {
-                            ...oldData,
-                            messages: [...oldData.messages, newMessage],
-                            contactAnswersCount:
-                                !loggedUserMessage && !oldData.isCreator
-                                    ? oldData.contactAnswersCount - 1
-                                    : oldData.contactAnswersCount,
-                            answersCount:
-                                loggedUserMessage && oldData.isCreator
-                                    ? oldData.answersCount - 1
-                                    : oldData.answersCount,
-                            needReply: oldData.messages.lenght === 0,
-                        };
-                    } else {
-                        return {
-                            messages: [newMessage],
-                        };
-                    }
-                },
-            );
-
-            if (scrollViewRef.current) {
-                scrollViewRef.current.scrollToEnd({ animated: true });
-            }
-        },
-        [conversationId, queryClient, scrollViewRef, user],
-    );
-
-    const handleNewAnswerRight = useCallback(
-        (conversationId: string) => {
-            queryClient.setQueryData(
-                ["conversationMessage", conversationId],
-                (oldData: any) => {
-                    if (oldData) {
-                        return {
-                            ...oldData,
-                            answersCount: oldData.answersCount + 1,
-                        };
-                    }
-                },
-            );
-
-            if (scrollViewRef.current) {
-                scrollViewRef.current.scrollToEnd({ animated: true });
-            }
-        },
-        [queryClient, scrollViewRef],
-    );
-
-    const handleConversationFinished = useCallback(
-        (conversationId: string) => {
-            queryClient.setQueryData(
-                ["conversationMessage", conversationId],
-                (oldData: any) => {
-                    if (oldData) {
-                        return {
-                            ...oldData,
-                            isFinished: true,
-                        };
-                    }
-                },
-            );
-
-            if (scrollViewRef.current) {
-                scrollViewRef.current.scrollToEnd({ animated: true });
-            }
-        },
-        [queryClient, scrollViewRef],
-    );
-
     useEffect(() => {
-        if (!socket) return;
+        if (!conversationId) return;
 
-        socket.emit("joinConversation", { conversationId });
+        joinConversation({ conversationId });
 
-        socket.on("newMessage", handleNewMessage);
-
-        socket.on(`newAnswerRight_${user?.id}`, () =>
-            handleNewAnswerRight(conversationId),
-        );
-
-        socket.on("conversationFinished", () => {
-            handleConversationFinished(conversationId);
-        });
-
+        markMessagesAsRead({ conversationId });
         return () => {
-            socket.off("newMessage", handleNewMessage);
-            socket.emit("leaveConversation", { conversationId });
-            socket.off(`newAnswerRight_${user?.id}`, handleNewAnswerRight);
-            socket.off("conversationFinished", handleConversationFinished);
+            leaveConversation({ conversationId });
         };
     }, [
-        socket,
         conversationId,
-        handleNewMessage,
-        handleNewAnswerRight,
-        handleConversationFinished,
-        user,
+        joinConversation,
+        leaveConversation,
+        markMessagesAsRead,
     ]);
 
-    const sendMessage = useCallback(
-        async ({
-            content,
-            image,
-            document,
-        }: {
-            content: string;
-            image?: string;
-            document?: string;
-        }) => {
-            console.log("sendMessage", content, image, document);
-
-            if (!socket || (content.trim() === "" && !image && !document))
-                return;
-
-            socket.emit("sendMessage", {
-                conversationId: Number(conversationId),
-                content,
-                image: image ?? document ?? null,
-            });
-        },
-        [socket, conversationId],
-    );
-
-    const gaveAnswerRight = useCallback(
-        async (conversationId: string) => {
-            if (!socket) return;
-
-            socket.emit("giveAnswerRight", { conversationId });
-        },
-        [socket],
-    );
-
-    const finishConversation = useCallback(
-        async (conversationId: string) => {
-            if (!socket) return;
-
-            socket.emit("finishConversation", { conversationId });
-        },
-        [socket],
-    );
-
     useEffect(() => {
-        if (scrollViewRef.current) {
-            setTimeout(() => {
-                scrollViewRef.current?.scrollToEnd({ animated: false });
-            }, 0);
-        }
-    }, [contactConversation]);
+        if (!scrollViewRef.current) return;
+        scrollViewRef.current.scrollToEnd({ animated: true });
+    }, [
+        contactConversation?.answersCount,
+        contactConversation?.isFinished,
+        contactConversation?.messages,
+    ]);
 
     useEffect(() => {
         if (
@@ -293,6 +198,7 @@ const ChatsScreen = () => {
                     <SendMessageForm
                         sendMessage={sendMessage}
                         setFormActive={setFormActive}
+                        conversationId={conversationId}
                     />
                 ) : (
                     <VStack flex={1}>
@@ -368,10 +274,14 @@ const ChatsScreen = () => {
                                         }
                                         messages={contactConversation.messages}
                                         gaveRightAnswer={() =>
-                                            gaveAnswerRight(conversationId)
+                                            gaveAnswerRight({
+                                                conversationId,
+                                            })
                                         }
                                         finishChat={() =>
-                                            finishConversation(conversationId)
+                                            finishConversation({
+                                                conversationId,
+                                            })
                                         }
                                         isCreator={
                                             contactConversation.isCreator
@@ -434,11 +344,14 @@ const ChatsScreen = () => {
                                                     py="$2"
                                                     mr="$1"
                                                     bgColor="$primaryDefault"
-                                                    onPress={() => {
-                                                        sendMessage({
-                                                            content: message,
-                                                        });
-                                                    }}
+                                                    onPress={() =>
+                                                        handleCreatePaymentIntent(
+                                                            10000,
+                                                        )
+                                                    }
+                                                    disabled={
+                                                        isCreatingPaymentIntent
+                                                    }
                                                 >
                                                     <Text
                                                         color="white"
@@ -455,6 +368,18 @@ const ChatsScreen = () => {
                     </VStack>
                 )}
             </VStack>
+            {clientSecret && (
+                <PaymentSheetComponent
+                    clientSecret={clientSecret}
+                    autoPresent={true}
+                    onSuccess={() => {
+                        console.log("Pagamento finalizado!");
+                    }}
+                    onError={(err) => {
+                        console.log("Erro no pagamento:", err);
+                    }}
+                />
+            )}
         </BaseContainer>
     );
 };

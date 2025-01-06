@@ -50,7 +50,5 @@ export const findConversationById = async (conversationId: string) => {
         `/conversation/${conversationId}/messages`,
     );
 
-    return {
-        ...data,
-    };
+    return data;
 };

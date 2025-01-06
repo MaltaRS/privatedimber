@@ -22,8 +22,11 @@ import { AuthProvider, useAuth } from "@/Context/AuthProvider";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { SocketProvider } from "@/Context/SocketProvider";
 
+import { StripeProvider } from "@stripe/stripe-react-native";
+
 import { GoogleSignin } from "@react-native-google-signin/google-signin";
 import { GoogleAuthProvider } from "@/Context/GoogleAuthProvider";
+import { ChatProvider } from "@/Context/ChatProvider";
 
 GoogleSignin.configure({
     webClientId: process.env.EXPO_PUBLIC_GOOGLE_CLIENT_ID,
@@ -38,7 +41,7 @@ SplashScreen.setOptions({
     fade: true,
 });
 
-function RootLayout() {
+const RootLayout = () => {
     const [loaded] = useFonts({
         PlusJakartaSans_400Regular,
         PlusJakartaSans_500Medium,
@@ -98,7 +101,7 @@ function RootLayout() {
             </Stack>
         </GluestackUIProvider>
     );
-}
+};
 
 export default function App() {
     const queryClient = new QueryClient();
@@ -108,7 +111,15 @@ export default function App() {
             <SocketProvider>
                 <AuthProvider>
                     <GoogleAuthProvider>
-                        <RootLayout />
+                        <StripeProvider
+                            publishableKey={
+                                process.env.EXPO_PUBLIC_STRIPE_KEY ?? ""
+                            }
+                        >
+                            <ChatProvider>
+                                <RootLayout />
+                            </ChatProvider>
+                        </StripeProvider>
                     </GoogleAuthProvider>
                 </AuthProvider>
             </SocketProvider>

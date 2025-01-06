@@ -1,7 +1,5 @@
 import { useState } from "react";
 
-import { useRouter } from "expo-router";
-
 import {
     Actionsheet,
     ActionsheetBackdrop,
@@ -33,23 +31,26 @@ import { z } from "zod";
 
 import * as DocumentPicker from "expo-document-picker";
 import * as ImagePicker from "expo-image-picker";
-import { useCameraPermissions } from "expo-camera";
 import { Button } from "../ui/Button";
 import { ImagePreviewForm } from "./ImagePreviewForm";
 import { DocumentPreviewForm } from "./DocumentPreviewForm";
 import { uploadImageToFirebase } from "@/utils/firebaseFunctions";
+import { VideoPreviewForm } from "./VideoPreviewForm";
 
 type SendMessageFormProps = {
     sendMessage: ({
         content,
         image,
         document,
+        conversationId,
     }: {
+        conversationId: string;
         content: string;
         image?: string;
         document?: string;
     }) => void;
     setFormActive: (value: boolean) => void;
+    conversationId: string;
 };
 
 const SendMessageSchema = z.object({
@@ -79,12 +80,18 @@ export type DocumentProps = {
     name: string;
 };
 
+export type VideoProps = {
+    uri: string;
+    size: number;
+    name: string;
+    duration: number;
+};
+
 export const SendMessageForm = ({
     sendMessage,
     setFormActive,
+    conversationId,
 }: SendMessageFormProps) => {
-    const router = useRouter();
-
     const {
         control,
         handleSubmit,
@@ -102,12 +109,14 @@ export const SendMessageForm = ({
         DocumentProps[]
     >([]);
 
+    const [previewVideosToSend, setPreviewVideosToSend] = useState<
+        VideoProps[]
+    >([]);
+
     const [needConfirmation, setNeedConfirmation] = useState(false);
     const [permissionFor, setPermissionFor] = useState<
         AvailableFeature[] | null
     >(null);
-
-    const [permission, requestPermission] = useCameraPermissions();
 
     const handleClose = () => {
         setNeedConfirmation(false);
@@ -159,14 +168,36 @@ export const SendMessageForm = ({
     };
 
     const OpenCamera = async () => {
-        if (!permission?.granted) {
-            const result = await requestPermission();
+        const permissionResult =
+            await ImagePicker.requestCameraPermissionsAsync();
 
-            if (result.granted) {
-                router.push("/camera");
-            }
+        if (!permissionResult.granted) {
+            alert("Permissão para acessar a câmera é necessária!");
+            return;
+        }
+
+        const result = await ImagePicker.launchCameraAsync({
+            mediaTypes: ["videos"],
+            videoMaxDuration: 60,
+            quality: 0.8,
+            allowsEditing: true,
+            allowsMultipleSelection: false,
+            videoQuality:
+                ImagePicker.UIImagePickerControllerQualityType["Medium"],
+        });
+
+        if (!result.canceled) {
+            setPreviewVideosToSend([
+                ...previewVideosToSend,
+                {
+                    uri: result.assets[0].uri,
+                    size: result.assets[0].fileSize ?? 0,
+                    name: result.assets[0].fileName ?? "",
+                    duration: result.assets[0].duration ?? 0,
+                },
+            ]);
         } else {
-            router.push("/camera");
+            console.log("Captura de vídeo cancelada");
         }
     };
 
@@ -197,6 +228,7 @@ export const SendMessageForm = ({
 
     const HandleSendMessage = async (data: SendMessageData) => {
         sendMessage({
+            conversationId,
             content: `*${data.title}*\n\n${data.content}`,
         });
 
@@ -208,6 +240,7 @@ export const SendMessageForm = ({
                 });
 
                 sendMessage({
+                    conversationId,
                     content: "",
                     image: imageUrl,
                 });
@@ -362,6 +395,14 @@ export const SendMessageForm = ({
                             document={document}
                             index={index}
                             setPreviewDocuments={setPreviewDocumentsToSend}
+                        />
+                    ))}
+                    {previewVideosToSend.map((video, index) => (
+                        <VideoPreviewForm
+                            key={video.name}
+                            video={video}
+                            index={index}
+                            setPreviewVideos={setPreviewVideosToSend}
                         />
                     ))}
                 </VStack>

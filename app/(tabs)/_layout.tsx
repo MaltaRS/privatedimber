@@ -59,13 +59,12 @@ export default function TabLayout() {
                     borderTopStartRadius={16}
                     borderTopEndRadius={16}
                     bg="$white"
-                    elevation={3}
+                    elevation={12}
                     sx={{
                         shadowColor: "#000",
                         shadowOffset: { width: 0, height: 2 },
                         shadowOpacity: 0.25,
                         shadowRadius: 3.84,
-                        elevation: 30,
                     }}
                     alignItems="center"
                     position="relative"
