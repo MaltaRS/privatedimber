@@ -9,6 +9,7 @@ import { MoveLeft, Plus } from "lucide-react-native";
 
 import {
     Avatar,
+    AvatarBadge,
     AvatarFallbackText,
     AvatarImage,
     Box,
@@ -37,14 +38,25 @@ import { useChatContext } from "@/Context/ChatProvider";
 import { InternalMessages } from "@/components/chats/InternalMessages";
 import { SendMessageForm } from "@/components/chats/SendMessageForm";
 import { Message } from "@/components/tabs/conversations/Message";
+import { PaymentSheetComponent } from "@/components/payment";
 import { BaseContainer } from "@/components/BaseContainer";
 
 import { toast } from "burnt";
-import { PaymentSheetComponent } from "@/components/payment";
+
+import { useOnlineUsersStore } from "@/stores/onlineUsersStore";
+
+export type PaymentItems = {
+    name: string;
+    description?: string;
+    amount: number;
+    quantity: number;
+}[];
 
 const ChatsScreen = () => {
     const router = useRouter();
     const { user } = useAuth();
+
+    const [paymentItems, setPaymentItems] = useState<PaymentItems>([]);
 
     const { conversationId } = useLocalSearchParams<{
         conversationId: string;
@@ -97,6 +109,26 @@ const ChatsScreen = () => {
 
     const scrollViewRef = useRef<ScrollView | null>(null);
 
+    const likeAnswer = (need: boolean) => {
+        setPaymentItems((prev) => [
+            ...prev,
+            {
+                name: "Resposta",
+                amount: 1000,
+                quantity: need ? 1 : 0,
+            },
+        ]);
+    };
+
+    const HandleCreatePaymentIntent = () => {
+        const paymentItemsTotal = paymentItems.reduce(
+            (acc, item) => acc + item.amount * item.quantity,
+            0,
+        );
+
+        handleCreatePaymentIntent(paymentItemsTotal);
+    };
+
     useEffect(() => {
         if (!conversationId) return;
 
@@ -123,16 +155,40 @@ const ChatsScreen = () => {
     ]);
 
     useEffect(() => {
+        const messages = contactConversation?.messages ?? [];
+
         if (
-            (contactConversation?.messages.length ?? 0) === 0 &&
+            (messages.length ?? 0) === 0 &&
             (contactConversation?.isCreator ?? true) &&
             !isLoading
         ) {
             setFormActive(true);
+        } else if (
+            messages.every(
+                (message) =>
+                    message.senderId === user?.id &&
+                    message.deliveredAt === null,
+            )
+        ) {
+            setPaymentItems([
+                {
+                    name: "Mensagem",
+                    amount: 10000,
+                    quantity: 1,
+                },
+                ...messages.slice(1).map((message) => ({
+                    name: "Imagem",
+                    amount: 1000,
+                    quantity: 1,
+                })),
+            ]);
         }
-    }, [isLoading, contactConversation]);
+    }, [isLoading, contactConversation, user]);
 
     const contact = contactConversation?.contact;
+
+    const onlineUsers = useOnlineUsersStore((state) => state.onlineUsers);
+    const isOnline = onlineUsers.includes(Number(contact?.id));
 
     return (
         <BaseContainer px="$0">
@@ -171,6 +227,7 @@ const ChatsScreen = () => {
                                         alt={`Foto de perfil de ${contact.name}`}
                                     />
                                 )}
+                                {isOnline && <AvatarBadge bgColor="#339058" />}
                             </Avatar>
                             <VStack gap={2}>
                                 <Text
@@ -196,6 +253,7 @@ const ChatsScreen = () => {
             <VStack flex={1}>
                 {formActive ? (
                     <SendMessageForm
+                        setPaymentItems={setPaymentItems}
                         sendMessage={sendMessage}
                         setFormActive={setFormActive}
                         conversationId={conversationId}
@@ -255,6 +313,10 @@ const ChatsScreen = () => {
                                             ),
                                         )}
                                     <InternalMessages
+                                        handleCreatePaymentIntent={
+                                            HandleCreatePaymentIntent
+                                        }
+                                        likeToAnswer={likeAnswer}
                                         contactConversation={
                                             contactConversation
                                         }
@@ -268,6 +330,7 @@ const ChatsScreen = () => {
                                                 conversationId,
                                             })
                                         }
+                                        paymentItems={paymentItems}
                                         contactName={contact?.name}
                                     />
                                 </ScrollView>

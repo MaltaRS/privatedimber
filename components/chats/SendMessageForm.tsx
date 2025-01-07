@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { Dispatch, SetStateAction, useState } from "react";
 
 import {
     Actionsheet,
@@ -31,24 +31,28 @@ import { z } from "zod";
 
 import * as DocumentPicker from "expo-document-picker";
 import * as ImagePicker from "expo-image-picker";
+
 import { Button } from "../ui/Button";
+
 import { ImagePreviewForm } from "./ImagePreviewForm";
-import { DocumentPreviewForm } from "./DocumentPreviewForm";
-import { uploadImageToFirebase } from "@/utils/firebaseFunctions";
 import { VideoPreviewForm } from "./VideoPreviewForm";
+import { DocumentPreviewForm } from "./DocumentPreviewForm";
+
+import { SendMessageParams } from "@/Context/ChatProvider";
+
+import { PaymentItems } from "@/app/(conversations)/[conversationId]";
+
+import { uploadImageToFirebase } from "@/utils/firebaseFunctions";
 
 type SendMessageFormProps = {
+    setPaymentItems: Dispatch<SetStateAction<PaymentItems>>;
     sendMessage: ({
         content,
         image,
         document,
         conversationId,
-    }: {
-        conversationId: string;
-        content: string;
-        image?: string;
-        document?: string;
-    }) => void;
+        shouldDeliver,
+    }: SendMessageParams) => void;
     setFormActive: (value: boolean) => void;
     conversationId: string;
 };
@@ -88,6 +92,7 @@ export type VideoProps = {
 };
 
 export const SendMessageForm = ({
+    setPaymentItems,
     sendMessage,
     setFormActive,
     conversationId,
@@ -230,6 +235,7 @@ export const SendMessageForm = ({
         sendMessage({
             conversationId,
             content: `*${data.title}*\n\n${data.content}`,
+            shouldDeliver: false,
         });
 
         if (previewImagesToSend.length > 0) {
@@ -243,8 +249,32 @@ export const SendMessageForm = ({
                     conversationId,
                     content: "",
                     image: imageUrl,
+                    shouldDeliver: false,
                 });
             });
+
+            setPaymentItems((prev) => [
+                ...prev,
+                {
+                    name: "Mensage",
+                    amount: 10000,
+                    quantity: 1,
+                },
+                {
+                    name: previewImagesToSend.length > 1 ? "Imagens" : "Imagem",
+                    amount: 1000,
+                    quantity: previewImagesToSend.length,
+                },
+            ]);
+        } else {
+            setPaymentItems((prev) => [
+                ...prev,
+                {
+                    name: "Mensagem",
+                    amount: 10000,
+                    quantity: 1,
+                },
+            ]);
         }
 
         // if (previewDocumentsToSend.length > 0) {

@@ -12,14 +12,18 @@ import { useQueryClient } from "@tanstack/react-query";
 import { useAuth } from "@/Context/AuthProvider";
 import { useSocket } from "@/Context/SocketProvider";
 
+export type SendMessageParams = {
+    conversationId: string;
+    content: string;
+    image?: string;
+    document?: string;
+    shouldDeliver?: boolean;
+};
+
 type ChatContextData = {
     joinConversation: (params: { conversationId: string }) => void;
     leaveConversation: (params: { conversationId: string }) => void;
-    sendMessage: (params: {
-        conversationId: string | number;
-        content: string;
-        image?: string;
-    }) => void;
+    sendMessage: (params: SendMessageParams) => void;
     gaveAnswerRight: (params: { conversationId: string }) => void;
     finishConversation: (params: { conversationId: string }) => void;
     markMessagesAsRead: (params: { conversationId: string }) => void;
@@ -36,17 +40,22 @@ export function ChatProvider({ children }: { children: ReactNode }) {
         if (!socket || !user) return;
 
         function handleNewMessage(newMessage: any) {
-            console.log("newMessage", newMessage);
-
             queryClient.setQueryData(
                 ["conversations"],
                 (oldConversations: any) => {
                     if (!oldConversations) return [];
 
                     const updatedConversations = [...oldConversations];
+
                     const chatIndex = updatedConversations.findIndex(
                         (chat) => chat.id === newMessage.conversationId,
                     );
+
+                    const alreadyExists = updatedConversations[
+                        chatIndex
+                    ].messages.some((msg: any) => msg.id === newMessage.id);
+
+                    if (alreadyExists) return updatedConversations;
 
                     if (chatIndex !== -1) {
                         const isFromTheLoggedUser =
@@ -219,10 +228,12 @@ export function ChatProvider({ children }: { children: ReactNode }) {
             conversationId,
             content,
             image,
+            shouldDeliver,
         }: {
             conversationId: number | string;
             content: string;
             image?: string;
+            shouldDeliver?: boolean;
         }) => {
             if (!socket) return;
             if (!content.trim() && !image) return;
@@ -230,6 +241,7 @@ export function ChatProvider({ children }: { children: ReactNode }) {
                 conversationId: Number(conversationId),
                 content,
                 image: image ?? null,
+                shouldDeliver,
             });
         },
         [socket],
