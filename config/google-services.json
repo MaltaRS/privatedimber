@@ -1,0 +1,63 @@
+{
+  "project_info": {
+    "project_number": "890182422231",
+    "firebase_url": "https://dimberapp-default-rtdb.firebaseio.com",
+    "project_id": "dimberapp",
+    "storage_bucket": "dimberapp.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:890182422231:android:0d989e2ae6d758c6066a92",
+        "android_client_info": {
+          "package_name": "com.dimber.app"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "890182422231-bngl1ivsvadoo6hg855olkq6e6uqn0qu.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.dimber.app",
+            "certificate_hash": "a20f2fbff3309b053b1d68ebe62cb13917e1452f"
+          }
+        },
+        {
+          "client_id": "890182422231-fsnafpbelejq91ukfm97o8i2419mulfn.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.dimber.app",
+            "certificate_hash": "5e8f16062ea3cd2c4a0d547876baa6f38cabf625"
+          }
+        },
+        {
+          "client_id": "890182422231-p4r4ad206h345nid8dlo7ubjf5jv764b.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBG04rBzUCMAV1xBcQ1bv0QCfUDR6C9PJc"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "890182422231-p4r4ad206h345nid8dlo7ubjf5jv764b.apps.googleusercontent.com",
+              "client_type": 3
+            },
+            {
+              "client_id": "890182422231-cakugkd7tbb61blkkstog46njtl195da.apps.googleusercontent.com",
+              "client_type": 2,
+              "ios_info": {
+                "bundle_id": "com.dimber.app"
+              }
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
