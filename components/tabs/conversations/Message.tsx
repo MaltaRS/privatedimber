@@ -1,7 +1,6 @@
 import { User } from "@/Context/AuthProvider";
 import { HStack, Box, VStack, Text, Image } from "@/gluestackComponents";
 
-import { MessageText } from "@/components/chats/MessageText";
 import { formatTime } from "@/utils/dateFormat";
 
 import Read from "@/assets/icons/appIcons/read.svg";
@@ -9,29 +8,24 @@ import Read from "@/assets/icons/appIcons/read.svg";
 import { Check } from "phosphor-react-native";
 import { Colors } from "@/constants/Colors";
 
+import { Message as ConnectionMessageProps } from "@/connection/conversations/ConversationConnection";
+
+import { MessageText } from "@/components/chats/MessageText";
+
 type MessageProps = {
-    content: string;
+    message: ConnectionMessageProps;
     isFirst: boolean;
-    senderId: string;
-    timestamp: string;
-    read?: boolean;
     contact: User;
-    image: string | undefined;
-    audio: string | undefined;
     user: User | null | undefined;
 };
 
-export const Message = ({
-    content,
-    isFirst,
-    senderId,
-    timestamp,
-    read,
-    user,
-    image,
-    audio,
-}: MessageProps) => {
+export const Message = ({ isFirst, message, user, contact }: MessageProps) => {
+    const { senderId, content, createdAt, image, readAt, deliveredAt } =
+        message;
+
     const isLoggedUser = senderId === user?.id;
+
+    const read = !!readAt;
 
     return (
         <VStack mb="$3" mt={isFirst ? "$2" : "$0"}>
@@ -63,14 +57,18 @@ export const Message = ({
                                 color="$gray600"
                                 letterSpacing="$sm"
                             >
-                                {formatTime(timestamp)}
+                                {formatTime(createdAt)}
                             </Text>
                             {isLoggedUser &&
-                                (read ? (
+                                (read || !!deliveredAt ? (
                                     <Read
                                         width={15}
                                         height={15}
-                                        stroke={Colors.primaryDefault}
+                                        stroke={
+                                            read
+                                                ? Colors.primaryDefault
+                                                : Colors.gray600
+                                        }
                                         style={{ marginTop: 2 }}
                                     />
                                 ) : (

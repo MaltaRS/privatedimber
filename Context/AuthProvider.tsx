@@ -1,5 +1,7 @@
 import { createContext, useContext, useState } from "react";
 
+import { useRouter } from "expo-router";
+
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 
 import { SecureStoreEncrypted } from "@/utils/SecureStorage";
@@ -8,7 +10,6 @@ import { removeAuthorizationHeader, setAuthorizationHeader } from "@/utils/api";
 import { useSocket } from "./SocketProvider";
 
 import { fetchUser } from "@/connection/auth/UserConnection";
-import { useRouter } from "expo-router";
 
 export type User = {
     id: string;
@@ -42,7 +43,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({
 
     const queryClient = useQueryClient();
 
-    const { recreateSocket } = useSocket();
+    const { recreate, disconnect } = useSocket();
 
     const { data: user, isLoading } = useQuery<User | null>({
         queryKey: ["authenticatedUser"],
@@ -66,7 +67,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({
             if (!user) {
                 throw new Error("Failed to fetch user");
             }
-            await recreateSocket();
+            await recreate();
             return user;
         },
         onSuccess: async (user: User) => {
@@ -79,6 +80,8 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({
     };
 
     const signOut = async () => {
+        disconnect();
+
         SecureStoreEncrypted.deleteItem("accessToken");
         SecureStoreEncrypted.deleteItem("refreshToken");
         await queryClient.setQueryData(["authenticatedUser"], null);

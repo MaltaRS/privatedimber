@@ -1,4 +1,4 @@
-import { Message } from "@/connection/conversations/ConversationConnection";
+import { MessagesPayload } from "@/connection/conversations/ConversationConnection";
 import {
     Button,
     ButtonText,
@@ -9,14 +9,9 @@ import {
 import { useEffect, useState } from "react";
 
 type InternalMessagesProps = {
-    needReplyMessage: boolean;
-    contactAnswersCount: number;
-    asnwersCount: number;
-    messages: Message[];
+    contactConversation: MessagesPayload;
     gaveRightAnswer: () => void;
     finishChat: () => void;
-    isCreator: boolean;
-    isFinished: boolean;
     contactName: string | undefined;
 };
 
@@ -35,16 +30,20 @@ type InternalMessage = {
 };
 
 export const InternalMessages = ({
-    needReplyMessage,
-    asnwersCount,
-    messages,
-    contactAnswersCount,
+    contactConversation,
     gaveRightAnswer,
     finishChat,
-    isCreator,
-    isFinished,
     contactName,
 }: InternalMessagesProps) => {
+    const {
+        isCreator,
+        isFinished,
+        needReply,
+        answersCount,
+        messages,
+        contactAnswersCount,
+    } = contactConversation;
+
     const [internalMessage, setInternalMessage] = useState<InternalMessage>({
         text: {
             content: "",
@@ -67,7 +66,7 @@ export const InternalMessages = ({
                 active: true,
             });
             return;
-        } else if (needReplyMessage && isCreator) {
+        } else if (needReply && isCreator) {
             setInternalMessage({
                 text: {
                     content: "Aguardando resposta",
@@ -78,7 +77,7 @@ export const InternalMessages = ({
                 active: true,
             });
             return;
-        } else if (needReplyMessage && !isCreator) {
+        } else if (needReply && !isCreator) {
             setInternalMessage({
                 text: {
                     content: "Mensagem com resposta obrigatória",
@@ -89,7 +88,7 @@ export const InternalMessages = ({
                 active: true,
             });
             return;
-        } else if (asnwersCount <= 0 && isCreator) {
+        } else if (answersCount <= 0 && isCreator) {
             setInternalMessage({
                 text: {
                     content: "Aguardando resposta",
@@ -124,8 +123,8 @@ export const InternalMessages = ({
             return;
         }
     }, [
-        needReplyMessage,
-        asnwersCount,
+        needReply,
+        answersCount,
         messages,
         isCreator,
         isFinished,

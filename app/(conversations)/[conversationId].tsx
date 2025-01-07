@@ -68,7 +68,7 @@ const ChatsScreen = () => {
                 setClientSecret(data.clientSecret);
             } else {
                 toast({
-                    title: "Não foi possível obter o clientSecret.",
+                    title: "Não foi possivel criar o pagamento!",
                     preset: "error",
                 });
             }
@@ -76,7 +76,7 @@ const ChatsScreen = () => {
         onError: (err: any) => {
             console.error("Erro ao criar Payment Intent:", err);
             toast({
-                title: "Falha ao criar Payment Intent.",
+                title: "Não foi possivel criar o pagamento!",
                 preset: "error",
             });
         },
@@ -247,15 +247,7 @@ const ChatsScreen = () => {
                                             (message, index) => (
                                                 <Message
                                                     key={index}
-                                                    senderId={message.senderId}
-                                                    content={message.content}
-                                                    timestamp={
-                                                        message.deliveredAt ??
-                                                        message.createdAt
-                                                    }
-                                                    read={!!message.readAt}
-                                                    image={message.image}
-                                                    audio={message.audio}
+                                                    message={message}
                                                     contact={contact}
                                                     isFirst={index === 0}
                                                     user={user}
@@ -263,16 +255,9 @@ const ChatsScreen = () => {
                                             ),
                                         )}
                                     <InternalMessages
-                                        needReplyMessage={
-                                            contactConversation.needReply
+                                        contactConversation={
+                                            contactConversation
                                         }
-                                        asnwersCount={
-                                            contactConversation.answersCount
-                                        }
-                                        contactAnswersCount={
-                                            contactConversation.contactAnswersCount
-                                        }
-                                        messages={contactConversation.messages}
                                         gaveRightAnswer={() =>
                                             gaveAnswerRight({
                                                 conversationId,
@@ -282,12 +267,6 @@ const ChatsScreen = () => {
                                             finishConversation({
                                                 conversationId,
                                             })
-                                        }
-                                        isCreator={
-                                            contactConversation.isCreator
-                                        }
-                                        isFinished={
-                                            contactConversation.isFinished
                                         }
                                         contactName={contact?.name}
                                     />
@@ -344,14 +323,12 @@ const ChatsScreen = () => {
                                                     py="$2"
                                                     mr="$1"
                                                     bgColor="$primaryDefault"
-                                                    onPress={() =>
-                                                        handleCreatePaymentIntent(
-                                                            10000,
-                                                        )
-                                                    }
-                                                    disabled={
-                                                        isCreatingPaymentIntent
-                                                    }
+                                                    onPress={() => {
+                                                        sendMessage({
+                                                            conversationId,
+                                                            content: message,
+                                                        });
+                                                    }}
                                                 >
                                                     <Text
                                                         color="white"

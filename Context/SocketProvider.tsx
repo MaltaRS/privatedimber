@@ -5,7 +5,8 @@ import { getSocket } from "@/utils/socket";
 
 interface SocketContextProps {
     socket: Socket<DefaultEventsMap, DefaultEventsMap> | null;
-    recreateSocket: () => Promise<void>;
+    recreate: () => Promise<void>;
+    disconnect: () => void;
 }
 
 const SocketContext = createContext<SocketContextProps | undefined>(undefined);
@@ -18,14 +19,19 @@ export const SocketProvider: React.FC<{ children: React.ReactNode }> = ({
         DefaultEventsMap
     > | null>(null);
 
-    const recreateSocket = async () => {
+    const recreate = async () => {
         if (socket) {
             socket.disconnect();
         }
-        console.log("Recreating socket");
-
         const socketInstance = await getSocket();
         setSocket(socketInstance);
+    };
+
+    const disconnect = () => {
+        if (socket) {
+            socket.disconnect();
+            setSocket(null);
+        }
     };
 
     useEffect(() => {
@@ -39,15 +45,12 @@ export const SocketProvider: React.FC<{ children: React.ReactNode }> = ({
         setupSocket();
 
         return () => {
-            if (socket) {
-                socket.disconnect();
-                setSocket(null);
-            }
+            disconnect();
         };
     }, []);
 
     return (
-        <SocketContext.Provider value={{ socket, recreateSocket }}>
+        <SocketContext.Provider value={{ socket, recreate, disconnect }}>
             {children}
         </SocketContext.Provider>
     );

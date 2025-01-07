@@ -1,7 +1,10 @@
 import { io, Socket } from "socket.io-client";
 import { DefaultEventsMap } from "@socket.io/component-emitter";
-import { SecureStoreEncrypted } from "./SecureStorage";
+
 import api from "./api";
+
+import { SecureStoreEncrypted } from "./SecureStorage";
+
 import { useOnlineUsersStore } from "@/stores/onlineUsersStore";
 
 let socket: Socket<DefaultEventsMap, DefaultEventsMap> | null = null;
