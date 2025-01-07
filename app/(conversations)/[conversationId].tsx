@@ -402,6 +402,8 @@ const ChatsScreen = () => {
                                                     mr="$1"
                                                     bgColor="$primaryDefault"
                                                     onPress={() => {
+                                                        setMessage("");
+
                                                         sendMessage({
                                                             conversationId,
                                                             content: message,
