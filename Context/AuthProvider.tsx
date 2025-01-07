@@ -84,7 +84,8 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({
 
         SecureStoreEncrypted.deleteItem("accessToken");
         SecureStoreEncrypted.deleteItem("refreshToken");
-        await queryClient.setQueryData(["authenticatedUser"], null);
+
+        queryClient.clear();
 
         setIsSigningOut(true);
 

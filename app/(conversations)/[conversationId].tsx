@@ -25,7 +25,7 @@ import {
     VStack,
 } from "@/gluestackComponents";
 
-import { useMutation, useQuery } from "@tanstack/react-query";
+import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 
 import { findConversationById } from "@/connection/conversations/ConversationConnection";
 import { createPaymentIntent } from "@/connection/stripe/StripeConnection";
@@ -53,6 +53,8 @@ export type PaymentItems = {
 }[];
 
 const ChatsScreen = () => {
+    const queryClient = useQueryClient();
+
     const router = useRouter();
     const { user } = useAuth();
 
@@ -121,12 +123,25 @@ const ChatsScreen = () => {
     };
 
     const HandleCreatePaymentIntent = () => {
+        const contact = contactConversation?.contact;
+
+        if (!contact) return;
+
         const paymentItemsTotal = paymentItems.reduce(
             (acc, item) => acc + item.amount * item.quantity,
             0,
         );
 
-        handleCreatePaymentIntent(paymentItemsTotal);
+        const items = paymentItems.filter((item) => item.quantity > 0);
+
+        handleCreatePaymentIntent({
+            amount: paymentItemsTotal,
+            items,
+            contact: contact,
+            metadata: {
+                conversationId,
+            },
+        });
     };
 
     useEffect(() => {
@@ -413,7 +428,35 @@ const ChatsScreen = () => {
                     clientSecret={clientSecret}
                     autoPresent={true}
                     onSuccess={() => {
-                        console.log("Pagamento finalizado!");
+                        queryClient.setQueryData(
+                            ["conversations"],
+                            (oldData: any) => {
+                                if (!oldData) return;
+                                return oldData.map((conversation: any) => {
+                                    if (conversation.id === conversationId) {
+                                        return {
+                                            ...conversation,
+                                            messages: conversation.messages.map(
+                                                (message: any) => {
+                                                    if (
+                                                        message.senderId ===
+                                                        user?.id
+                                                    ) {
+                                                        return {
+                                                            ...message,
+                                                            deliveredAt:
+                                                                new Date(),
+                                                        };
+                                                    }
+                                                    return message;
+                                                },
+                                            ),
+                                        };
+                                    }
+                                    return conversation;
+                                });
+                            },
+                        );
                     }}
                     onError={(err) => {
                         console.log("Erro no pagamento:", err);

@@ -255,19 +255,29 @@ export const InternalMessages = ({
                     {internalMessage.items && (
                         <Fragment>
                             <VStack gap="$1">
-                                {internalMessage.items.map((item, index) => (
-                                    <HStack
-                                        key={index}
-                                        justifyContent="space-between"
-                                    >
-                                        <Text color="$gray600" fontSize={14}>
-                                            {item.name}
-                                        </Text>
-                                        <Text color="$gray600" fontSize={14}>
-                                            R$ {item.value}
-                                        </Text>
-                                    </HStack>
-                                ))}
+                                {internalMessage.items
+                                    .filter(
+                                        (item) => parseFloat(item.value) > 0,
+                                    )
+                                    .map((item, index) => (
+                                        <HStack
+                                            key={index}
+                                            justifyContent="space-between"
+                                        >
+                                            <Text
+                                                color="$gray600"
+                                                fontSize={14}
+                                            >
+                                                {item.name}
+                                            </Text>
+                                            <Text
+                                                color="$gray600"
+                                                fontSize={14}
+                                            >
+                                                R$ {item.value}
+                                            </Text>
+                                        </HStack>
+                                    ))}
                             </VStack>
                             <Divider bgColor="$gray200" mt="$2" />
                             <HStack
