@@ -12,7 +12,8 @@
     },
     "preview-android": {
       "android": {
-        "buildType": "apk"
+        "buildType": "apk",
+        "resourceClass": "large"
       },
       "env": {
         "EXPO_PUBLIC_FIREBASE_API_KEY": "AIzaSyBgrFFCof6hNuzhWL220TmcuA81DnGLVJg",
