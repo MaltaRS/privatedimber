@@ -5,12 +5,12 @@ import { formatTime } from "@/utils/dateFormat";
 
 import Read from "@/assets/icons/appIcons/read.svg";
 
-import { Check } from "phosphor-react-native";
 import { Colors } from "@/constants/Colors";
 
 import { Message as ConnectionMessageProps } from "@/connection/conversations/ConversationConnection";
 
 import { MessageText } from "@/components/chats/MessageText";
+import { Check } from "lucide-react-native";
 
 type MessageProps = {
     message: ConnectionMessageProps;

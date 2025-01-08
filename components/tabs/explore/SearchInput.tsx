@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useState } from "react";
+import { Fragment, useCallback, useEffect, useState } from "react";
 
 import { useRouter } from "expo-router";
 
@@ -22,19 +22,14 @@ import {
     VStack,
 } from "@/gluestackComponents";
 
-import {
-    ArrowLeft,
-    MagnifyingGlass,
-    SlidersHorizontal,
-    X,
-} from "phosphor-react-native";
-
 import { SecureStoreUnencrypted } from "@/utils/SecureStorage";
 import api from "@/utils/api";
 
 import { User } from "@/Context/AuthProvider";
 import { useSocket } from "@/Context/SocketProvider";
 import { useQueryClient } from "@tanstack/react-query";
+
+import { ArrowLeft, Search, SlidersHorizontal, X } from "lucide-react-native";
 
 interface SearchInputProps {
     isSearching: boolean;
@@ -211,7 +206,7 @@ export const SearchInput = ({
                             onCancel();
                         }}
                     >
-                        <ArrowLeft size={20} />
+                        <ArrowLeft size={20} color="black" />
                     </Pressable>
                 )}
                 <Input
@@ -224,7 +219,7 @@ export const SearchInput = ({
                 >
                     <InputSlot bgColor="#E5E7EB" pl="$5" pt="$1">
                         <InputIcon>
-                            <MagnifyingGlass size={20} color="#6B7280" />
+                            <Search size={20} color="#6B7280" />
                         </InputIcon>
                     </InputSlot>
                     <InputField
@@ -276,7 +271,7 @@ export const SearchInput = ({
                         <ScrollView showsVerticalScrollIndicator={false}>
                             <VStack gap="$2" w="$full">
                                 {recentSearchs.length === 0 && value === "" ? (
-                                    <></>
+                                    <Fragment></Fragment>
                                 ) : (
                                     <Text fontSize="$lg" fontWeight="bold">
                                         {value !== ""
@@ -409,7 +404,7 @@ export const SearchInput = ({
                     </VStack>
                 )
             ) : (
-                <></>
+                <Fragment></Fragment>
             )}
         </VStack>
     );

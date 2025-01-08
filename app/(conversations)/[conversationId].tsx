@@ -4,7 +4,6 @@ import { ScrollView } from "react-native";
 
 import { useLocalSearchParams, useRouter } from "expo-router";
 
-import { Chats } from "phosphor-react-native";
 import { MoveLeft, Plus } from "lucide-react-native";
 
 import {
@@ -299,7 +298,6 @@ const ChatsScreen = () => {
                                     flex={1}
                                     mb="$4"
                                 >
-                                    <Chats size={30} color="#6B7280" />
                                     <Box>
                                         <Text fontSize="$lg" color="#6B7280">
                                             Nenhuma mensagem encontrada

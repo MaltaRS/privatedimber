@@ -18,9 +18,9 @@ import {
 
 import { useRouter } from "expo-router";
 
-import { ArrowLeft, X } from "phosphor-react-native";
 import { SecureStoreUnencrypted } from "@/utils/SecureStorage";
 import { useGoogleAuth } from "@/Context/GoogleAuthProvider";
+import { ArrowLeft, X } from "lucide-react-native";
 
 type BackLeftProps = {
     step?: number;
@@ -100,7 +100,7 @@ export const BackLeft = ({ step, setSteps, verifiedEmail }: BackLeftProps) => {
             bgColor="$gray200"
             onPress={verifyIfShouldGoBack}
         >
-            <ArrowLeft size={20} />
+            <ArrowLeft size={20} color="black" />
             {showConfirmation && (
                 <AlertDialog
                     isOpen={showConfirmation}

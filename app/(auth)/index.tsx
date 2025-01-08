@@ -4,7 +4,7 @@ import { Link, Redirect, useRouter } from "expo-router";
 
 import { Controller, useForm } from "react-hook-form";
 
-import { EyeSlash, Eye } from "phosphor-react-native";
+import { Eye, EyeOff } from "lucide-react-native";
 
 import {
     Box,
@@ -77,7 +77,7 @@ const WelcomeScreen = () => {
     const isKeyboardVisible = useKeyboardVisibility();
     const router = useRouter();
 
-    const PasswordShowIcon = showPassword ? EyeSlash : Eye;
+    const PasswordShowIcon = showPassword ? EyeOff : Eye;
 
     const HandleLogin = async (data: LoginData) => {
         try {

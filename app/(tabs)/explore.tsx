@@ -9,10 +9,7 @@ import {
     VStack,
     Text,
     Spinner,
-    useToast,
 } from "@/gluestackComponents";
-
-import { MagnifyingGlass } from "phosphor-react-native";
 
 import { BaseContainer } from "@/components/BaseContainer";
 import { MainTitle } from "@/components/MainTitle";
@@ -42,6 +39,7 @@ import { useSocket } from "@/Context/SocketProvider";
 import { useQueryClient } from "@tanstack/react-query";
 
 import * as Burnt from "burnt";
+import { Search } from "lucide-react-native";
 
 const ExploreScreen = () => {
     const router = useRouter();
@@ -288,7 +286,7 @@ const ExploreScreen = () => {
                                 alignItems="center"
                                 justifyContent="center"
                             >
-                                <MagnifyingGlass size={24} color="#9CA3AF" />
+                                <Search size={24} color="#9CA3AF" />
                                 <Text
                                     fontFamily="$heading"
                                     size="lg"

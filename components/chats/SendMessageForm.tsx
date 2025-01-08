@@ -19,8 +19,6 @@ import {
     VStack,
 } from "@/gluestackComponents";
 
-import { Paperclip } from "phosphor-react-native";
-
 import Camera from "@/assets/icons/appIcons/camera.svg";
 import ImageSquare from "@/assets/icons/appIcons/imageSquare.svg";
 
@@ -43,6 +41,7 @@ import { SendMessageParams } from "@/Context/ChatProvider";
 import { PaymentItems } from "@/app/(conversations)/[conversationId]";
 
 import { uploadImageToFirebase } from "@/utils/firebaseFunctions";
+import { Paperclip } from "lucide-react-native";
 
 type SendMessageFormProps = {
     setPaymentItems: Dispatch<SetStateAction<PaymentItems>>;

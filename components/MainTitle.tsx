@@ -1,6 +1,6 @@
 import { Box, HStack, Text } from "@/gluestackComponents";
+import { Bell } from "lucide-react-native";
 
-import { Bell } from "phosphor-react-native";
 import { Pressable } from "react-native";
 
 type MainTitleProps = {

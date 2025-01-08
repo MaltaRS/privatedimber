@@ -9,11 +9,9 @@ import {
     Text,
     VStack,
     Pressable,
-    Box,
 } from "@/gluestackComponents";
-import { ArrowUp, Heart } from "lucide-react-native";
 
-import { SealCheck } from "phosphor-react-native";
+import { ArrowUp, Heart } from "lucide-react-native";
 
 export type ExploreCardProps = {
     id: string;
@@ -142,13 +140,13 @@ export const ExploreCard = ({
                             <Text size="lg" color="#000" fontWeight="$bold">
                                 {name}
                             </Text>
-                            {isChecked && (
+                            {/* {isChecked && (
                                 <SealCheck
                                     size={20}
                                     color={Colors.primaryDefault}
                                     weight="fill"
                                 />
-                            )}
+                            )} */}
                         </HStack>
                         <CardTags tags={["Atleta", "Investidor"]} />
                         <CardPrice price={price} />

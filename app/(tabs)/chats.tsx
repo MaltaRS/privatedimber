@@ -7,14 +7,6 @@ import Octicons from "@expo/vector-icons/Octicons";
 import ArchiveIcon from "@/assets/icons/appIcons/archive.svg";
 
 import {
-    Chats,
-    MagnifyingGlass,
-    UserCircle,
-    X,
-    XCircle,
-} from "phosphor-react-native";
-
-import {
     AlertDialog,
     AlertDialogBackdrop,
     AlertDialogBody,
@@ -48,6 +40,13 @@ import { findConversations } from "@/connection/conversations/ConversationConnec
 
 import { useQuery } from "@tanstack/react-query";
 import { useOnlineUsersStore } from "@/stores/onlineUsersStore";
+import {
+    CircleUserRound,
+    MessageSquareText,
+    Search,
+    X,
+    XCircle,
+} from "lucide-react-native";
 
 const ChatsScreen = () => {
     const router = useRouter();
@@ -94,7 +93,7 @@ const ChatsScreen = () => {
             >
                 <InputSlot bgColor="#E5E7EB" pl="$5" pt="$1">
                     <InputIcon>
-                        <MagnifyingGlass size={20} color="#6B7280" />
+                        <Search size={20} color="#6B7280" />
                     </InputIcon>
                 </InputSlot>
                 <InputField
@@ -131,7 +130,7 @@ const ChatsScreen = () => {
                             flex={1}
                             mb="$4"
                         >
-                            <Chats size={30} color="#6B7280" />
+                            <MessageSquareText size={30} color="#6B7280" />
                             <Box>
                                 <Text fontSize="$lg" color="#6B7280">
                                     Nenhuma conversa encontrada
@@ -205,7 +204,7 @@ const ChatsScreen = () => {
                     <AlertDialogBody px="$0" mt="-$2" mb="$2">
                         <VStack mx="$3" p="$2" rounded="$xl" bgColor="$gray50">
                             <HStack pb="$3" alignItems="center" gap="$3">
-                                <UserCircle size={20} />
+                                <CircleUserRound size={20} />
                                 <Text
                                     fontFamily="$arialBody"
                                     color="$black"

@@ -5,9 +5,8 @@ import { HStack, Pressable, Text } from "@/gluestackComponents";
 
 import { VideoProps } from "./SendMessageForm";
 
-import { X } from "phosphor-react-native";
-
 import { ResizeMode, Video } from "expo-av";
+import { X } from "lucide-react-native";
 
 type VideoPreviewFormProps = {
     video: VideoProps;

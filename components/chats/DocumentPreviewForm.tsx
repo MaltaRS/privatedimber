@@ -1,7 +1,7 @@
 import { HStack, Pressable, Text } from "@/gluestackComponents";
 
 import { DocumentProps } from "./SendMessageForm";
-import { X } from "phosphor-react-native";
+import { X } from "lucide-react-native";
 
 type DocumentPreviewFormProps = {
     document: DocumentProps;

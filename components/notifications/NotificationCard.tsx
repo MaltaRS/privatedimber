@@ -8,8 +8,7 @@ import User from "@/assets/icons/appIcons/userAdd.svg";
 import NewFeat from "@/assets/icons/appIcons/newFeat.svg";
 import MessagePositive from "@/assets/icons/appIcons/messagePositive.svg";
 import MessageNegative from "@/assets/icons/appIcons/messageNegative.svg";
-
-import { HandWaving } from "phosphor-react-native";
+import { Hand } from "lucide-react-native";
 
 type NotificationCardProps = {
     title: string;
@@ -33,7 +32,7 @@ export const NotificationCard = ({
         MESSAGE_POSITIVE: <MessagePositive />,
         MESSAGE_NEGATIVE: <MessageNegative />,
         FEATURE: <NewFeat />,
-        WELCOME: <HandWaving />,
+        WELCOME: <Hand />,
     };
 
     return (

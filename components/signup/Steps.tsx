@@ -9,6 +9,8 @@ import React, {
 
 import { Controller, useFormContext } from "react-hook-form";
 
+import { CheckCircle, XCircle, Eye, EyeOff } from "lucide-react-native";
+
 import {
     Pressable,
     Text,
@@ -28,16 +30,15 @@ import {
     Spinner,
 } from "@/gluestackComponents";
 
-import { CheckCircle, Eye, EyeSlash, XCircle } from "phosphor-react-native";
-
-import api from "@/utils/api";
-
 import * as ImagePicker from "expo-image-picker";
 
 import { useMutation } from "@tanstack/react-query";
 
 import { VerifyOtpCode } from "@/connection/auth/PendingUserConnection";
+
 import OTPCodeInput from "./OtpCodeInput";
+
+import api from "@/utils/api";
 import { SecureStoreUnencrypted } from "@/utils/SecureStorage";
 
 export const StepEmail = memo(
@@ -465,8 +466,8 @@ export const StepPassword = memo(() => {
     const [showPassword, setShowPassword] = useState(false);
     const [showConfirmPassword, setShowConfirmPassword] = useState(false);
 
-    const PasswordShowIcon = showPassword ? EyeSlash : Eye;
-    const ConfirmPasswordShowIcon = showConfirmPassword ? EyeSlash : Eye;
+    const PasswordShowIcon = showPassword ? EyeOff : Eye;
+    const ConfirmPasswordShowIcon = showConfirmPassword ? EyeOff : Eye;
 
     return (
         <>

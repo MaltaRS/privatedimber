@@ -1,7 +1,7 @@
 import { HStack, Image, Pressable, Text } from "@/gluestackComponents";
 
 import { ImageProps } from "./SendMessageForm";
-import { X } from "phosphor-react-native";
+import { X } from "lucide-react-native";
 
 type ImagePreviewFormProps = {
     image: ImageProps;
