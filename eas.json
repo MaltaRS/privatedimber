@@ -13,7 +13,7 @@
     "preview-android": {
       "android": {
         "buildType": "apk",
-        "resourceClass": "large"
+        "resourceClass": "medium"
       },
       "env": {
         "EXPO_PUBLIC_FIREBASE_API_KEY": "AIzaSyBgrFFCof6hNuzhWL220TmcuA81DnGLVJg",
