@@ -72,7 +72,11 @@ export const Message = ({ isFirst, message, user, contact }: MessageProps) => {
                                         style={{ marginTop: 2 }}
                                     />
                                 ) : (
-                                    <Check size={15} style={{ marginTop: 2 }} />
+                                    <Check
+                                        size={15}
+                                        color={Colors.gray600}
+                                        style={{ marginTop: 2 }}
+                                    />
                                 ))}
                         </HStack>
                     </HStack>

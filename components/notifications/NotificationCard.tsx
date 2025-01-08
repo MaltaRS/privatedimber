@@ -8,6 +8,7 @@ import User from "@/assets/icons/appIcons/userAdd.svg";
 import NewFeat from "@/assets/icons/appIcons/newFeat.svg";
 import MessagePositive from "@/assets/icons/appIcons/messagePositive.svg";
 import MessageNegative from "@/assets/icons/appIcons/messageNegative.svg";
+
 import { Hand } from "lucide-react-native";
 
 type NotificationCardProps = {
@@ -31,8 +32,9 @@ export const NotificationCard = ({
         CONTACT: <User />,
         MESSAGE_POSITIVE: <MessagePositive />,
         MESSAGE_NEGATIVE: <MessageNegative />,
+        PAYMENT_SUCCEEDED: <MessagePositive />,
         FEATURE: <NewFeat />,
-        WELCOME: <Hand />,
+        WELCOME: <Hand color="black" />,
     };
 
     return (
