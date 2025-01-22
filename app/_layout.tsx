@@ -1,4 +1,5 @@
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
+
 
 import { Box, GluestackUIProvider, Spinner } from "@/gluestackComponents";
 
@@ -98,6 +99,19 @@ const RootLayout = () => {
                 <Stack.Screen name="(auth)/index" />
                 <Stack.Screen name="(auth)/signup" />
                 <Stack.Screen name="notifications" />
+                <Stack.Screen name="myprofile" />
+                <Stack.Screen name="editmyprofile" />
+                <Stack.Screen name="profileinstituition" />
+                <Stack.Screen name="listinstituition" />
+                <Stack.Screen name="mycarts" />
+                <Stack.Screen name="languages" />
+                <Stack.Screen name="comprovantpix" />
+                <Stack.Screen name="sake" />
+                <Stack.Screen name="sharedimber" />
+                <Stack.Screen name="editmycarts" />
+                <Stack.Screen name="confirmpaymsg" />
+                <Stack.Screen name="selectpaytype" />
+
             </Stack>
         </GluestackUIProvider>
     );

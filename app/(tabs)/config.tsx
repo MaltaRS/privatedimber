@@ -10,6 +10,8 @@ import {
     VStack,
 } from "@/gluestackComponents";
 
+import { useRouter } from "expo-router";
+
 import { useGoogleAuth } from "@/Context/GoogleAuthProvider";
 import { useAuth } from "@/Context/AuthProvider";
 
@@ -21,7 +23,10 @@ import { ConfigCard } from "@/components/tabs/config/configCard";
 import { BaseContainer } from "@/components/BaseContainer";
 
 const ConfigScreen = () => {
+    const router = useRouter();
+    
     const { user } = useAuth();
+    
 
     const { signOut } = useGoogleAuth();
 
@@ -67,6 +72,7 @@ const ConfigScreen = () => {
                                 </Avatar>
                                 <VStack gap="$1">
                                     <Text
+                                        onPress={() => router.push("/myprofile")}
                                         size="lg"
                                         fontFamily="$heading"
                                         color="#000"
@@ -108,6 +114,7 @@ const ConfigScreen = () => {
                                 {
                                     title: "Notificações",
                                     href: "/config/messages",
+                                    
                                 },
                                 {
                                     title: "Definir valores",

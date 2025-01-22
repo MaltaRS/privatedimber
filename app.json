@@ -10,7 +10,8 @@
     "newArchEnabled": true,
     "ios": {
       "googleServicesFile": "./config/GoogleService-Info.plist",
-      "supportsTablet": false
+      "supportsTablet": false,
+      "bundleIdentifier": "com.dimber.app"
     },
     "android": {
       "googleServicesFile": "./config/google-services.json",
