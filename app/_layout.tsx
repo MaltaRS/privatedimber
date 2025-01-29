@@ -100,8 +100,10 @@ const RootLayout = () => {
                 <Stack.Screen name="(auth)/signup" />
                 <Stack.Screen name="notifications" />
                 <Stack.Screen name="myprofile" />
+                <Stack.Screen name="profileusermsg" />
                 <Stack.Screen name="editmyprofile" />
                 <Stack.Screen name="profileinstituition" />
+                <Stack.Screen name="donationinstituition" />
                 <Stack.Screen name="listinstituition" />
                 <Stack.Screen name="mycarts" />
                 <Stack.Screen name="languages" />
@@ -111,6 +113,7 @@ const RootLayout = () => {
                 <Stack.Screen name="editmycarts" />
                 <Stack.Screen name="confirmpaymsg" />
                 <Stack.Screen name="selectpaytype" />
+                <Stack.Screen name="saketype" />
 
             </Stack>
         </GluestackUIProvider>

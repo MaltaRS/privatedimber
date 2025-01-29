@@ -8,11 +8,15 @@ import {
     HStack,
     Button,
     ButtonText,
-    Box
+    Box,
+    Input,
+    InputField
  } from "@/gluestackComponents";
 
  import { MainTitle } from "@/components/MainTitle";
  import { BaseContainer } from "@/components/BaseContainer";
+ import  ButtonPadrao  from "@/components/ButtonPadrao";
+
 
 import Feather from '@expo/vector-icons/Feather';
 
@@ -57,74 +61,147 @@ export default function EditMyCartScreen() {
     
 
 
-    const PayListComponent = (notific) => {
-      return(
-      <View  > 
-              <HStack
-               style={{
-                 alignItems: 'center',  justifyContent: 'space-between', marginTop: 20 
-                }}  className="bg-white  mr-4 " >
-                      
-                    <VStack  style={{marginLeft: 12, width: '100%'}} >
-                          <Text  size="xl"  >{notific.name}</Text>
-                          <TextInput
-                            style={styles.input}
-                            placeholder="Digite"
-                            />                 
-                    </VStack>
-
-              </HStack>
-        
-        <View style={{ marginTop: 20, width: '100%', height: 2, backgroundColor: '#f1f1f1', borderRadius: 10}} />
   
-        </View>
-      )
-  }
 
+  const PayInput = (title) => {
+        return(
+           
+                        <VStack  
+                             style={{
+                              width: '100%',
+                              borderWidth: 1, 
+                              borderColor: '#999',  
+                              paddingTop: 10, 
+                              paddingBottom: 10, 
+                              borderRadius: 10,
+                              alignItems: 'center', 
+                              marginTop: 10
+                             }} 
+                            >
+                            <Input 
+                              borderColor="#fff"
+                              size="lg" >
+  
+                              <InputField 
+                               fontSize={15}
+                               placeholder={title.icon}
+                              />
+                            </Input>             
+                        </VStack>
+  
+  
+          
+        )
+    }
 
 
   return (
     <BaseContainer>
-       <VStack className="mt-5 p-5" >
 
 
       <MainTitle  title="Meus Cartoes" />
-       
 
-       <CardWalletComponent 
-        name="444 555 666 888 00" 
-        description="Renato Cariane" 
-        data="20/25"
-        nav="profile"
-        logo={logoCard}
-       />
+      <Heading 
+        style={{fontSize: 15, marginTop: 20, marginBottom: 20}} >
+        Preencha os dados abaixo para o cadastro de um novo cartao
+      </Heading>
+
+  
+      <Heading style={{fontSize: 15}} >
+        Numero do cartao
+      </Heading>
+
+      <PayInput icon={"0000.000.0000.000"} /> 
 
 
-      <PayListComponent
-        name="Numero do Cartao" 
-        description="444 555 666 888" 
-        nav="profile"
-        />
 
-        <PayListComponent
-         name="Nome do Cartao" 
-         description="444 555 666 888" 
-         nav="profile"
-        />
+      <Heading style={{fontSize: 15, marginTop: 20}} >
+        Nome impresso no cartao
+      </Heading>
+      
+      <HStack>
 
-        <PayListComponent
-         name="Data de Expiracao" 
-         description="444 555 666 888" 
-         nav="profile"
-        />       
+      <VStack  
+                             style={{
+                              width: '40%',
+                              borderWidth: 1, 
+                              borderColor: '#999',  
+                              paddingTop: 10, 
+                              paddingBottom: 10, 
+                              borderRadius: 10,
+                              alignItems: 'center', 
+                              marginTop: 20,
+                              marginRight: 15
+                             }} 
+                            >
+                            <Input 
+                              borderColor="#fff"
+                              size="lg" >
+  
+                              <InputField 
+                               fontSize={15}
+                               placeholder="MM / AA"
+                              />
+                            </Input>             
+                        </VStack>
 
-        <Box className="flex-col sm:flex-row" >
-            <Button style={{backgroundColor: '#00A8FF', borderRadius: 40, marginTop: 20}} className="px-8 h-[70px] mr-0 mb-3 sm:mr-3 sm:mb-0 sm:flex-1"  >
-              <ButtonText size="xl">Confirmar</ButtonText>
-            </Button>
-        </Box>
+                        <VStack  
+                             style={{
+                              width: '40%',
+                              borderWidth: 1, 
+                              borderColor: '#999',  
+                              paddingTop: 10, 
+                              paddingBottom: 10, 
+                              borderRadius: 10,
+                              alignItems: 'center', 
+                              marginTop: 20
+                             }} 
+                            >
+                            <Input 
+                              borderColor="#fff"
+                              size="lg" >
+  
+                              <InputField 
+                               fontSize={15}
+                               placeholder="123"
+                              />
+                            </Input>             
+                        </VStack>
 
-        </VStack>
+                        
+            </HStack>
+
+      <Heading style={{fontSize: 15, marginTop: 15}} >
+        Nome Impresso no cartao
+      </Heading>
+      <PayInput icon={"Ex: Antonio Ataide"} /> 
+
+
+      <Heading style={{fontSize: 15,  marginTop: 15}} >
+        CPF / CNPJ do titular
+      </Heading>
+      <PayInput icon={"0000.000.0000.000"} /> 
+
+      <Heading style={{fontSize: 15,  marginTop: 15}} >
+       Apelido
+      </Heading>
+      <PayInput icon={"Ex: Antonio Ataide"} /> 
+
+       <ButtonPadrao 
+             nav="/saketype"
+             name="Continuar"  />
+
+
+
+
+     
+      
+
+
+
+
+        
+      
  
       <StatusBar style="auto" />
     </BaseContainer>

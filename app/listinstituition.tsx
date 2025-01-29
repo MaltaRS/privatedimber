@@ -1,4 +1,6 @@
-import {View, TouchableOpacity} from 'react-native'
+import React, { useEffect, useState } from "react";
+
+import {View, TouchableOpacity, } from 'react-native'
 import { useRouter } from "expo-router";
 
 import { 
@@ -19,7 +21,11 @@ import {
 
 import { BaseContainer } from "@/components/BaseContainer";
 import { MainTitle } from "@/components/MainTitle";
+import { CategoryTabs } from "@/components/tabs/explore/CategoryTabs";
+
+
  import MaterialIcons from '@expo/vector-icons/MaterialIcons';
+import { mockCategories } from "@/utils/mockDados";
 
 
 
@@ -28,11 +34,16 @@ export default function ListInstituition() {
      const logoInstituto = "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcS5z03a91O5qAqycFrTXVjaBcpy1rOjeBERaw&s"
 
 
+     const [categories, setCategories] = useState<string[]>(mockCategories);
+         const [selectedCategory, setSelectedCategory] = useState<string>("Geral");
+     
+
     const ItemListProfile = () => {
         return(
             <View>
     
                 <HStack style={{width: '100%', alignItems: 'center', }}  >
+                    
                     <Image 
                      source={{ uri: logoInstituto}} 
                      className="h-[60] w-[60] mr-3"
@@ -41,18 +52,17 @@ export default function ListInstituition() {
 
                     <TouchableOpacity 
                       onPress={() => router.push("/profileinstituition")}  >
-                        <VStack>
+                        <VStack marginLeft={20}  >
                             <HStack alignItems='center' >
-                                <Text bold size="17" >Instituto Neymar</Text>
+                                <Text bold fontSize={16} >Instituto Neymar</Text>
                                 <MaterialIcons 
                                 style={{paddingLeft: 4}}
                                 name="verified" size={14} color="#00A8FF" 
                                 />
                             </HStack>
-                                <Text size="13" >Esporte, Criancas * Rio de Janeiro</Text>
+                                <Text fontSize={15} >Esporte, Criancas * Rio de Janeiro</Text>
                         </VStack>
                     </TouchableOpacity>
-
 
                 </HStack>
 
@@ -90,6 +100,18 @@ export default function ListInstituition() {
                     size="lg"
                 />
             </Input>
+
+            <VStack style={{marginTop: 20, marginBottom: 20}} > 
+                <CategoryTabs
+                    categories={categories}
+                    selectedCategory={selectedCategory}
+                    onSelectCategory={(category) =>
+                        setSelectedCategory(category)
+                    }
+                    type="darkBlue"
+                />
+           </VStack>
+
 
             <ItemListProfile />
             <ItemListProfile />

@@ -12,6 +12,9 @@ import {
 
 import iconsucesspix from '../assets/images/iconsucesspix.png'
 import { BaseContainer } from '@/components/BaseContainer';
+
+import  ButtonPadrao  from "@/components/ButtonPadrao";
+
 import Row from '../components/Row'
 export default function ComprovantPixScreen() {
 
@@ -30,7 +33,7 @@ export default function ComprovantPixScreen() {
                 <VStack 
                     space="xs" 
                     style={{ marginTop: 20,}}  >
-                    <Text bold size="4xl" >{title.name}</Text>
+                    <Text bold style={{fontSize: 20}} >{title.name}</Text>
                     <HStack>
                         <Text size="sm" >26 de setembro, 2024 as 18h21</Text>
                         <Text size="sm" >19h</Text>
@@ -147,15 +150,16 @@ const ItemBodyInfoContainer = () => {
   return (
     <BaseContainer>
       
-
        <ItemTitleInfoContainer
              name="Agradecemos a sua contribuição!" 
-             description="Você recebeu uma resposta de Camila Farani, Confira" 
-             descnameinst="Nome da Instituicao" 
-             nameinst="Instituto Neymar" 
         />
 
         <ItemBodyInfoContainer/>
+
+         <ButtonPadrao 
+            nav="/saketype"
+            name="Confirmar Pagamento" />
+        
 
       <StatusBar style="auto" />
     </BaseContainer>

@@ -1,4 +1,4 @@
-import {View, TouchableOpacity} from 'react-native'
+import {View, TouchableOpacity, Image} from 'react-native'
 import { useRouter } from "expo-router";
 
 import { 
@@ -14,6 +14,13 @@ import { MainTitle } from "@/components/MainTitle";
 import FontAwesome from '@expo/vector-icons/FontAwesome';
 import AntDesign from '@expo/vector-icons/AntDesign';
 import MaterialIcons from '@expo/vector-icons/MaterialIcons';
+import FontAwesome5 from '@expo/vector-icons/FontAwesome5';
+import iconsake from '../../assets/images/iconsake.png'
+import iconhand from '../../assets/images/iconhand.png'
+import iconcartwallet from '../../assets/images/iconcartwallet.png'
+
+
+
 
 
 
@@ -41,7 +48,7 @@ const  WalletScreen = ()  => {
                 <HStack 
                     style={{alignItems: 'center', justifyContent: 'center', marginTop: 30}}  >
                     <Heading size="4xl" >
-                        R$ 4,023,99
+                        R$ 7,023,99
                     </Heading>
                     <AntDesign name="circledowno" size={17} color="#999" style={{marginLeft: 5}} />
                 </HStack>
@@ -67,9 +74,20 @@ const  WalletScreen = ()  => {
         <TouchableOpacity
           onPress={() => router.push(title.nav)}
           style={{
-            margin: 10, borderRadius: 300, backgroundColor: '#F9F9F9', width: 80, height: 80, alignItems: 'center', justifyContent: 'center'}} >
-          <FontAwesome name={title.icon} size={24} color="black" />
-          <Text>{title.name}</Text>
+            margin: 10,
+            borderRadius: 300,
+            backgroundColor: '#F9F9F9',
+            width: 80, height: 80, 
+            alignItems: 'center',
+            justifyContent: 'center'}} 
+          >
+
+            
+          <Image 
+           source={title.icon}
+           style={{width: 50, height: 50}}
+           />
+          <Text style={{fontSize: 15}} >{title.name}</Text>
        </TouchableOpacity>
       );
   }
@@ -85,19 +103,19 @@ const  WalletScreen = ()  => {
 
                 <MiniButtonsWallet 
                   name="Sacar"
-                  icon="bank"
+                  icon={iconsake}
                   nav="/sake"
                   />
 
                 <MiniButtonsWallet 
                   name="Cartoes"
-                  icon="bank"
+                  icon={iconcartwallet}
                   nav="/mycarts"
                   />
 
                 <MiniButtonsWallet 
                   name="Doar"
-                  icon="bank"
+                  icon={iconhand}
                   nav="/listinstituition"
                   />
 
@@ -142,8 +160,8 @@ const  WalletScreen = ()  => {
 
           <HStack style={{width: '100%', alignItems: 'center', justifyContent: 'space-between', }}  >
             <TouchableOpacity
-              onPress={() => router.push("/selectpaytype")} >
-              <Heading size="2xl">Extrato</Heading>
+              onPress={() => router.push("/profileusermsg")} >
+              <Heading size="25">Extrato</Heading>
             </TouchableOpacity>
                     
             <TouchableOpacity  

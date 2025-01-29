@@ -9,8 +9,7 @@ import {
     Box,
  } from "@/gluestackComponents";
 
-
-import MaterialIcons from '@expo/vector-icons/MaterialIcons';
+ import  ButtonPadrao  from "@/components/ButtonPadrao";
 import AntDesign from '@expo/vector-icons/AntDesign';
 import Feather from '@expo/vector-icons/Feather';
 
@@ -27,70 +26,52 @@ export default function ConfirmPayScreen() {
     }
 
      
-        const PayListComponent = (notific) => {
-          return(
-          <View   >
-                  <HStack
-                   style={{
-                     borderWidth: 1, borderColor: '#f5f5f5',  padding: 15, borderRadius: 10,
-                     alignItems: 'center',  justifyContent: 'space-between', marginTop: 20 
-                    }}  className="bg-white  " >
-                      <HStack style={{alignItems: 'center', justifyContent: 'space-between', }} >
-                          
-                          <VStack space="xs" >
-                              <Text bold size="xl"  >{notific.name}</Text>
-                          </VStack>
-                      </HStack>
-    
-                      <Feather name="copy" size={24} color="#00A8FF" />
-                  </HStack>
-
-                  <VStack space="xs" style={{ marginTop: 30, width: '100%', alignItems: 'center'}}  >
-                        <Text 
-                            size="sm" style={{alignItems: 'center', textAlign: 'center', }} >
-                            Finalize o pagamento em até 30 minutos para garantir o envio da mensagem.
-                        </Text>
-
-                    </VStack>
-
-            
-      
-            </View>
-          )
-      }
 
     
-const NotificationsComponent = (notific) => {
+const ContainerInfoNameComprovant = (title) => {
     return(
         <View  >
         <VStack  style={{padding: 12, }} >
 
             
 
-        <VStack space="xs" style={{ marginTop: 40,}}  >
-           <Text  bold size="4xl"  >{notific.name}</Text>
-               <HStack>
-                    <Text size="sm" >26 de setembro, 2024 as 18h21</Text>
-                    <Text size="sm" >19h</Text>
-                </HStack>
+        <VStack 
+        space="xs" 
+        style={{ marginTop: 40 }}  >
+           <Text  
+            bold 
+            style={{fontSize: 25, marginRight: 30}}
+            >
+            {title.name}
+          </Text>
          </VStack>
 
 
 
          <VStack space="xs" style={{ marginTop: 30}}  >
 
-               <HStack style={{width: '100%', alignItems: 'center', justifyContent: 'space-between', marginTop: 15}}  >
-                    <Text size="2xl"  bold >Detalhes do envio</Text>
+               <HStack 
+                style={{
+                width: '100%', alignItems: 'center', justifyContent: 'space-between', marginTop: 15
+                }}  
+                >
+                    <Text size="19"  bold >Detalhes do envio</Text>
                     
                     <AntDesign name="down" size={18} color="black" />
                 </HStack>
+                
                 <VStack space="xs" style={{ marginTop: 30}}  >
-                    <Text size="2xl"  bold >Forma de pagamento</Text>
+                    <Text size="17" bold >Forma de pagamento</Text>
                 </VStack>
 
                 <HStack style={{width: '100%', alignItems: 'center', justifyContent: 'space-between', marginTop: 6}}  >
-                    <Text size="sm" >Pix</Text>
+                    <Text size="sm" >Saldo na carteira</Text>
                     <Text bold size="2x1" >R$ 1.400,00</Text>
+                </HStack>
+
+                <HStack style={{width: '100%', alignItems: 'center', justifyContent: 'space-between', marginTop: 6}}  >
+                    <Text size="sm" >Pix</Text>
+                    <Text bold size="2x1" >R$ 648,00</Text>
                 </HStack>
 
 
@@ -102,31 +83,27 @@ const NotificationsComponent = (notific) => {
 
          </VStack>
 
-         <View style={{ marginTop: 34, width: '100%', height: 2, backgroundColor: '#f2f2f2', borderRadius: 10}}  />
+         <View style={{ marginTop: 34, width: '100%', height: 2, backgroundColor: '#f4f4f4', borderRadius: 10}}  />
 
 
-        <View style={{backgroundColor: '#f1f1f1', alignItems: 'center'}}  >
+        <View style={{backgroundColor: '#F8F8F8', alignItems: 'center'}}  >
          <VStack space="xs" style={{ marginTop: 30, width: '100%', alignItems: 'center'}}  >
             <Image
-            style={{width: 50, height: 30}}
+            style={{width: 100, height: 70}}
             source={{
                 uri: logoPix2
                 }}
             />           
-              <Text 
-                  size="2xl" bold >Mensagem aguardando pagamento
-              </Text>
+               <Text size="17" bold >Mensagem aguardando pagamento</Text>
                <Text 
-                 style={{alignItems: 'center', textAlign: 'center',}} >
+                 style={{alignItems: 'center', textAlign: 'center', fontSize: 15}} >
                  Copie o código Pix abaixo e cole no seu aplicativo bancário para concluir o pagamento.
                </Text>
          </VStack>
 
-         <PayListComponent
+         <ContainerQrQcodeInput
                 name="MAPPRVU71LFFABUEY5" 
-                description="Selecione seu valor" 
                 nav="profile"
-                logo={logoPix2}
                 />
 
         </View>
@@ -153,20 +130,53 @@ const NotificationsComponent = (notific) => {
 
 
 
+const ContainerQrQcodeInput = (title) => {
+  return(
+  <View   >
+          <HStack
+           style={{
+             borderWidth: 1, borderColor: '#f5f5f5',  padding: 15, borderRadius: 10,
+             alignItems: 'center',  justifyContent: 'space-between', marginTop: 20 
+            }}  className="bg-white  " >
+              <HStack style={{alignItems: 'center', justifyContent: 'space-between', }} >
+                  
+                  <VStack space="xs" >
+                      <Text bold size="15"  >{title.name}</Text>
+                  </VStack>
+              </HStack>
+
+              <Feather name="copy" size={24} color="#00A8FF" />
+          </HStack>
+
+          <VStack space="xs" style={{ marginTop: 10, width: '100%', alignItems: 'center'}}  >
+                <Text 
+                    size="sm" style={{alignItems: 'center', textAlign: 'center', }} >
+                    Finalize o pagamento em até 30 minutos para garantir o envio da mensagem.
+                </Text>
+
+            </VStack>
+
+    
+
+    </View>
+  )
+}
+
+
+
   return (
     <View style={styles.container}>
       
 
-       <NotificationsComponent
+       <ContainerInfoNameComprovant
              name="Enviando mensagem para Camila Farani"    
              description="Você recebeu uma resposta de Camila Farani, Confira" 
              descnameinst="Nome da Instituicao" 
              nameinst="Instituto Neymar" 
         />
 
-       
-
-      
+        
+        
        
 
      

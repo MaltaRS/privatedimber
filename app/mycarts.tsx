@@ -6,6 +6,9 @@ import {
     Text,
     VStack,
     HStack,
+    Input,
+    InputField,
+
  } from "@/gluestackComponents";
  
 import { BaseContainer } from "@/components/BaseContainer";
@@ -13,7 +16,6 @@ import { MainTitle } from "@/components/MainTitle";
 import  Row  from "../components/Row"
 
 import Feather from '@expo/vector-icons/Feather';
-
 
 
 export default function MyCartsSreen() {
@@ -26,7 +28,7 @@ export default function MyCartsSreen() {
   const logoCard = 'https://brand.mastercard.com/content/dam/mccom/brandcenter/thumbnails/mastercard_vrt_pos_92px_2x.png'
 
     
-    const CartContainer = (notific) => {
+    const CartContainer = (title) => {
       return(
         <View >
               <HStack
@@ -38,12 +40,12 @@ export default function MyCartsSreen() {
                         <Image
                             style={{width: 30, height: 30}}
                             source={{
-                             uri: notific.logo
+                             uri: title.logo
                             }}
                         />
                         <VStack space="xs" marginLeft={12} >
-                            <Text bold size="xl"  >{notific.name}</Text>
-                            <Text size="lg" color="#999" >{notific.description}</Text>
+                            <Text bold size="15"  >{title.name}</Text>
+                            <Text size="15" color="#999" >{title.description}</Text>
                         </VStack>
                     </HStack>
 
@@ -73,8 +75,8 @@ export default function MyCartsSreen() {
                           }}
                       />
                       <VStack space="xs" marginLeft={12} >
-                          <Text bold size="xl"  >Adicionar Novo Cartão</Text>
-                          <Text size="lg" color="#999" >Selecione seu banco</Text>
+                          <Text bold size="15"  >Adicionar Novo Cartão</Text>
+                          <Text size="15" color="#999" >Selecione seu banco</Text>
                       </VStack>
                    </HStack>
 
@@ -87,7 +89,44 @@ export default function MyCartsSreen() {
     );
 }
 
+ const PayInput = () => {
+      return(
+      <View >
+          <HStack
+               style={{
+                 borderWidth: 1, 
+                 borderColor: '#999',  
+                 paddingTop: 10, 
+                 paddingBottom: 10, 
+                 borderRadius: 10,
+                 alignItems: 'center', 
+                 justifyContent: 'space-between', 
+                 marginTop: 10
+                }} >
 
+              <HStack style={{alignItems: 'center', justifyContent: 'space-between', }} >
+                      
+                      <VStack>
+                          <Input 
+                            borderColor="#fff"
+                            size="lg" >
+
+                            <InputField 
+                             fontSize={15}
+                             placeholder="Digite um valor"
+                            />
+                          </Input>             
+                      </VStack>
+              </HStack>
+
+                   <Text size="15" style={{ color: "#00A8FF"}} >max</Text>
+
+              </HStack>
+        
+  
+        </View>
+      )
+  }
 
 
   return (
