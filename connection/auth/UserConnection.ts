@@ -12,3 +12,16 @@ export const fetchUser = async (): Promise<User | null> => {
         return null;
     }
 };
+
+export const isUserBlocked = async (blockedId: string): Promise<boolean> => {
+    const { data } = await api.get(`/user/blocked/${blockedId}`);
+    return data.isBlocked;
+};
+
+export const blockUser = async (blockedId: string) => {
+    await api.post(`/user/block/${blockedId}`);
+};
+
+export const unblockUser = async (blockedId: string) => {
+    await api.delete(`/user/unblock/${blockedId}`);
+};

@@ -15,7 +15,7 @@ import { formatMoney } from "@/utils/money";
 
 type InternalMessagesProps = {
     contactConversation: MessagesPayload;
-    handleCreatePaymentIntent: () => void;
+    handleSendToPayment: () => void;
     gaveRightAnswer: () => void;
     finishChat: () => void;
     likeToAnswer: (need: boolean) => void;
@@ -44,7 +44,7 @@ type InternalMessage = {
 };
 
 export const InternalMessages = ({
-    handleCreatePaymentIntent,
+    handleSendToPayment,
     contactConversation,
     gaveRightAnswer,
     finishChat,
@@ -59,6 +59,7 @@ export const InternalMessages = ({
         answersCount,
         messages,
         contactAnswersCount,
+        contactTotalAnswers,
     } = contactConversation;
 
     const [internalMessage, setInternalMessage] = useState<InternalMessage>({
@@ -108,7 +109,7 @@ export const InternalMessages = ({
             } else {
                 setInternalMessage({
                     text: {
-                        content: `Este é o resumo dos valores para o envio da mensagem para Camila Farani:`,
+                        content: `Este é o resumo dos valores para o envio da mensagem para ${contactName?.split(" ")[0]}:`,
                         color: "$gray900",
                         fontSize: 17,
                     },
@@ -122,7 +123,7 @@ export const InternalMessages = ({
                         {
                             type: "positive",
                             text: "Realizar pagamento",
-                            action: handleCreatePaymentIntent,
+                            action: handleSendToPayment,
                         },
                     ],
                     active: true,
@@ -175,7 +176,11 @@ export const InternalMessages = ({
                 active: true,
             });
             return;
-        } else if (contactAnswersCount === 0 && !isCreator) {
+        } else if (
+            contactAnswersCount === 0 &&
+            !isCreator &&
+            contactTotalAnswers <= 2
+        ) {
             setInternalMessage({
                 text: {
                     content: `${contactName?.split(" ")[0]} pode te responder até 3 vezes. Deseja conceder 1 direito de resposta, ou encerrar a conversa?`,
@@ -197,6 +202,33 @@ export const InternalMessages = ({
                 active: true,
             });
             return;
+        } else if (!isCreator && contactTotalAnswers > 2) {
+            setInternalMessage({
+                text: {
+                    content: `${contactName?.split(" ")[0]} já teve 3 direitos de resposta. Deseja encerrar a conversa?`,
+                    color: "$gray900",
+                    fontSize: 17,
+                },
+                buttons: [
+                    {
+                        type: "negative",
+                        text: "Encerrar e arquivar",
+                        action: finishChat,
+                    },
+                ],
+                active: true,
+            });
+            return;
+        } else {
+            setInternalMessage({
+                text: {
+                    content: "",
+                    color: "$",
+                    fontSize: 17,
+                },
+                buttons: [],
+                active: false,
+            });
         }
     }, [
         needReply,
@@ -206,11 +238,12 @@ export const InternalMessages = ({
         isFinished,
         contactName,
         contactAnswersCount,
+        contactTotalAnswers,
+        paymentItems,
         gaveRightAnswer,
         finishChat,
         likeToAnswer,
-        paymentItems,
-        handleCreatePaymentIntent,
+        handleSendToPayment,
     ]);
 
     return (

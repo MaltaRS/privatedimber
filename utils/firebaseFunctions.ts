@@ -2,13 +2,15 @@ import { ref, uploadBytes, getDownloadURL } from "firebase/storage";
 
 import { storage } from "@/utils/firebaseConfig";
 
+type Attachment = {
+    uri: string;
+    storage_path: string;
+};
+
 export const uploadImageToFirebase = async ({
     uri,
     storage_path,
-}: {
-    uri: string;
-    storage_path: string;
-}) => {
+}: Attachment) => {
     const blob = await new Promise<Blob>((resolve, reject) => {
         const xhr = new XMLHttpRequest();
         xhr.onload = function () {

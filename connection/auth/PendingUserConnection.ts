@@ -18,6 +18,23 @@ export const CreatePendingUser = async (
     }
 };
 
+export const CancelPendingUser = async (
+    email: string,
+): Promise<boolean | null> => {
+    try {
+        await setAuthorizationHeader();
+        const response = await api.delete("/pending-user", {
+            data: {
+                email,
+            },
+        });
+        return response.status > 200 && response.status < 300 ? true : false;
+    } catch (error: any) {
+        console.error("Erro ao cancelar o cadastro:", error.response.message);
+        return null;
+    }
+};
+
 export const VerifyOtpCode = async ({
     email,
     code,

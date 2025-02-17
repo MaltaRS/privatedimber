@@ -37,36 +37,34 @@ export const VideoPreviewForm = ({
             justifyContent="space-between"
         >
             <HStack alignItems="center" gap="$2">
+                <Video
+                    ref={videoRef}
+                    style={styles.video}
+                    source={{
+                        uri: video.uri,
+                    }}
+                    useNativeControls
+                    resizeMode={ResizeMode.CONTAIN}
+                    isLooping
+                    onPlaybackStatusUpdate={(status) => setStatus(() => status)}
+                />
                 <Text
                     color="$primaryDefault"
                     fontFamily="$heading"
                     fontWeight="$bold"
                     size="md"
                 >
-                    <Video
-                        ref={videoRef}
-                        style={styles.video}
-                        source={{
-                            uri: "https://d23dyxeqlo5psv.cloudfront.net/big_buck_bunny.mp4",
-                        }}
-                        useNativeControls
-                        resizeMode={ResizeMode.CONTAIN}
-                        isLooping
-                        onPlaybackStatusUpdate={(status) =>
-                            setStatus(() => status)
-                        }
-                    />
                     {video.name.length > 15
                         ? `${video.name.substring(0, 15)}[...]${video.name.substring(video.name.lastIndexOf("."))} `
                         : `${video.name} `}
-                    <Text
-                        color="$gray500"
-                        fontFamily="$novaBody"
-                        fontWeight="$bold"
-                        size="md"
-                    >
-                        ({(video.size / 1024).toFixed(2)} KB)
-                    </Text>
+                </Text>
+                <Text
+                    color="$gray500"
+                    fontFamily="$novaBody"
+                    fontWeight="$bold"
+                    size="md"
+                >
+                    ({(video.size / 1024).toFixed(2)} KB)
                 </Text>
             </HStack>
             <Pressable

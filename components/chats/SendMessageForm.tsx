@@ -27,9 +27,6 @@ import { Controller, useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
 
-import * as DocumentPicker from "expo-document-picker";
-import * as ImagePicker from "expo-image-picker";
-
 import { Button } from "../ui/Button";
 
 import { ImagePreviewForm } from "./ImagePreviewForm";
@@ -42,6 +39,11 @@ import { PaymentItems } from "@/app/(conversations)/[conversationId]";
 
 import { uploadImageToFirebase } from "@/utils/firebaseFunctions";
 import { Paperclip } from "lucide-react-native";
+import {
+    OpenCameraAttachment,
+    OpenDocumentPickerAttachment,
+    OpenImageSelectorAttachment,
+} from "@/utils/expoAttachments";
 
 type SendMessageFormProps = {
     setPaymentItems: Dispatch<SetStateAction<PaymentItems>>;
@@ -127,77 +129,56 @@ export const SendMessageForm = ({
     };
 
     const OpenImageSelector = async () => {
-        const { status } =
-            await ImagePicker.requestMediaLibraryPermissionsAsync();
-        if (status !== "granted") {
+        const resultImage = await OpenImageSelectorAttachment();
+
+        if (!resultImage) {
             alert("Desculpe, precisamos da permissão para acessar suas fotos.");
             return;
         }
 
-        const result = await ImagePicker.launchImageLibraryAsync({
-            mediaTypes: ["images", "livePhotos", "videos"],
-            allowsEditing: true,
-            aspect: [1, 1],
-            quality: 1,
-        });
-
-        if (!result.canceled) {
+        if (!resultImage.canceled) {
             setPreviewImagesToSend([
                 ...previewImagesToSend,
                 {
-                    uri: result.assets[0].uri,
-                    size: result.assets[0].fileSize ?? 0,
-                    name: result.assets[0].fileName ?? "",
+                    uri: resultImage.assets[0].uri,
+                    size: resultImage.assets[0].fileSize ?? 0,
+                    name: resultImage.assets[0].fileName ?? "",
                 },
             ]);
         }
     };
 
     const OpenDocumentPicker = async () => {
-        const result = await DocumentPicker.getDocumentAsync({
-            type: "*/*",
-            copyToCacheDirectory: false,
-        });
+        const resultDocument = await OpenDocumentPickerAttachment();
 
-        if (!result.canceled) {
+        if (!resultDocument.canceled) {
             setPreviewDocumentsToSend([
                 ...previewDocumentsToSend,
                 {
-                    uri: result.assets[0].uri,
-                    size: result.assets[0].size ?? 0,
-                    name: result.assets[0].name,
+                    uri: resultDocument.assets[0].uri,
+                    size: resultDocument.assets[0].size ?? 0,
+                    name: resultDocument.assets[0].name,
                 },
             ]);
         }
     };
 
     const OpenCamera = async () => {
-        const permissionResult =
-            await ImagePicker.requestCameraPermissionsAsync();
+        const resultCamera = await OpenCameraAttachment();
 
-        if (!permissionResult.granted) {
+        if (!resultCamera) {
             alert("Permissão para acessar a câmera é necessária!");
             return;
         }
 
-        const result = await ImagePicker.launchCameraAsync({
-            mediaTypes: ["videos"],
-            videoMaxDuration: 60,
-            quality: 0.8,
-            allowsEditing: true,
-            allowsMultipleSelection: false,
-            videoQuality:
-                ImagePicker.UIImagePickerControllerQualityType["Medium"],
-        });
-
-        if (!result.canceled) {
+        if (!resultCamera.canceled) {
             setPreviewVideosToSend([
                 ...previewVideosToSend,
                 {
-                    uri: result.assets[0].uri,
-                    size: result.assets[0].fileSize ?? 0,
-                    name: result.assets[0].fileName ?? "",
-                    duration: result.assets[0].duration ?? 0,
+                    uri: resultCamera.assets[0].uri,
+                    size: resultCamera.assets[0].fileSize ?? 0,
+                    name: resultCamera.assets[0].fileName ?? "",
+                    duration: resultCamera.assets[0].duration ?? 0,
                 },
             ]);
         } else {
@@ -238,7 +219,7 @@ export const SendMessageForm = ({
         });
 
         if (previewImagesToSend.length > 0) {
-            previewImagesToSend.forEach(async (image) => {
+            for (const image of previewImagesToSend) {
                 const imageUrl = await uploadImageToFirebase({
                     uri: image.uri,
                     storage_path: "conversation_images/",
@@ -250,41 +231,86 @@ export const SendMessageForm = ({
                     image: imageUrl,
                     shouldDeliver: false,
                 });
-            });
-
-            setPaymentItems((prev) => [
-                ...prev,
-                {
-                    name: "Mensage",
-                    amount: 10000,
-                    quantity: 1,
-                },
-                {
-                    name: previewImagesToSend.length > 1 ? "Imagens" : "Imagem",
-                    amount: 1000,
-                    quantity: previewImagesToSend.length,
-                },
-            ]);
-        } else {
-            setPaymentItems((prev) => [
-                ...prev,
-                {
-                    name: "Mensagem",
-                    amount: 10000,
-                    quantity: 1,
-                },
-            ]);
+            }
         }
 
-        // if (previewDocumentsToSend.length > 0) {
-        //     previewDocumentsToSend.forEach((document) => {
-        //         sendMessage({
-        //             content: "",
-        //             document: document.uri,
-        //         });
-        //     });
-        // }
+        if (previewDocumentsToSend.length > 0) {
+            for (const document of previewDocumentsToSend) {
+                const documentUrl = await uploadImageToFirebase({
+                    uri: document.uri,
+                    storage_path: "conversation_documents/",
+                });
 
+                sendMessage({
+                    conversationId,
+                    content: "",
+                    document: documentUrl,
+                    shouldDeliver: false,
+                });
+            }
+        }
+
+        if (previewVideosToSend.length > 0) {
+            for (const video of previewVideosToSend) {
+                const videoUrl = await uploadImageToFirebase({
+                    uri: video.uri,
+                    storage_path: "conversation_videos/",
+                });
+
+                sendMessage({
+                    conversationId,
+                    content: "",
+                    document: videoUrl,
+                    shouldDeliver: false,
+                });
+            }
+        }
+
+        const paymentItems = [
+            {
+                name: "Mensagem",
+                amount: 10000,
+                quantity: 1,
+            },
+            ...(previewImagesToSend.length > 0
+                ? [
+                      {
+                          name:
+                              previewImagesToSend.length > 1
+                                  ? "Imagens"
+                                  : "Imagem",
+                          amount: previewImagesToSend.length * 1000,
+                          quantity: previewImagesToSend.length,
+                      },
+                  ]
+                : []),
+            ...(previewDocumentsToSend.length > 0
+                ? [
+                      {
+                          name:
+                              previewDocumentsToSend.length > 1
+                                  ? "Documentos"
+                                  : "Documento",
+                          amount: previewDocumentsToSend.length * 1000,
+                          quantity: previewDocumentsToSend.length,
+                      },
+                  ]
+                : []),
+            ...(previewVideosToSend.length > 0
+                ? [
+                      {
+                          name:
+                              previewVideosToSend.length > 1
+                                  ? "Vídeos"
+                                  : "Vídeo",
+                          amount: previewVideosToSend.length * 1000,
+                          quantity: previewVideosToSend.length,
+                      },
+                  ]
+                : []),
+        ];
+
+        setPaymentItems((prev) => [...prev, ...paymentItems]);
         setFormActive(false);
     };
 
@@ -343,6 +369,7 @@ export const SendMessageForm = ({
                                 textAlign="center"
                                 fontWeight="$bold"
                                 mt="$2"
+                                onPress={handleClose}
                             >
                                 Cancelar
                             </Text>

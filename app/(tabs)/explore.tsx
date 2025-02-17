@@ -1,4 +1,5 @@
-import React, { useEffect, useState } from "react";
+import React, { Fragment, useState } from "react";
+
 import { Keyboard } from "react-native";
 
 import { useRouter } from "expo-router";
@@ -9,20 +10,15 @@ import {
     VStack,
     Text,
     Spinner,
+    FlatList,
 } from "@/gluestackComponents";
 
 import { BaseContainer } from "@/components/BaseContainer";
 import { MainTitle } from "@/components/MainTitle";
 import { CategoryTabs } from "@/components/tabs/explore/CategoryTabs";
-import {
-    FavoriteCard,
-    FavoriteCardProps,
-} from "@/components/tabs/explore/FavoriteCard";
+import { FavoriteCard } from "@/components/tabs/explore/FavoriteCard";
 import { SearchInput } from "@/components/tabs/explore/SearchInput";
-import {
-    ExploreCard,
-    ExploreCardProps,
-} from "@/components/tabs/explore/ExploreCard";
+import { ExploreCard } from "@/components/tabs/explore/ExploreCard";
 
 import { useNotifications } from "@/hooks/NotificationHook";
 
@@ -36,10 +32,22 @@ import { mockCategories } from "@/utils/mockDados";
 
 import { useSocket } from "@/Context/SocketProvider";
 
-import { useQueryClient } from "@tanstack/react-query";
+import {
+    useInfiniteQuery,
+    useQuery,
+    useQueryClient,
+} from "@tanstack/react-query";
 
-import * as Burnt from "burnt";
 import { Search } from "lucide-react-native";
+
+import { toast } from "burnt";
+
+import {
+    GetFavorites,
+    GetMostPopular,
+} from "@/connection/explore/ExploreConnection";
+
+import { useOnlineUsersStore } from "@/stores/onlineUsersStore";
 
 const ExploreScreen = () => {
     const router = useRouter();
@@ -48,6 +56,25 @@ const ExploreScreen = () => {
     const { socket } = useSocket();
 
     const { notificationsCount } = useNotifications();
+
+    const { data: userFavorites, isLoading: isLoadingFavorites } = useQuery({
+        queryKey: ["userFavorites"],
+        queryFn: GetFavorites,
+    });
+
+    const {
+        data: popularData,
+        fetchNextPage: fetchNextPopularPage,
+        isLoading: isLoadingPopularUsers,
+    } = useInfiniteQuery({
+        queryKey: ["popularUsers"],
+        queryFn: GetMostPopular,
+        initialPageParam: 0,
+        getNextPageParam: (lastPage) => lastPage.nextPage,
+    });
+
+    const popularUsers =
+        popularData?.pages.map((page) => page.popularUsers).flat() ?? [];
 
     const [isSearching, setIsSearching] = useState(false);
 
@@ -62,111 +89,94 @@ const ExploreScreen = () => {
         zIndex: 999,
     }));
 
-    const [loadingStates, setLoadingStates] = useState({
-        favoriteCards: false,
-        popularUsers: false,
-    });
+    const [likedIds, setLikedIds] = useState<string[]>([]);
 
-    const [linkingIds, setLinkingIds] = useState<string[]>([]);
-
-    const [categories, setCategories] = useState<string[]>(mockCategories);
     const [selectedCategory, setSelectedCategory] = useState<string>("Geral");
 
-    const [favoriteCards, setFavoriteCards] = useState<FavoriteCardProps[]>([]);
+    const categories = mockCategories;
 
-    const [cards, setCards] = useState<Omit<ExploreCardProps, "onLike">[]>([]);
-
-    const GetFavoriteCards = async () => {
-        setLoadingStates((prev) => ({ ...prev, favoriteCards: true }));
-
-        //TODO: change the request to tanstack query yeah!
-
-        try {
-            const response = await api.get("/user/favorites");
-
-            setFavoriteCards(response.data);
-        } catch (error) {
-            console.log("Favorites Error: ", error);
-        } finally {
-            setLoadingStates((prev) => ({ ...prev, favoriteCards: false }));
-        }
-    };
+    const hasMorePopularUsers =
+        popularData?.pages[popularData.pages.length - 1].nextPage !== null;
 
     const GetPopularUsers = async () => {
-        setLoadingStates((prev) => ({ ...prev, popularUsers: true }));
+        if (!hasMorePopularUsers) return;
 
-        try {
-            const response = await api.get("/user/popular?offset=0");
-
-            setCards(
-                response.data.map((item: any) => ({
-                    ...item,
-                    liked: item.isFavorited,
-                })),
-            );
-        } catch (error) {
-            console.log("Popular Error: ", error);
-        } finally {
-            setLoadingStates((prev) => ({ ...prev, popularUsers: false }));
-        }
+        fetchNextPopularPage();
     };
 
     const HandleLike = async (id: string) => {
-        console.log("HandleLike: ", id);
-
-        if (linkingIds.includes(id)) {
+        if (likedIds.includes(id)) {
             return;
         }
 
-        setLinkingIds((prev) => [...prev, id]);
+        setLikedIds((prev) => [...prev, id]);
 
         try {
-            if (cards.find((card) => card.id === id)?.liked) {
-                setCards((prevCards) =>
-                    prevCards.map((card) => {
-                        if (card.id === id) {
-                            return { ...card, liked: !card.liked };
-                        }
-                        return card;
-                    }),
-                );
+            const isFavorited = popularUsers?.some(
+                (item) => String(item.id) === String(id) && item.isFavorited,
+            );
 
+            if (isFavorited) {
                 await api.delete(`/user/favorites/${id}`);
 
-                setFavoriteCards((prevFavorites: any) =>
-                    prevFavorites.filter((favorite: any) => favorite.id !== id),
+                queryClient.setQueryData(["popularUsers"], (prev: any) => ({
+                    ...prev,
+                    pages: prev.pages.map((page: any) => ({
+                        ...page,
+                        popularUsers: page.popularUsers.map((item: any) =>
+                            item.id === id
+                                ? { ...item, isFavorited: false }
+                                : item,
+                        ),
+                    })),
+                }));
+
+                queryClient.setQueryData(["userFavorites"], (prev: any) =>
+                    prev.filter((item: any) => item.id !== id),
                 );
 
                 return;
             }
 
-            setCards((prevCards) =>
-                prevCards.map((card) => {
-                    if (card.id === id) {
-                        return { ...card, liked: !card.liked };
-                    }
-                    return card;
-                }),
-            );
-
             await api.post("/user/favorites", {
                 userId: id,
             });
 
-            setFavoriteCards((prevFavorites: any) => {
-                const newFavorite = cards.find((card) => card.id === id);
-                return [...prevFavorites, newFavorite];
-            });
-        } catch (error) {
-            console.log(error);
-        } finally {
-            setLinkingIds((prev) =>
-                prev.filter((linkingId) => linkingId !== id),
+            queryClient.setQueryData(["popularUsers"], (prev: any) => ({
+                ...prev,
+                pages: prev.pages.map((page: any) => ({
+                    ...page,
+                    popularUsers: page.popularUsers.map((item: any) =>
+                        item.id === id ? { ...item, isFavorited: true } : item,
+                    ),
+                })),
+            }));
+
+            const newFavorite = popularUsers?.find(
+                (item) => String(item.id) === String(id),
             );
+
+            if (newFavorite) {
+                queryClient.setQueryData(["userFavorites"], (prev: any) => [
+                    ...(prev || []),
+                    newFavorite,
+                ]);
+            }
+        } catch (error) {
+            console.error("Erro ao (des)favoritar:", error);
+            toast({
+                title: "Erro ao processar sua solicitação!",
+                haptic: "error",
+                duration: 2,
+                preset: "error",
+                from: "top",
+            });
+        } finally {
+            setLikedIds((prev) => prev.filter((likedId) => likedId !== id));
         }
     };
 
-    const CreateConversation = async (participantId: string) => {
+    const CreateConversation = async (participantId: number) => {
         if (!socket) return;
 
         socket.emit(
@@ -178,7 +188,7 @@ const ExploreScreen = () => {
                         "Error creating conversation: ",
                         response.error,
                     );
-                    Burnt.toast({
+                    toast({
                         title: "Erro ao criar conversa, tente novamente mais tarde!",
                         haptic: "error",
                         duration: 3,
@@ -196,10 +206,7 @@ const ExploreScreen = () => {
         );
     };
 
-    useEffect(() => {
-        GetFavoriteCards();
-        GetPopularUsers();
-    }, []);
+    const onlineUsers = useOnlineUsersStore((state) => state.onlineUsers);
 
     return (
         <BaseContainer gap="$2">
@@ -212,7 +219,9 @@ const ExploreScreen = () => {
             <Animated.View style={animatedSearchStyle}>
                 <SearchInput
                     isSearching={isSearching}
-                    onFocus={() => setIsSearching(true)}
+                    onFocus={() => {
+                        setIsSearching(true);
+                    }}
                     onCancel={() => {
                         Keyboard.dismiss();
                         setIsSearching(false);
@@ -226,19 +235,23 @@ const ExploreScreen = () => {
                     onSelectCategory={(category) =>
                         setSelectedCategory(category)
                     }
-                    type="darkBlue"
+                    type="lightBlue"
                 />
             )}
             {!isSearching && (
-                <>
+                <Fragment>
                     <VStack gap="$3">
-                        {favoriteCards.length !== 0 &&
-                        !loadingStates.favoriteCards ? (
-                            <>
+                        {userFavorites &&
+                        userFavorites?.length !== 0 &&
+                        !isLoadingFavorites ? (
+                            <Fragment>
                                 <Text
+                                    py="$1"
                                     fontFamily="$heading"
-                                    fontSize={18}
+                                    fontSize={27}
                                     color="#000"
+                                    fontWeight="$semibold"
+                                    lineHeight={28}
                                 >
                                     Favoritos
                                 </Text>
@@ -247,20 +260,30 @@ const ExploreScreen = () => {
                                     showsHorizontalScrollIndicator={false}
                                 >
                                     <HStack gap="$4">
-                                        {favoriteCards.map((item, index) => (
-                                            <FavoriteCard
-                                                key={index}
-                                                name={item.name}
-                                                icon={item.icon}
-                                                isActive={
-                                                    item.isActive ?? false
-                                                }
-                                            />
-                                        ))}
+                                        {userFavorites.map((item, index) => {
+                                            const isOnline =
+                                                onlineUsers.includes(
+                                                    Number(item?.id),
+                                                );
+
+                                            return (
+                                                <FavoriteCard
+                                                    key={index}
+                                                    name={item.name}
+                                                    icon={item.icon}
+                                                    isOnline={isOnline}
+                                                    onPress={() =>
+                                                        CreateConversation(
+                                                            item.id,
+                                                        )
+                                                    }
+                                                />
+                                            );
+                                        })}
                                     </HStack>
                                 </ScrollView>
-                            </>
-                        ) : favoriteCards.length === 0 ? null : (
+                            </Fragment>
+                        ) : userFavorites?.length === 0 ? null : (
                             <VStack
                                 alignItems="center"
                                 justifyContent="center"
@@ -272,14 +295,16 @@ const ExploreScreen = () => {
                     </VStack>
                     <VStack gap="$3" flex={1} pt="$2" bgColor="#12212">
                         <Text
+                            py="$1"
                             fontFamily="$heading"
-                            size="2xl"
+                            fontSize={27}
                             color="#000"
-                            fontWeight="$bold"
+                            fontWeight="$semibold"
+                            lineHeight={28}
                         >
                             Mais populares
                         </Text>
-                        {cards.length === 0 ? (
+                        {popularUsers.length === 0 ? (
                             <VStack
                                 flex={1}
                                 py="$10"
@@ -297,39 +322,50 @@ const ExploreScreen = () => {
                                     Nenhum usuário encontrado
                                 </Text>
                             </VStack>
-                        ) : !loadingStates.popularUsers ? (
-                            <ScrollView showsVerticalScrollIndicator={false}>
-                                <HStack gap="$4" flexWrap="wrap">
-                                    {cards.map((item, index) => (
-                                        <ExploreCard
-                                            key={index}
-                                            id={item.id}
-                                            icon={item.icon}
-                                            name={item.name}
-                                            tags={item.tags ?? []}
-                                            price={item.price ?? "R$ 100,00"}
-                                            isChecked={item.isChecked ?? false}
-                                            liked={item.liked ?? false}
-                                            onLike={(id) => HandleLike(id)}
-                                            onPress={() =>
-                                                CreateConversation(item.id)
-                                            }
-                                        />
-                                    ))}
-                                </HStack>
-                            </ScrollView>
                         ) : (
-                            <VStack
-                                flex={1}
-                                py="$10"
-                                alignItems="center"
-                                justifyContent="center"
-                            >
-                                <Spinner size="large" />
-                            </VStack>
+                            <FlatList
+                                data={popularUsers}
+                                keyExtractor={(item: any) => item.id.toString()}
+                                refreshing={isLoadingPopularUsers}
+                                onRefresh={() => {}}
+                                renderItem={({ item }: any) => (
+                                    <ExploreCard
+                                        id={item.id}
+                                        icon={item.icon}
+                                        name={item.name}
+                                        tags={item.tags ?? []}
+                                        price={item.price ?? "R$ 100,00"}
+                                        isChecked={item.isChecked ?? false}
+                                        liked={item.isFavorited ?? false}
+                                        onLike={(id) => HandleLike(id)}
+                                        onPress={() =>
+                                            CreateConversation(item.id)
+                                        }
+                                    />
+                                )}
+                                numColumns={2}
+                                columnWrapperStyle={{
+                                    justifyContent: "space-between",
+                                }}
+                                mb="$2"
+                                onEndReached={GetPopularUsers}
+                                onEndReachedThreshold={0.5}
+                                showsVerticalScrollIndicator={false}
+                                ListFooterComponent={
+                                    isLoadingPopularUsers ? (
+                                        <VStack
+                                            alignItems="center"
+                                            justifyContent="center"
+                                            py="$4"
+                                        >
+                                            <Spinner size="large" />
+                                        </VStack>
+                                    ) : null
+                                }
+                            />
                         )}
                     </VStack>
-                </>
+                </Fragment>
             )}
         </BaseContainer>
     );

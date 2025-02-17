@@ -1,29 +1,25 @@
-import React, { useState } from "react";
+import { useState } from "react";
 import { useRouter } from "expo-router";
 
-import Ionicons from "@expo/vector-icons/Ionicons";
-import Octicons from "@expo/vector-icons/Octicons";
-
-import ArchiveIcon from "@/assets/icons/appIcons/archive.svg";
-
 import {
-    AlertDialog,
-    AlertDialogBackdrop,
-    AlertDialogBody,
-    AlertDialogCloseButton,
-    AlertDialogContent,
-    AlertDialogHeader,
+    Actionsheet,
+    ActionsheetBackdrop,
+    ActionsheetContent,
+    ActionsheetDragIndicator,
+    ActionsheetDragIndicatorWrapper,
+    ActionsheetItem,
     Avatar,
     AvatarFallbackText,
     AvatarImage,
     Box,
     Divider,
+    FlatList,
     HStack,
     Input,
     InputField,
     InputIcon,
     InputSlot,
-    ScrollView,
+    Pressable,
     Spinner,
     Text,
     VStack,
@@ -31,45 +27,64 @@ import {
 
 import { useNotifications } from "@/hooks/NotificationHook";
 
-import { CategoryTabs } from "@/components/tabs/explore/CategoryTabs";
-import { ChatCard } from "@/components/chats/ChatCard";
-import { BaseContainer } from "@/components/BaseContainer";
-import { MainTitle } from "@/components/MainTitle";
-
 import { findConversations } from "@/connection/conversations/ConversationConnection";
 
-import { useQuery } from "@tanstack/react-query";
+import EmptyChats from "@/assets/icons/appIcons/emptyChat.svg";
+
+import { useInfiniteQuery } from "@tanstack/react-query";
+
 import { useOnlineUsersStore } from "@/stores/onlineUsersStore";
-import {
-    CircleUserRound,
-    MessageSquareText,
-    Search,
-    X,
-    XCircle,
-} from "lucide-react-native";
+
+import { CircleUserRound, Search, X } from "lucide-react-native";
+
+import { DeleteConversation } from "@/components/tabs/conversations/DeleteConversation";
+import { ClearConversation } from "@/components/tabs/conversations/ClearConversation";
+import { BlockUser } from "@/components/tabs/conversations/BlockUser";
+import { CategoryTabs } from "@/components/tabs/explore/CategoryTabs";
+import { BaseContainer } from "@/components/BaseContainer";
+import { ChatCard } from "@/components/chats/ChatCard";
+import { MainTitle } from "@/components/MainTitle";
 
 const ChatsScreen = () => {
     const router = useRouter();
     const { notificationsCount } = useNotifications();
 
-    const { data: queryChats, isLoading } = useQuery({
+    const {
+        data: queryChats,
+        fetchNextPage: fetchNextChats,
+        isLoading,
+    } = useInfiniteQuery({
         queryKey: ["conversations"],
         queryFn: findConversations,
+        initialPageParam: 0,
+        getNextPageParam: (lastPage) => lastPage.nextPage,
     });
+
+    const chats =
+        queryChats?.pages.map((page) => page.conversations).flat() ?? [];
 
     const [searchTerm, setSearchTerm] = useState("");
     const [selectedCategory, setSelectedCategory] = useState("Todas");
     const [idSelectedChat, setIdSelectedChat] = useState<string | null>(null);
 
     const categories = ["Todas", "Não lidas", "Expiradas"];
-    const selectedChat = queryChats?.find((chat) => chat.id === idSelectedChat);
+    const selectedChat = chats?.find((chat) => chat.id === idSelectedChat);
+
+    const hasMore =
+        queryChats?.pages[queryChats.pages.length - 1].nextPage !== null;
 
     const handleSearch = (term: string) => {
         setSearchTerm(term);
     };
 
+    const fetchMoreConversations = async () => {
+        if (!hasMore) return;
+
+        fetchNextChats();
+    };
+
     const filteredChats =
-        queryChats?.filter((chat) =>
+        chats?.filter((chat) =>
             (chat?.participant?.name ?? "")
                 .toLowerCase()
                 .includes(searchTerm.toLowerCase()),
@@ -115,96 +130,124 @@ const ChatsScreen = () => {
                     type="lightBlue"
                 />
                 <Box flex={1}>
-                    {filteredChats.length === 0 && isLoading ? (
-                        <VStack
-                            alignItems="center"
-                            justifyContent="center"
-                            flex={1}
-                        >
-                            <Spinner size="large" />
-                        </VStack>
-                    ) : filteredChats.length === 0 ? (
-                        <VStack
-                            alignItems="center"
-                            justifyContent="center"
-                            flex={1}
-                            mb="$4"
-                        >
-                            <MessageSquareText size={30} color="#6B7280" />
+                    {filteredChats.length === 0 && !isLoading ? (
+                        <VStack alignItems="center" flex={1} mt="$4">
+                            <EmptyChats width={180} height={180} />
                             <Box>
-                                <Text fontSize="$lg" color="#6B7280">
-                                    Nenhuma conversa encontrada
+                                <Text
+                                    fontSize={22}
+                                    textAlign="center"
+                                    color="#000"
+                                    fontFamily="$heading"
+                                >
+                                    Envie uma mensagem e aguarde o início de uma
+                                    nova conexão.
                                 </Text>
                             </Box>
                         </VStack>
                     ) : (
-                        <ScrollView showsVerticalScrollIndicator={false}>
-                            <VStack mb="$2">
-                                {filteredChats.map((chat, index) => {
-                                    const isOnline = onlineUsers.includes(
-                                        Number(chat.participant.id),
-                                    );
+                        <FlatList
+                            data={filteredChats}
+                            keyExtractor={(chat: any) => chat.id.toString()}
+                            renderItem={({ item }: any) => {
+                                const isOnline = onlineUsers.includes(
+                                    Number(item.participant.id),
+                                );
 
-                                    return (
-                                        <ChatCard
-                                            key={index}
-                                            chat={chat}
-                                            name={chat.participant.name}
-                                            icon={chat.participant.icon}
-                                            isOnline={isOnline}
-                                            onLongPress={() => {
-                                                setIdSelectedChat(chat.id);
-                                            }}
-                                        />
-                                    );
-                                })}
-                            </VStack>
-                        </ScrollView>
+                                return (
+                                    <ChatCard
+                                        chat={item}
+                                        name={item.participant.name}
+                                        icon={item.participant.icon}
+                                        isOnline={isOnline}
+                                        onLongPress={() =>
+                                            setIdSelectedChat(item.id)
+                                        }
+                                    />
+                                );
+                            }}
+                            mb="$2"
+                            onEndReached={fetchMoreConversations}
+                            onEndReachedThreshold={0.5}
+                            showsVerticalScrollIndicator={false}
+                            ListFooterComponent={
+                                isLoading ? (
+                                    <VStack
+                                        alignItems="center"
+                                        justifyContent="center"
+                                        flex={1}
+                                    >
+                                        <Spinner size="large" />
+                                    </VStack>
+                                ) : null
+                            }
+                        />
                     )}
                 </Box>
             </VStack>
-            <AlertDialog
+            <Actionsheet
                 isOpen={idSelectedChat !== null}
                 onClose={() => setIdSelectedChat(null)}
             >
-                <AlertDialogBackdrop backgroundColor="#000" />
-                <AlertDialogContent bgColor="$gray200">
-                    <AlertDialogHeader>
+                <ActionsheetBackdrop backgroundColor="#000" />
+                <ActionsheetContent bgColor="$gray200">
+                    <ActionsheetDragIndicatorWrapper>
+                        <ActionsheetDragIndicator bgColor="#000" />
+                    </ActionsheetDragIndicatorWrapper>
+                    <ActionsheetItem>
                         <HStack
                             gap="$2"
                             alignItems="center"
-                            justifyContent="center"
+                            justifyContent="space-between"
+                            w="$full"
                         >
-                            <Avatar width={40} height={40} ml="-$1">
-                                <AvatarFallbackText rounded="$lg">
-                                    {selectedChat?.participant.name}
-                                </AvatarFallbackText>
-                                {selectedChat?.participant.icon && (
-                                    <AvatarImage
-                                        rounded="$full"
-                                        source={{
-                                            uri: selectedChat?.participant.icon,
-                                        }}
-                                        alt={`Foto de perfil de ${selectedChat?.participant.name}`}
-                                    />
-                                )}
-                            </Avatar>
-                            <Text
-                                size="lg"
-                                fontFamily="$heading"
-                                color="$black"
+                            <HStack
+                                gap="$2"
+                                alignItems="center"
+                                justifyContent="center"
                             >
-                                {selectedChat?.participant.name}
-                            </Text>
+                                <Avatar width={40} height={40} ml="$2">
+                                    <AvatarFallbackText rounded="$lg">
+                                        {selectedChat?.participant.name}
+                                    </AvatarFallbackText>
+                                    {selectedChat?.participant.icon && (
+                                        <AvatarImage
+                                            rounded="$full"
+                                            source={{
+                                                uri: selectedChat?.participant
+                                                    .icon,
+                                            }}
+                                            alt={`Foto de perfil de ${selectedChat?.participant.name}`}
+                                        />
+                                    )}
+                                </Avatar>
+                                <Text
+                                    size="lg"
+                                    fontFamily="$heading"
+                                    color="$black"
+                                >
+                                    {selectedChat?.participant.name}
+                                </Text>
+                            </HStack>
+                            <Pressable onPress={() => setIdSelectedChat(null)}>
+                                <X size={20} color="#000" />
+                            </Pressable>
                         </HStack>
-                        <AlertDialogCloseButton>
-                            <X size={20} />
-                        </AlertDialogCloseButton>
-                    </AlertDialogHeader>
-                    <AlertDialogBody px="$0" mt="-$2" mb="$2">
-                        <VStack mx="$3" p="$2" rounded="$xl" bgColor="$gray50">
-                            <HStack pb="$3" alignItems="center" gap="$3">
-                                <CircleUserRound size={20} />
+                    </ActionsheetItem>
+                    <ActionsheetItem px="$3" mt="-$2" mb="$2">
+                        <VStack
+                            p="$2"
+                            w="$full"
+                            rounded="$xl"
+                            bgColor="$gray50"
+                        >
+                            <HStack
+                                py="$3"
+                                px="$3"
+                                alignItems="center"
+                                gap="$3"
+                            >
+                                <CircleUserRound size={20} color="#000" />
                                 <Text
                                     fontFamily="$arialBody"
                                     color="$black"
@@ -214,64 +257,33 @@ const ChatsScreen = () => {
                                 </Text>
                             </HStack>
                             <Divider bgColor="$gray300" />
-                            <HStack py="$3" alignItems="center" gap="$3">
-                                <ArchiveIcon width={20} height={20} />
-                                <Text
-                                    fontFamily="$arialBody"
-                                    color="$black"
-                                    size="lg"
-                                    fontWeight="$medium"
-                                >
-                                    Arquivar
-                                </Text>
-                            </HStack>
+                            <ClearConversation
+                                conversationId={selectedChat?.id ?? ""}
+                                conversationName={
+                                    selectedChat?.participant.name ?? ""
+                                }
+                                onClose={() => setIdSelectedChat(null)}
+                            />
                             <Divider bgColor="$gray300" />
-                            <HStack py="$3" alignItems="center" gap="$3">
-                                <XCircle size={20} />
-                                <Text
-                                    fontFamily="$arialBody"
-                                    color="$black"
-                                    size="lg"
-                                >
-                                    Limpar conversa
-                                </Text>
-                            </HStack>
+                            <DeleteConversation
+                                conversationId={selectedChat?.id ?? ""}
+                                conversationName={
+                                    selectedChat?.participant.name ?? ""
+                                }
+                                onClose={() => setIdSelectedChat(null)}
+                            />
                             <Divider bgColor="$gray300" />
-                            <HStack py="$3" alignItems="center" gap="$3">
-                                <Ionicons
-                                    name="trash-outline"
-                                    size={20}
-                                    color="#D32F2F"
-                                />
-                                <Text
-                                    fontFamily="$arialBody"
-                                    color="$negative"
-                                    size="lg"
-                                >
-                                    Apagar conversa
-                                </Text>
-                            </HStack>
-                            <Divider bgColor="$gray300" />
-                            <HStack pt="$3" alignItems="center" gap="$3">
-                                <Box width={16} ml="$1">
-                                    <Octicons
-                                        name="circle-slash"
-                                        size={16}
-                                        color="#D32F2F"
-                                    />
-                                </Box>
-                                <Text
-                                    fontFamily="$arialBody"
-                                    color="$negative"
-                                    size="lg"
-                                >
-                                    Bloquear
-                                </Text>
-                            </HStack>
+                            <BlockUser
+                                blockedId={selectedChat?.participant.id ?? ""}
+                                blockedName={
+                                    selectedChat?.participant.name ?? ""
+                                }
+                                onClose={() => setIdSelectedChat(null)}
+                            />
                         </VStack>
-                    </AlertDialogBody>
-                </AlertDialogContent>
-            </AlertDialog>
+                    </ActionsheetItem>
+                </ActionsheetContent>
+            </Actionsheet>
         </BaseContainer>
     );
 };

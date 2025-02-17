@@ -17,6 +17,7 @@ export type SendMessageParams = {
     content: string;
     image?: string;
     document?: string;
+    video?: string;
     shouldDeliver?: boolean;
 };
 
@@ -43,9 +44,18 @@ export function ChatProvider({ children }: { children: ReactNode }) {
             queryClient.setQueryData(
                 ["conversations"],
                 (oldConversations: any) => {
+                    queryClient.invalidateQueries({
+                        queryKey: [
+                            "conversationMessage",
+                            newMessage.conversationId.toString(),
+                        ],
+                    });
+
                     if (!oldConversations) return [];
 
-                    const updatedConversations = [...oldConversations];
+                    const updatedConversations = [
+                        ...oldConversations.conversations,
+                    ];
 
                     const chatIndex = updatedConversations.findIndex(
                         (chat) => chat.id === newMessage.conversationId,
@@ -55,7 +65,14 @@ export function ChatProvider({ children }: { children: ReactNode }) {
                         chatIndex
                     ].messages.some((msg: any) => msg.id === newMessage.id);
 
-                    if (alreadyExists) return updatedConversations;
+                    if (alreadyExists) {
+                        console.log("Mensagem já existe no array de mensagens");
+
+                        return {
+                            ...oldConversations,
+                            conversations: updatedConversations,
+                        };
+                    }
 
                     if (chatIndex !== -1) {
                         const isFromTheLoggedUser =
@@ -104,27 +121,39 @@ export function ChatProvider({ children }: { children: ReactNode }) {
                             1,
                         );
                         updatedConversations.unshift(updatedChat);
-
-                        queryClient.invalidateQueries({
-                            queryKey: [
-                                "conversationMessage",
-                                newMessage.conversationId.toString(),
-                            ],
-                        });
                     }
-                    return updatedConversations;
+                    return {
+                        ...oldConversations,
+                        conversations: updatedConversations,
+                    };
                 },
             );
         }
 
         function handleConversationCreated(newConversation: any) {
-            console.log("Nova conversa criada:", newConversation);
-
             queryClient.setQueryData(
                 ["conversations"],
                 (oldConversations: any) => {
-                    if (!oldConversations) return [newConversation];
-                    return [newConversation, ...oldConversations];
+                    if (!oldConversations)
+                        return {
+                            ...oldConversations,
+                            conversations: [newConversation],
+                        };
+
+                    if (
+                        oldConversations.conversations.some(
+                            (c: any) => c.id === newConversation.id,
+                        )
+                    )
+                        return oldConversations;
+
+                    return {
+                        ...oldConversations,
+                        conversations: [
+                            newConversation,
+                            ...oldConversations.conversations,
+                        ],
+                    };
                 },
             );
 
@@ -133,7 +162,9 @@ export function ChatProvider({ children }: { children: ReactNode }) {
             });
         }
 
-        const handleNewAnswerRight = (conversationId: string) => {
+        const handleNewAnswerRight = (data: { conversationId: string }) => {
+            const { conversationId } = data;
+
             queryClient.setQueryData(
                 ["conversationMessage", conversationId],
                 (oldData: any) => {
@@ -147,7 +178,11 @@ export function ChatProvider({ children }: { children: ReactNode }) {
             );
         };
 
-        const handleConversationFinished = (conversationId: string) => {
+        const handleConversationFinished = (data: {
+            conversationId: string;
+        }) => {
+            const { conversationId } = data;
+
             queryClient.setQueryData(
                 ["conversationMessage", conversationId],
                 (oldData: any) => {
@@ -173,7 +208,11 @@ export function ChatProvider({ children }: { children: ReactNode }) {
                     if (!oldData) return oldData;
 
                     const updatedMessages = oldData.messages.map((msg: any) => {
-                        if (!msg.readAt && msg.senderId !== userId) {
+                        if (
+                            !msg.readAt &&
+                            msg.senderId !== userId &&
+                            !!msg.deliveredAt
+                        ) {
                             return {
                                 ...msg,
                                 readAt: new Date().toISOString(),
@@ -191,7 +230,7 @@ export function ChatProvider({ children }: { children: ReactNode }) {
         }
 
         socket.on("newMessage", handleNewMessage);
-        socket.on(`conversationCreated`, handleConversationCreated);
+        socket.on(`conversationCreated_${user.id}`, handleConversationCreated);
 
         socket.on("newAnswerRight", handleNewAnswerRight);
         socket.on("conversationFinished", handleConversationFinished);
@@ -199,7 +238,10 @@ export function ChatProvider({ children }: { children: ReactNode }) {
 
         return () => {
             socket.off("newMessage", handleNewMessage);
-            socket.off(`conversationCreated`, handleConversationCreated);
+            socket.off(
+                `conversationCreated_${user.id}`,
+                handleConversationCreated,
+            );
 
             socket.off("newAnswerRight", handleNewAnswerRight);
             socket.off("conversationFinished", handleConversationFinished);
@@ -228,19 +270,18 @@ export function ChatProvider({ children }: { children: ReactNode }) {
             conversationId,
             content,
             image,
+            video,
+            document,
             shouldDeliver,
-        }: {
-            conversationId: number | string;
-            content: string;
-            image?: string;
-            shouldDeliver?: boolean;
-        }) => {
+        }: SendMessageParams) => {
             if (!socket) return;
-            if (!content.trim() && !image) return;
+            if (!content.trim() && !image && !video) return;
             socket.emit("sendMessage", {
                 conversationId: Number(conversationId),
                 content,
                 image: image ?? null,
+                video: video ?? null,
+                documentUri: document ?? null,
                 shouldDeliver,
             });
         },
@@ -251,6 +292,19 @@ export function ChatProvider({ children }: { children: ReactNode }) {
         ({ conversationId }: { conversationId: string }) => {
             if (!socket) return;
             socket.emit("giveAnswerRight", { conversationId });
+
+            queryClient.setQueryData(
+                ["conversationMessage", conversationId],
+                (oldData: any) => {
+                    if (oldData) {
+                        return {
+                            ...oldData,
+                            contactAnswersCount:
+                                oldData.contactAnswersCount + 1,
+                        };
+                    }
+                },
+            );
         },
         [socket],
     );

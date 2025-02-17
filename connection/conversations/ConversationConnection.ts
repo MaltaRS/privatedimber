@@ -1,4 +1,5 @@
 import { User } from "@/Context/AuthProvider";
+
 import api from "@/utils/api";
 
 export type Conversation = {
@@ -21,6 +22,7 @@ export type Message = {
     senderId: string;
     content: string;
     image?: string;
+    video?: string;
     audio?: string;
     document?: string;
     deliveredAt?: string;
@@ -33,16 +35,28 @@ export type MessagesPayload = {
     contact: User;
     messages: Message[];
     answersCount: number;
+    totalAnswers: number;
+    contactTotalAnswers: number;
     contactAnswersCount: number;
     isCreator: boolean;
     needReply: boolean;
     isFinished: boolean;
 };
 
-export const findConversations = async () => {
-    const { data } = await api.get<Conversation[]>("/conversation");
+export type ConversationsResponse = {
+    conversations: Conversation[];
+    totalConversations: number;
+    nextPage: number | null;
+};
 
-    return data.reverse();
+export const findConversations = async ({
+    pageParam,
+}: any): Promise<ConversationsResponse> => {
+    const { data } = await api.get<ConversationsResponse>("/conversation", {
+        params: { offset: pageParam },
+    });
+
+    return data;
 };
 
 export const findConversationById = async (conversationId: string) => {
@@ -51,4 +65,12 @@ export const findConversationById = async (conversationId: string) => {
     );
 
     return data;
+};
+
+export const clearConversation = async (conversationId: string) => {
+    await api.patch(`/conversation/${conversationId}/clear-messages`);
+};
+
+export const deleteConversation = async (conversationId: string) => {
+    await api.delete(`/conversation/${conversationId}/delete-conversation`);
 };

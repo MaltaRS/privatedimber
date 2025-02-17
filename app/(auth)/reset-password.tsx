@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useMemo, useState } from "react";
+import React, { useCallback, useEffect, useMemo, useState } from "react";
 
 import { useRouter } from "expo-router";
 
@@ -15,125 +15,87 @@ import {
 import { BaseContainer } from "@/components/BaseContainer";
 import { BackLeft } from "@/components/utils/BackArrow";
 import { Button } from "@/components/ui/Button";
-import { Terms } from "@/components/Terms";
 
 import { FormProvider, useForm } from "react-hook-form";
 
 import { zodResolver } from "@hookform/resolvers/zod";
 
 import {
-    StepAccountType,
-    StepBio,
-    StepEmail,
+    StepEmailOrUsername,
     StepEmailCode,
-    StepName,
     StepPassword,
-    StepUsername,
-} from "@/components/signup/Steps";
+} from "@/components/resetPassword/Steps";
 
 import { Alert, Pressable } from "react-native";
 
 import { z } from "zod";
 
-import { useAuth } from "@/Context/AuthProvider";
-
 import { useMutation } from "@tanstack/react-query";
 
-import { CreatePendingUser } from "@/connection/auth/PendingUserConnection";
+import {
+    PasswordReset,
+    RequestPasswordReset,
+} from "@/connection/auth/resetPasswordConnection";
 
-import { toast } from "burnt";
-
-import { SecureStoreUnencrypted } from "@/utils/SecureStorage";
-import { uploadImageToFirebase } from "@/utils/firebaseFunctions";
-import api from "@/utils/api";
-
-import { useGoogleAuth } from "@/Context/GoogleAuthProvider";
-
-const createUserFormSchema = z
+const resetPasswordSchema = z
     .object({
-        email: z
-            .string({ required_error: "O email é obrigatório." })
-            .email("O email é inválido."),
-        username: z
+        emailOrUsername: z
             .string({
-                required_error: "O nome de usuário é obrigatório.",
+                message: "O campo de email ou nome de usuário é obrigatório.",
             })
-            .min(3, "O nome de usuário deve ter no mínimo 3 caracteres.")
-            .regex(
-                /^[a-z-]+$/,
-                "O nome de usuário deve conter apenas letras minusculas e hífens.",
-            )
-            .refine((username) => !username.includes(" "), {
-                message: "O nome de usuário não deve conter espaços.",
-            }),
-        name: z
-            .string({ required_error: "O nome é obrigatório." })
-            .refine((name) => name.trim().includes(" "), {
-                message: "É obrigatório incluir pelo menos o nome e sobrenome.",
-            }),
-        type: z.enum(["REGULAR", "PROFESSIONAL"]).default("REGULAR"),
+            .min(1, "O campo de email ou nome de usuário é obrigatório.")
+            .refine(
+                (value) =>
+                    /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(value) ||
+                    /^[a-zA-Z0-9_.-]+$/.test(value),
+                {
+                    message: "Insira um email válido ou nome de usuário.",
+                },
+            ),
         password: z
             .string({ required_error: "O senha é obrigatória." })
             .min(6, "A senha deve ter no mínimo 6 caracteres."),
         confirm_password: z.string({
             required_error: "A confirmação de senha é obrigatória.",
         }),
-        bio: z.string().optional(),
-        icon: z.string().optional(),
+    })
+    .refine((data) => data.password === data.confirm_password, {
+        message: "As senhas não coincidem.",
     })
     .transform((data) => {
         return {
-            email: data.email.trim(),
-            username: data.username.trim(),
-            name: data.name.trim(),
-            type: data.type,
+            emailOrUsername: data.emailOrUsername.trim(),
             password: data.password,
-            bio: data.bio?.trim() ?? "",
-            icon: data.icon,
         };
     });
 
-type CreateUserForm = z.infer<typeof createUserFormSchema> & {
+type ResetPasswordSchema = z.infer<typeof resetPasswordSchema> & {
     confirm_password: string;
 };
 
 export type Step = {
     component: JSX.Element;
     active: boolean;
-    fields: (keyof CreateUserForm)[];
+    fields: (keyof ResetPasswordSchema)[];
 };
 
-const SignUp = () => {
+const ResetPassword = () => {
     const router = useRouter();
-    const { user } = useGoogleAuth();
 
-    const [revalidateEmail, setRevalidateEmail] = useState(false);
+    const [userEmail, setUserEmail] = useState<string | null>(null);
 
-    let verifiedEmail = useMemo(() => {
-        const manualEmailVerified =
-            SecureStoreUnencrypted.getItem("verified_email");
-
-        if (manualEmailVerified) {
-            return manualEmailVerified;
-        }
-
-        if (user) {
-            return user.email;
-        }
-    }, [revalidateEmail, user]);
-
-    const { mutateAsync: createPendingUser } = useMutation({
-        mutationFn: CreatePendingUser,
+    const { mutateAsync: requestPasswordReset } = useMutation({
+        mutationFn: RequestPasswordReset,
     });
 
-    const formProps = useForm<CreateUserForm>({
-        resolver: zodResolver(createUserFormSchema),
+    const { mutateAsync: passwordReset } = useMutation({
+        mutationFn: PasswordReset,
+    });
+
+    const formProps = useForm<ResetPasswordSchema>({
+        resolver: zodResolver(resetPasswordSchema),
         shouldUnregister: false,
         reValidateMode: "onBlur",
-        defaultValues: {
-            email: verifiedEmail ?? "",
-            type: "REGULAR",
-        },
     });
 
     const { handleSubmit, getValues } = formProps;
@@ -141,16 +103,12 @@ const SignUp = () => {
     const [isGlobalLoading, setIsGlobalLoading] = useState(false);
     const [globalError, setGlobalError] = useState(false);
 
-    const [previewImage, setPreviewImage] = useState("");
-
-    const { signIn } = useAuth();
-
     const [steps, setSteps] = useState<{ steps: Step[]; activeStep: number }>({
         steps: [
             {
-                component: <StepEmail />,
-                active: verifiedEmail ? false : true,
-                fields: ["email"],
+                component: <StepEmailOrUsername />,
+                active: true,
+                fields: ["emailOrUsername"],
             },
             {
                 component: <StepEmailCode />,
@@ -159,31 +117,11 @@ const SignUp = () => {
             },
             {
                 component: <StepPassword />,
-                active: verifiedEmail ? true : false,
+                active: false,
                 fields: ["password"],
             },
-            {
-                component: <StepName />,
-                active: false,
-                fields: ["name"],
-            },
-            {
-                component: <StepAccountType />,
-                active: false,
-                fields: ["type"],
-            },
-            {
-                component: <StepUsername />,
-                active: false,
-                fields: ["username"],
-            },
-            {
-                component: <StepBio />,
-                active: false,
-                fields: ["bio", "icon"],
-            },
         ],
-        activeStep: verifiedEmail ? 2 : 0,
+        activeStep: 0,
     });
 
     // step email code timer
@@ -203,29 +141,35 @@ const SignUp = () => {
     const sendVerificationEmail = useCallback(async (): Promise<boolean> => {
         setIsGlobalLoading(true);
 
-        const email = getValues("email");
+        const emailOrUsername = getValues("emailOrUsername");
 
-        const codeSended = await createPendingUser(email);
+        const isEmail = /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(emailOrUsername);
+
+        const codeSended = await requestPasswordReset({
+            ...(isEmail
+                ? { email: emailOrUsername }
+                : { username: emailOrUsername }),
+        });
 
         if (!codeSended) {
             setIsGlobalLoading(false);
-            toast({
-                title: "Erro",
-                message: "Ocorreu um erro ao enviar o código de verificação.",
-                duration: 5000,
-                haptic: "error",
-                from: "top",
-                preset: "error",
+
+            formProps.setError("emailOrUsername", {
+                type: "manual",
+                message: "Nenhum usuário encontrado com esse email ou nome.",
             });
+
             return false;
         }
+
+        setUserEmail(codeSended.email);
 
         setIsGlobalLoading(false);
 
         setTimeLeft(300);
 
         return true;
-    }, [createPendingUser, getValues]);
+    }, [requestPasswordReset, getValues]);
 
     const HandleChangeStep = useCallback(async () => {
         if (isGlobalLoading) return;
@@ -236,7 +180,7 @@ const SignUp = () => {
 
         if (!isValid) return;
 
-        if (fields.includes("password")) {
+        if (steps.activeStep === steps.steps.length - 1) {
             const password = getValues("password");
             const confirm_password = getValues("confirm_password");
 
@@ -249,7 +193,12 @@ const SignUp = () => {
             }
 
             formProps.clearErrors("confirm_password");
-        } else if (fields.includes("email")) {
+
+            handleSubmit(OnSubmit)();
+
+            return;
+        }
+        if (fields.includes("emailOrUsername")) {
             const success = await sendVerificationEmail();
 
             if (!success) return;
@@ -268,42 +217,24 @@ const SignUp = () => {
     }, [
         formProps,
         getValues,
+        handleSubmit,
         isGlobalLoading,
         sendVerificationEmail,
         steps.activeStep,
         steps.steps,
     ]);
 
-    const OnSubmit = async (data: CreateUserForm) => {
+    const OnSubmit = async (data: ResetPasswordSchema) => {
         setIsGlobalLoading(true);
 
         try {
-            let imageUrl = data.icon;
-
-            if (data.icon) {
-                imageUrl = await uploadImageToFirebase({
-                    uri: data.icon,
-                    storage_path: "profile_images/",
-                });
-            }
-
-            await api.post("/user", {
-                ...data,
-                icon: imageUrl,
+            await passwordReset({
+                email: userEmail ?? data.emailOrUsername,
+                newPassword: data.password,
             });
 
-            const responseToken = await api.post("/auth/token", {
-                email: data.email,
-                password: data.password,
-            });
-
-            const { access_token, refresh_token } = responseToken.data;
-
-            await signIn(access_token, refresh_token);
-
-            SecureStoreUnencrypted.deleteItem("verified_email");
-
-            router.push("/(tabs)/explore");
+            // @ts-ignore
+            router.push("(auth)/");
         } catch (error: any) {
             console.error(error.request?._response);
             Alert.alert(
@@ -332,11 +263,7 @@ const SignUp = () => {
         >
             <VStack gap="$4">
                 <HStack alignItems="center" justifyContent="space-between">
-                    <BackLeft
-                        step={steps.activeStep}
-                        setSteps={setSteps}
-                        email={verifiedEmail}
-                    />
+                    <BackLeft step={steps.activeStep} setSteps={setSteps} />
                     <HStack gap="$1">
                         {steps.steps.map((step, index) => (
                             <Box
@@ -353,34 +280,15 @@ const SignUp = () => {
                 </HStack>
                 <VStack gap="$4">
                     <FormProvider {...formProps}>
-                        {steps.steps[steps.activeStep].fields.includes(
-                            "email",
-                        ) ? (
-                            <StepEmail
-                                setGlobalLoading={setIsGlobalLoading}
-                                setGlobalError={setGlobalError}
-                            />
-                        ) : steps.steps[steps.activeStep].fields.includes(
-                              "username",
-                          ) ? (
-                            <StepUsername
-                                setGlobalLoading={setIsGlobalLoading}
-                                setGlobalError={setGlobalError}
-                            />
-                        ) : steps.steps[steps.activeStep].fields.includes(
-                              "bio",
-                          ) ? (
-                            <StepBio
-                                setPreviewImage={setPreviewImage}
-                                previewImage={previewImage}
-                            />
-                        ) : steps.steps[steps.activeStep].fields.length ===
-                          0 ? (
+                        {steps.steps[steps.activeStep].fields.length === 0 ? (
                             <StepEmailCode
                                 setGlobalError={setGlobalError}
                                 handleChangeStep={HandleChangeStep}
-                                revalidateEmail={setRevalidateEmail}
+                                userEmail={userEmail ?? ""}
                             />
+                        ) : steps.steps[steps.activeStep].fields.length ===
+                          2 ? (
+                            <StepPassword setGlobalError={setGlobalError} />
                         ) : (
                             steps.steps[steps.activeStep].component
                         )}
@@ -395,16 +303,9 @@ const SignUp = () => {
                         : "$3"
                 }
             >
-                {steps.activeStep === 0 && <Terms />}
                 <Button
                     mt="$4"
-                    onPress={() => {
-                        if (steps.activeStep === steps.steps.length - 1) {
-                            handleSubmit(OnSubmit)();
-                        } else {
-                            HandleChangeStep();
-                        }
-                    }}
+                    onPress={HandleChangeStep}
                     isDisabled={isGlobalLoading || globalError}
                 >
                     {isGlobalLoading && (
@@ -415,7 +316,7 @@ const SignUp = () => {
                     {!isGlobalLoading && (
                         <ButtonText textAlign="center" size="md">
                             {steps.activeStep === steps.steps.length - 1
-                                ? "Finalizar"
+                                ? "Entrar na minha conta"
                                 : "Continuar"}
                         </ButtonText>
                     )}
@@ -443,19 +344,9 @@ const SignUp = () => {
                         </Text>
                     </Pressable>
                 )}
-                {steps.activeStep === steps.steps.length - 1 &&
-                    (isGlobalLoading ? (
-                        <Spinner />
-                    ) : (
-                        <Pressable onPress={handleSubmit(OnSubmit)}>
-                            <Text textAlign="center" color="$primaryDefault">
-                                Pular
-                            </Text>
-                        </Pressable>
-                    ))}
             </VStack>
         </BaseContainer>
     );
 };
 
-export default SignUp;
+export default ResetPassword;

@@ -1,6 +1,7 @@
 import React, { Dispatch, SetStateAction, useState } from "react";
 
-import { Step } from "@/app/(auth)/signup";
+import { useRouter } from "expo-router";
+
 import {
     AlertDialog,
     AlertDialogBackdrop,
@@ -16,26 +17,36 @@ import {
     Text,
 } from "@/gluestackComponents";
 
-import { useRouter } from "expo-router";
+import { ArrowLeft, X } from "lucide-react-native";
+
+import { useGoogleAuth } from "@/Context/GoogleAuthProvider";
+
+import { useMutation } from "@tanstack/react-query";
+
+import { CancelPendingUser } from "@/connection/auth/PendingUserConnection";
 
 import { SecureStoreUnencrypted } from "@/utils/SecureStorage";
-import { useGoogleAuth } from "@/Context/GoogleAuthProvider";
-import { ArrowLeft, X } from "lucide-react-native";
 
 type BackLeftProps = {
     step?: number;
-    setSteps?: Dispatch<SetStateAction<{ steps: Step[]; activeStep: number }>>;
-    verifiedEmail?: boolean;
+    setSteps?: Dispatch<SetStateAction<{ steps: any[]; activeStep: number }>>;
+    email?: string | null;
 };
 
-export const BackLeft = ({ step, setSteps, verifiedEmail }: BackLeftProps) => {
+export const BackLeft = ({ step, setSteps, email }: BackLeftProps) => {
+    const verifiedEmail = !!email;
+
     const router = useRouter();
     const { user: googleUser, signOut } = useGoogleAuth();
+
+    const { mutateAsync: cancelEmailValidation } = useMutation({
+        mutationFn: CancelPendingUser,
+    });
 
     const [showConfirmation, setShowConfirmation] = useState(false);
 
     const verifyIfShouldGoBack = () => {
-        if (verifiedEmail && step === 2 && setSteps) {
+        if (verifiedEmail && (step === 2 || step === 1) && setSteps) {
             setShowConfirmation(true);
             return;
         }
@@ -44,7 +55,13 @@ export const BackLeft = ({ step, setSteps, verifiedEmail }: BackLeftProps) => {
     };
 
     const HandleGoBack = async () => {
+        const cancelEmailValidated =
+            verifiedEmail && (step === 2 || step === 1) && setSteps;
         const shouldSignOut = verifiedEmail && step === 2 && setSteps;
+
+        if (cancelEmailValidated && !googleUser) {
+            await cancelEmailValidation(email);
+        }
 
         if (shouldSignOut && !googleUser) {
             SecureStoreUnencrypted.deleteItem("verified_email");
@@ -117,7 +134,7 @@ export const BackLeft = ({ step, setSteps, verifiedEmail }: BackLeftProps) => {
                                 Deseja realmente voltar?
                             </Text>
                             <AlertDialogCloseButton>
-                                <X size={20} />
+                                <X size={20} color="#000" />
                             </AlertDialogCloseButton>
                         </AlertDialogHeader>
                         <AlertDialogBody mb="$2">

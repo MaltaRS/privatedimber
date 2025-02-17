@@ -13,6 +13,7 @@ web-build/
 # /config
 
 /android*
+/ios*
 
 .env
 .env.local

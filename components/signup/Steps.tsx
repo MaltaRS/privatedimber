@@ -16,7 +16,6 @@ import {
     Text,
     Heading,
     Divider,
-    Input,
     InputField,
     ScrollView,
     InputSlot,
@@ -40,6 +39,8 @@ import OTPCodeInput from "./OtpCodeInput";
 
 import api from "@/utils/api";
 import { SecureStoreUnencrypted } from "@/utils/SecureStorage";
+
+import { Input } from "../ui/Input";
 
 export const StepEmail = memo(
     ({

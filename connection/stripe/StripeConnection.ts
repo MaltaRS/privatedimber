@@ -3,6 +3,7 @@ import api from "@/utils/api";
 
 type CreatePaymentIntentResponse = {
     clientSecret: string;
+    status: "requires_payment_method" | "requires_confirmation" | "succeeded";
 };
 
 type CreatePaymentIntentParams = {

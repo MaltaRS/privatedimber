@@ -24,9 +24,8 @@ import { BaseContainer } from "@/components/BaseContainer";
 
 const ConfigScreen = () => {
     const router = useRouter();
-    
+
     const { user } = useAuth();
-    
 
     const { signOut } = useGoogleAuth();
 
@@ -49,10 +48,12 @@ const ConfigScreen = () => {
                     }}
                 >
                     <VStack p="$1" pt="$2" gap="$2">
-                        <HStack
+                        <Pressable
                             bgColor="#fff"
                             px="$4"
                             py="$3"
+                            onPress={() => router.push("/myprofile")}
+                            flexDirection="row"
                             borderRadius="$xl"
                             alignItems="center"
                             justifyContent="space-between"
@@ -72,7 +73,6 @@ const ConfigScreen = () => {
                                 </Avatar>
                                 <VStack gap="$1">
                                     <Text
-                                        onPress={() => router.push("/myprofile")}
                                         size="lg"
                                         fontFamily="$heading"
                                         color="#000"
@@ -99,7 +99,7 @@ const ConfigScreen = () => {
                                     />
                                 </Pressable>
                             </Box>
-                        </HStack>
+                        </Pressable>
                         <Text
                             my="$4"
                             fontSize={21}
@@ -114,7 +114,6 @@ const ConfigScreen = () => {
                                 {
                                     title: "Notificações",
                                     href: "/config/messages",
-                                    
                                 },
                                 {
                                     title: "Definir valores",

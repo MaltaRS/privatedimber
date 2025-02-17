@@ -1,19 +1,15 @@
-import { useState } from "react";
-
 import { Link, Redirect, useRouter } from "expo-router";
 
 import { Controller, useForm } from "react-hook-form";
-
-import { Eye, EyeOff } from "lucide-react-native";
 
 import {
     Box,
     ButtonIcon,
     ButtonText,
+    Divider,
+    HStack,
     Input,
     InputField,
-    InputIcon,
-    InputSlot,
     ScrollView,
     Text,
     VStack,
@@ -35,6 +31,7 @@ import api from "@/utils/api";
 
 import { useAuth } from "@/Context/AuthProvider";
 import { useGoogleAuth } from "@/Context/GoogleAuthProvider";
+import React from "react";
 
 const loginSchema = z.object({
     emailOrUsername: z
@@ -50,10 +47,8 @@ const loginSchema = z.object({
                 message: "Insira um email válido ou nome de usuário.",
             },
         ),
-    password: z
-        .string({ message: "A senha é obrigatória." })
-        .min(6, "A senha deve ter pelo menos 6 caracteres."),
 });
+
 type LoginData = z.infer<typeof loginSchema>;
 
 const WelcomeScreen = () => {
@@ -61,6 +56,7 @@ const WelcomeScreen = () => {
         control,
         handleSubmit,
         formState: { errors },
+        watch,
         setError,
     } = useForm<LoginData>({
         resolver: zodResolver(loginSchema),
@@ -68,16 +64,11 @@ const WelcomeScreen = () => {
 
     const { user: googleUser, signIn: googleSignIn } = useGoogleAuth();
 
-    const { user, isSigningOut, loading, signIn } = useAuth();
-
-    const [showPasswordField, setShowPasswordField] = useState(false);
-
-    const [showPassword, setShowPassword] = useState(false);
+    const { user, isSigningOut, loading } = useAuth();
 
     const isKeyboardVisible = useKeyboardVisibility();
-    const router = useRouter();
 
-    const PasswordShowIcon = showPassword ? EyeOff : Eye;
+    const router = useRouter();
 
     const HandleLogin = async (data: LoginData) => {
         try {
@@ -85,28 +76,38 @@ const WelcomeScreen = () => {
                 data.emailOrUsername,
             );
 
-            const response = await api.post("/auth/token", {
-                ...(isEmail
-                    ? { email: data.emailOrUsername }
-                    : { username: data.emailOrUsername }),
-                password: data.password,
-            });
+            let response;
 
-            const { access_token, refresh_token } = response.data;
+            if (isEmail) {
+                response = await api.get(`/user/email/${data.emailOrUsername}`);
+            } else {
+                response = await api.get(
+                    `/user/username/${data.emailOrUsername}`,
+                );
+            }
 
-            await signIn(access_token, refresh_token);
+            const notFound = response.data.available;
 
-            router.push("/(tabs)/explore");
+            if (notFound) {
+                setError("emailOrUsername", {
+                    type: "manual",
+                    message:
+                        "Não encontramos um usuário com essas credenciais.",
+                });
+
+                return;
+            }
+
+            router.push(
+                // @ts-expect-error
+                "/(auth)/password?emailOrUsername=" + data.emailOrUsername,
+            );
         } catch (error: any) {
             console.error("Erro durante o login:", error);
 
             setError("emailOrUsername", {
                 type: "manual",
-                message: "Credenciais inválidas. Tente novamente.",
-            });
-            setError("password", {
-                type: "manual",
-                message: "Credenciais inválidas. Tente novamente.",
+                message: "Não encontramos um usuário com essas credenciais.",
             });
         }
     };
@@ -139,7 +140,7 @@ const WelcomeScreen = () => {
                         color="#000"
                         letterSpacing="$lg"
                     >
-                        Bem vindo ao dimber!
+                        Vamos começar!
                     </Text>
                     <VStack gap="$4">
                         <Text fontWeight="bold">Email ou nome do usuário</Text>
@@ -149,8 +150,10 @@ const WelcomeScreen = () => {
                                 name="emailOrUsername"
                                 render={({ field: { onChange, value } }) => (
                                     <Input
-                                        variant="underlined"
+                                        variant="outline"
                                         size="lg"
+                                        borderRadius={8}
+                                        borderColor="$gray400"
                                         isInvalid={!!errors.emailOrUsername}
                                         $invalid-borderColor="$negative"
                                     >
@@ -169,69 +172,20 @@ const WelcomeScreen = () => {
                             )}
                         </VStack>
                     </VStack>
-                    {showPasswordField && (
-                        <VStack gap="$4">
-                            <Text fontWeight="bold">Senha</Text>
-                            <VStack gap="$2">
-                                <Controller
-                                    control={control}
-                                    name="password"
-                                    render={({
-                                        field: { onChange, value },
-                                    }) => (
-                                        <Input
-                                            variant="underlined"
-                                            size="lg"
-                                            isInvalid={!!errors.password}
-                                            $invalid-borderColor="$negative"
-                                        >
-                                            <InputField
-                                                type={
-                                                    showPassword
-                                                        ? "text"
-                                                        : "password"
-                                                }
-                                                placeholder="Sua senha"
-                                                value={value}
-                                                onChangeText={onChange}
-                                            />
-                                            <InputSlot
-                                                pr="$3"
-                                                onPress={() =>
-                                                    setShowPassword(
-                                                        !showPassword,
-                                                    )
-                                                }
-                                            >
-                                                <InputIcon>
-                                                    <PasswordShowIcon
-                                                        size={20}
-                                                        color="black"
-                                                    />
-                                                </InputIcon>
-                                            </InputSlot>
-                                        </Input>
-                                    )}
-                                />
-                                {errors.password && (
-                                    <Text color="$negative">
-                                        {errors.password.message}
-                                    </Text>
-                                )}
-                            </VStack>
-                        </VStack>
-                    )}
                     <Button
                         mt="$4"
-                        onPress={() => {
-                            if (!showPasswordField) {
-                                setShowPasswordField(true);
-                            } else {
-                                handleSubmit(HandleLogin)();
-                            }
-                        }}
+                        onPress={handleSubmit(HandleLogin)}
+                        isDisabled={
+                            watch("emailOrUsername") === "" ||
+                            watch("emailOrUsername") == null
+                        }
                     >
-                        <ButtonText textAlign="center" size="md">
+                        <ButtonText
+                            textAlign="center"
+                            fontFamily="$heading"
+                            size="lg"
+                            fontWeight="$bold"
+                        >
                             Continuar
                         </ButtonText>
                     </Button>
@@ -249,28 +203,41 @@ const WelcomeScreen = () => {
                 </VStack>
             </ScrollView>
             {!isKeyboardVisible && (
-                <VStack gap="$12" pb="$6" pt="$2">
-                    <VStack gap="$2">
-                        <Button
-                            bgColor="transparent"
-                            borderColor="$black"
-                            variant="outline"
-                            justifyContent="center"
+                <VStack gap="$12" pb="$4" pt="$2">
+                    <VStack gap="$8">
+                        <HStack
                             alignItems="center"
-                            onPress={HandleGoogleSignIn}
+                            gap="$3"
+                            justifyContent="center"
                         >
-                            <ButtonIcon>
-                                <GoogleLogo width={20} height={20} />
-                            </ButtonIcon>
-                            <ButtonText
-                                textAlign="center"
-                                color="$black"
-                                size="md"
-                                fontFamily="$jakartMedium"
+                            <Divider w="45%" bgColor="$gray300" />
+                            <Text color="$gray500" size="md" mb="$1">
+                                ou
+                            </Text>
+                            <Divider w="45%" bgColor="$gray300" />
+                        </HStack>
+                        <VStack gap="$2">
+                            <Button
+                                bgColor="transparent"
+                                borderColor="$black"
+                                variant="outline"
+                                justifyContent="center"
+                                alignItems="center"
+                                onPress={HandleGoogleSignIn}
                             >
-                                Continuar com o Google
-                            </ButtonText>
-                        </Button>
+                                <ButtonIcon>
+                                    <GoogleLogo width={20} height={20} />
+                                </ButtonIcon>
+                                <ButtonText
+                                    textAlign="center"
+                                    color="$black"
+                                    size="md"
+                                    fontFamily="$jakartMedium"
+                                >
+                                    Continuar com o Google
+                                </ButtonText>
+                            </Button>
+                        </VStack>
                     </VStack>
                     <Terms />
                 </VStack>
@@ -278,4 +245,5 @@ const WelcomeScreen = () => {
         </BaseContainer>
     );
 };
+
 export default WelcomeScreen;

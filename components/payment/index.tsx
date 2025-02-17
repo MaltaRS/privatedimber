@@ -1,5 +1,7 @@
-import { useEffect, useState } from "react";
-import { Alert, Button } from "react-native";
+import { useEffect } from "react";
+
+import { Alert } from "react-native";
+
 import {
     initPaymentSheet,
     presentPaymentSheet,
@@ -7,7 +9,7 @@ import {
 
 type PaymentSheetProps = {
     clientSecret: string;
-    onSuccess?: () => void;
+    onSuccess?: () => Promise<void>;
     onError?: (error: Error) => void;
     autoPresent?: boolean;
 };
@@ -18,8 +20,6 @@ export function PaymentSheetComponent({
     onError,
     autoPresent = true,
 }: PaymentSheetProps) {
-    const [sheetReady, setSheetReady] = useState(false);
-
     useEffect(() => {
         if (!clientSecret) {
             Alert.alert("Erro", "Client secret não foi fornecido");
@@ -31,6 +31,8 @@ export function PaymentSheetComponent({
                 paymentIntentClientSecret: clientSecret,
                 merchantDisplayName: "Dimber",
                 allowsDelayedPaymentMethods: true,
+                allowsRemovalOfLastSavedPaymentMethod: true,
+                style: "automatic",
                 googlePay: {
                     merchantCountryCode: "BR",
                 },
@@ -39,13 +41,13 @@ export function PaymentSheetComponent({
                 },
             });
 
+            console.log("PaymentSheet inicializado");
+
             if (error) {
                 console.error("Erro ao inicializar PaymentSheet:", error);
                 onError?.(new Error(error.message));
                 return;
             }
-
-            setSheetReady(true);
 
             if (autoPresent) {
                 present();
@@ -58,19 +60,16 @@ export function PaymentSheetComponent({
     async function present() {
         const { error } = await presentPaymentSheet();
 
+        console.log("error");
+
         if (error) {
             onError?.(new Error(error.message));
         } else {
-            Alert.alert("Sucesso", "Pagamento realizado com sucesso!");
-            onSuccess?.();
+            console.log("Pagamento realizado com sucesso");
+
+            await onSuccess?.();
         }
     }
 
-    if (autoPresent) {
-        return null;
-    }
-
-    return (
-        <Button title="Pagar agora" onPress={present} disabled={!sheetReady} />
-    );
+    return null;
 }

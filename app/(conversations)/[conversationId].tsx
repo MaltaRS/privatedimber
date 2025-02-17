@@ -1,10 +1,8 @@
-import React, { useEffect, useRef, useState } from "react";
+import { Fragment, useEffect, useRef, useState } from "react";
 
 import { ScrollView } from "react-native";
 
 import { useLocalSearchParams, useRouter } from "expo-router";
-
-import { MoveLeft, Plus } from "lucide-react-native";
 
 import {
     Avatar,
@@ -24,25 +22,21 @@ import {
     VStack,
 } from "@/gluestackComponents";
 
-import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
-
-import { findConversationById } from "@/connection/conversations/ConversationConnection";
-import { createPaymentIntent } from "@/connection/stripe/StripeConnection";
-
-import { Colors } from "@/constants/Colors";
+import { useQuery } from "@tanstack/react-query";
 
 import { useAuth } from "@/Context/AuthProvider";
 import { useChatContext } from "@/Context/ChatProvider";
 
+import { useOnlineUsersStore } from "@/stores/onlineUsersStore";
+
+import { findConversationById } from "@/connection/conversations/ConversationConnection";
 import { InternalMessages } from "@/components/chats/InternalMessages";
 import { SendMessageForm } from "@/components/chats/SendMessageForm";
 import { Message } from "@/components/tabs/conversations/Message";
-import { PaymentSheetComponent } from "@/components/payment";
+import { Confirmation } from "@/components/payment/confirmation";
 import { BaseContainer } from "@/components/BaseContainer";
-
-import { toast } from "burnt";
-
-import { useOnlineUsersStore } from "@/stores/onlineUsersStore";
+import { GoBack } from "@/components/utils/GoBack";
+import { AttachmentsMenu } from "@/components/chats/attachmentsMenu";
 
 export type PaymentItems = {
     name: string;
@@ -52,47 +46,21 @@ export type PaymentItems = {
 }[];
 
 const ChatsScreen = () => {
-    const queryClient = useQueryClient();
-
     const router = useRouter();
     const { user } = useAuth();
 
     const [paymentItems, setPaymentItems] = useState<PaymentItems>([]);
 
+    const [sendToPayment, setSendToPayment] = useState(false);
+
     const { conversationId } = useLocalSearchParams<{
         conversationId: string;
     }>();
 
-    const [clientSecret, setClientSecret] = useState<string | null>(null);
-
     const { data: contactConversation, isLoading } = useQuery({
         queryKey: ["conversationMessage", conversationId],
         queryFn: () => findConversationById(conversationId),
-        staleTime: Infinity,
-    });
-
-    const {
-        mutate: handleCreatePaymentIntent,
-        isPending: isCreatingPaymentIntent,
-    } = useMutation({
-        mutationFn: createPaymentIntent,
-        onSuccess: (data) => {
-            if (data.clientSecret) {
-                setClientSecret(data.clientSecret);
-            } else {
-                toast({
-                    title: "Não foi possivel criar o pagamento!",
-                    preset: "error",
-                });
-            }
-        },
-        onError: (err: any) => {
-            console.error("Erro ao criar Payment Intent:", err);
-            toast({
-                title: "Não foi possivel criar o pagamento!",
-                preset: "error",
-            });
-        },
+        staleTime: 20000,
     });
 
     const {
@@ -119,28 +87,6 @@ const ChatsScreen = () => {
                 quantity: need ? 1 : 0,
             },
         ]);
-    };
-
-    const HandleCreatePaymentIntent = () => {
-        const contact = contactConversation?.contact;
-
-        if (!contact) return;
-
-        const paymentItemsTotal = paymentItems.reduce(
-            (acc, item) => acc + item.amount * item.quantity,
-            0,
-        );
-
-        const items = paymentItems.filter((item) => item.quantity > 0);
-
-        handleCreatePaymentIntent({
-            amount: paymentItemsTotal,
-            items,
-            contact: contact,
-            metadata: {
-                conversationId,
-            },
-        });
     };
 
     useEffect(() => {
@@ -171,6 +117,8 @@ const ChatsScreen = () => {
     useEffect(() => {
         const messages = contactConversation?.messages ?? [];
 
+        markMessagesAsRead({ conversationId });
+
         if (
             (messages.length ?? 0) === 0 &&
             (contactConversation?.isCreator ?? true) &&
@@ -197,7 +145,13 @@ const ChatsScreen = () => {
                 })),
             ]);
         }
-    }, [isLoading, contactConversation, user]);
+    }, [
+        isLoading,
+        contactConversation,
+        user,
+        conversationId,
+        markMessagesAsRead,
+    ]);
 
     const contact = contactConversation?.contact;
 
@@ -207,11 +161,8 @@ const ChatsScreen = () => {
     return (
         <BaseContainer px="$0">
             <HStack gap="$3" px="$3" alignItems="center">
-                <Pressable
-                    p="$1"
-                    alignItems="center"
-                    justifyContent="center"
-                    rounded="$full"
+                <GoBack
+                    transparent
                     onPress={() => {
                         if (
                             formActive &&
@@ -222,13 +173,11 @@ const ChatsScreen = () => {
                         }
                         router.back();
                     }}
-                >
-                    <MoveLeft size={24} color={Colors.gray700} />
-                </Pressable>
+                />
                 <HStack gap="$3" alignItems="center">
                     {isLoading && <Spinner size="small" />}
                     {contact && (
-                        <>
+                        <Fragment>
                             <Avatar width={44} height={44} rounded="$full">
                                 <AvatarFallbackText>
                                     {contact.name}
@@ -259,7 +208,7 @@ const ChatsScreen = () => {
                                     R$ 100,00
                                 </Text>
                             </VStack>
-                        </>
+                        </Fragment>
                     )}
                 </HStack>
             </HStack>
@@ -326,9 +275,9 @@ const ChatsScreen = () => {
                                             ),
                                         )}
                                     <InternalMessages
-                                        handleCreatePaymentIntent={
-                                            HandleCreatePaymentIntent
-                                        }
+                                        handleSendToPayment={() => {
+                                            setSendToPayment(true);
+                                        }}
                                         likeToAnswer={likeAnswer}
                                         contactConversation={
                                             contactConversation
@@ -363,18 +312,10 @@ const ChatsScreen = () => {
                                         borderTopColor="$gray300"
                                         gap="$2"
                                     >
-                                        <Box
-                                            p="$2"
-                                            bgColor="$white"
-                                            rounded="$full"
-                                            alignItems="center"
-                                            justifyContent="center"
-                                        >
-                                            <Plus
-                                                size={24}
-                                                color={Colors.gray700}
-                                            />
-                                        </Box>
+                                        <AttachmentsMenu
+                                            conversationId={conversationId}
+                                            sendMessage={sendMessage}
+                                        />
                                         <Input
                                             flex={1}
                                             variant="rounded"
@@ -423,44 +364,12 @@ const ChatsScreen = () => {
                     </VStack>
                 )}
             </VStack>
-            {clientSecret && (
-                <PaymentSheetComponent
-                    clientSecret={clientSecret}
-                    autoPresent={true}
-                    onSuccess={() => {
-                        queryClient.setQueryData(
-                            ["conversations"],
-                            (oldData: any) => {
-                                if (!oldData) return;
-                                return oldData.map((conversation: any) => {
-                                    if (conversation.id === conversationId) {
-                                        return {
-                                            ...conversation,
-                                            messages: conversation.messages.map(
-                                                (message: any) => {
-                                                    if (
-                                                        message.senderId ===
-                                                        user?.id
-                                                    ) {
-                                                        return {
-                                                            ...message,
-                                                            deliveredAt:
-                                                                new Date(),
-                                                        };
-                                                    }
-                                                    return message;
-                                                },
-                                            ),
-                                        };
-                                    }
-                                    return conversation;
-                                });
-                            },
-                        );
-                    }}
-                    onError={(err) => {
-                        console.log("Erro no pagamento:", err);
-                    }}
+            {sendToPayment && (
+                <Confirmation
+                    contact={contactConversation?.contact}
+                    conversationId={conversationId}
+                    paymentItems={paymentItems}
+                    setSendToPayment={setSendToPayment}
                 />
             )}
         </BaseContainer>

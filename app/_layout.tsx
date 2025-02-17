@@ -97,6 +97,8 @@ const RootLayout = () => {
             >
                 <Stack.Screen name="(tabs)" />
                 <Stack.Screen name="(auth)/index" />
+                <Stack.Screen name="(auth)/password" />
+                <Stack.Screen name="(auth)/reset-password" />
                 <Stack.Screen name="(auth)/signup" />
                 <Stack.Screen name="notifications" />
                 <Stack.Screen name="myprofile" />

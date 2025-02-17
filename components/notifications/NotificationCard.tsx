@@ -33,6 +33,7 @@ export const NotificationCard = ({
         MESSAGE_POSITIVE: <MessagePositive />,
         MESSAGE_NEGATIVE: <MessageNegative />,
         PAYMENT_SUCCEEDED: <MessagePositive />,
+        PAYMENT_FAILED: <MessageNegative />,
         FEATURE: <NewFeat />,
         WELCOME: <Hand color="black" />,
     };

@@ -1,23 +1,29 @@
 import {
-    VStack,
     Avatar,
     AvatarFallbackText,
     AvatarImage,
     AvatarBadge,
     Text,
+    Pressable,
 } from "@/gluestackComponents";
 
 export type FavoriteCardProps = {
     icon: string;
     name: string;
-    isActive: boolean;
+    isOnline: boolean;
+    onPress: () => void;
 };
 
-export const FavoriteCard = ({ icon, name, isActive }: FavoriteCardProps) => {
+export const FavoriteCard = ({
+    icon,
+    name,
+    isOnline,
+    onPress,
+}: FavoriteCardProps) => {
     return (
-        <VStack>
-            <Avatar size="lg" rounded="$lg">
-                <AvatarFallbackText>{name}</AvatarFallbackText>
+        <Pressable onPress={onPress}>
+            <Avatar width={80} height={80} rounded="$2xl">
+                <AvatarFallbackText size="3xl">{name}</AvatarFallbackText>
                 <AvatarImage
                     rounded="$lg"
                     source={{
@@ -25,17 +31,19 @@ export const FavoriteCard = ({ icon, name, isActive }: FavoriteCardProps) => {
                     }}
                     alt="Foto de perfil"
                 />
-                {isActive && <AvatarBadge bgColor="#339058" />}
+                {isOnline && <AvatarBadge bgColor="#339058" />}
             </Avatar>
             <Text
                 width="$full"
-                maxWidth={64}
+                maxWidth={80}
                 textAlign="center"
                 fontWeight="$bold"
-                numberOfLines={2}
+                color="$gray900"
+                numberOfLines={1}
+                pt="$1"
             >
                 {name}
             </Text>
-        </VStack>
+        </Pressable>
     );
 };

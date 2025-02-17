@@ -1,6 +1,7 @@
 import {
     format,
     formatDistanceToNow,
+    isThisYear,
     isToday,
     isYesterday,
     parseISO,
@@ -40,6 +41,10 @@ export const formatMessageTime = (dateString: string) => {
 
         if (isYesterday(date)) {
             return "Ontem";
+        }
+
+        if (isThisYear(date)) {
+            return format(date, "dd/MM", { locale: ptBR });
         }
 
         return format(date, "dd/MM/yyyy", { locale: ptBR });

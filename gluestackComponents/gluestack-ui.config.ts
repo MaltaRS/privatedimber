@@ -409,7 +409,7 @@ export const gluestackUIConfig = createConfig({
             primaryA: "#000000",
             primaryB: "#FFFFFF",
             accent: "#1976D2",
-            negative: "#D32F2F",
+            negative: "#C82844",
             warning: "#F9A825",
             positive: "#388E3C",
 

@@ -1,5 +1,12 @@
 import { User } from "@/Context/AuthProvider";
-import { HStack, Box, VStack, Text, Image } from "@/gluestackComponents";
+import {
+    HStack,
+    Box,
+    VStack,
+    Text,
+    Image,
+    Pressable,
+} from "@/gluestackComponents";
 
 import { formatTime } from "@/utils/dateFormat";
 
@@ -10,7 +17,12 @@ import { Colors } from "@/constants/Colors";
 import { Message as ConnectionMessageProps } from "@/connection/conversations/ConversationConnection";
 
 import { MessageText } from "@/components/chats/MessageText";
-import { Check } from "lucide-react-native";
+
+import { Check, FileText } from "lucide-react-native";
+
+import { ResizeMode, Video } from "expo-av";
+
+import * as Linking from "expo-linking";
 
 type MessageProps = {
     message: ConnectionMessageProps;
@@ -20,12 +32,40 @@ type MessageProps = {
 };
 
 export const Message = ({ isFirst, message, user, contact }: MessageProps) => {
-    const { senderId, content, createdAt, image, readAt, deliveredAt } =
-        message;
+    const {
+        senderId,
+        content,
+        createdAt,
+        image,
+        readAt,
+        video,
+        document,
+        deliveredAt,
+    } = message;
 
     const isLoggedUser = senderId === user?.id;
 
     const read = !!readAt;
+
+    const openDocument = async (uri: string) => {
+        try {
+            const supported = await Linking.canOpenURL(uri);
+            if (supported) {
+                await Linking.openURL(uri);
+            } else {
+                const openSettings = confirm(
+                    "Não foi possível abrir o documento. Você deseja abrir as configurações do dispositivo para verificar permissões ou instalar um aplicativo compatível?",
+                );
+
+                if (openSettings) {
+                    await Linking.openSettings();
+                }
+            }
+        } catch (error) {
+            console.error("Erro ao tentar abrir o documento:", error);
+            alert("Ocorreu um erro ao tentar abrir o documento.");
+        }
+    };
 
     return (
         <VStack mb="$3" mt={isFirst ? "$2" : "$0"}>
@@ -48,6 +88,35 @@ export const Message = ({ isFirst, message, user, contact }: MessageProps) => {
                                     height={150}
                                     alt="image"
                                 />
+                            )}
+                            {video && (
+                                <Video
+                                    source={{ uri: video }}
+                                    style={{ width: 150, height: 150 }}
+                                    useNativeControls
+                                    resizeMode={ResizeMode.CONTAIN}
+                                    isLooping
+                                />
+                            )}
+                            {document && (
+                                <Pressable
+                                    onPress={() => openDocument(document)}
+                                >
+                                    <HStack alignItems="center" gap="$2">
+                                        <FileText
+                                            size={20}
+                                            color={Colors.gray600}
+                                        />
+                                        <Text
+                                            color="$primaryDefault"
+                                            fontFamily="$heading"
+                                            fontWeight="$bold"
+                                            size="md"
+                                        >
+                                            {document.split("/").pop()}
+                                        </Text>
+                                    </HStack>
+                                </Pressable>
                             )}
                             <MessageText content={content} />
                         </Box>
