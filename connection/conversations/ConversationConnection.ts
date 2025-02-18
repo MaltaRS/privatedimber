@@ -49,11 +49,17 @@ export type ConversationsResponse = {
     nextPage: number | null;
 };
 
-export const findConversations = async ({
-    pageParam,
-}: any): Promise<ConversationsResponse> => {
+export const findConversations = async (
+    pageParam: number,
+    filter: string,
+): Promise<ConversationsResponse> => {
+    console.log("filter", filter);
+
     const { data } = await api.get<ConversationsResponse>("/conversation", {
-        params: { offset: pageParam },
+        params: {
+            offset: pageParam,
+            ...(filter !== "" && { filter }),
+        },
     });
 
     return data;

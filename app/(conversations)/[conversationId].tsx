@@ -76,6 +76,10 @@ const ChatsScreen = () => {
 
     const [message, setMessage] = useState("");
 
+    const [needAnswerOpen, setNeedAnswerOpen] = useState<boolean | undefined>(
+        undefined,
+    );
+
     const scrollViewRef = useRef<ScrollView | null>(null);
 
     const likeAnswer = (need: boolean) => {
@@ -294,6 +298,8 @@ const ChatsScreen = () => {
                                         }
                                         paymentItems={paymentItems}
                                         contactName={contact?.name}
+                                        needAnswerOpen={needAnswerOpen}
+                                        setNeedAnswerOpen={setNeedAnswerOpen}
                                     />
                                 </ScrollView>
                             )}
@@ -358,6 +364,17 @@ const ChatsScreen = () => {
                                                 </Pressable>
                                             </InputSlot>
                                         </Input>
+                                        <Text
+                                            fontSize={16}
+                                            fontFamily="$arialHeading"
+                                            color="$primaryDefault"
+                                        >
+                                            {Math.abs(
+                                                (contactConversation?.totalAnswers ??
+                                                    3) - 3,
+                                            )}
+                                            /3
+                                        </Text>
                                     </HStack>
                                 )}
                         </ImageBackground>

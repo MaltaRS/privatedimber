@@ -1,6 +1,6 @@
 import { Pressable } from "@/gluestackComponents";
 
-import { MoveLeft } from "lucide-react-native";
+import { MoveLeft, X } from "lucide-react-native";
 
 import { Colors } from "@/constants/Colors";
 
@@ -9,6 +9,7 @@ type GoBackProps = {
     transparent?: boolean;
     style?: any;
     iconSize?: number;
+    icon?: "arrow" | "close";
 };
 
 export const GoBack = ({
@@ -16,10 +17,14 @@ export const GoBack = ({
     transparent = false,
     style,
     iconSize = 24,
+    icon = "arrow",
 }: GoBackProps) => {
+    const Icon = icon === "arrow" ? MoveLeft : X;
+
     return (
         <Pressable
             p="$2"
+            zIndex={1000}
             alignItems="center"
             justifyContent="center"
             rounded="$full"
@@ -33,7 +38,7 @@ export const GoBack = ({
                   })}
             {...style}
         >
-            <MoveLeft size={iconSize} color={Colors.gray700} />
+            <Icon size={iconSize} color={Colors.gray700} />
         </Pressable>
     );
 };

@@ -1,10 +1,12 @@
-import { Fragment, useEffect, useState } from "react";
+import { Dispatch, Fragment, SetStateAction, useEffect, useState } from "react";
 
 import { PaymentItems } from "@/app/(conversations)/[conversationId]";
 import { MessagesPayload } from "@/connection/conversations/ConversationConnection";
 
 import {
-    Button,
+    Actionsheet,
+    ActionsheetContent,
+    ActionsheetItem,
     ButtonText,
     Divider,
     HStack,
@@ -12,6 +14,8 @@ import {
     VStack,
 } from "@/gluestackComponents";
 import { formatMoney } from "@/utils/money";
+import { Button } from "../ui/Button";
+import { useRouter } from "expo-router";
 
 type InternalMessagesProps = {
     contactConversation: MessagesPayload;
@@ -21,6 +25,8 @@ type InternalMessagesProps = {
     likeToAnswer: (need: boolean) => void;
     paymentItems: PaymentItems;
     contactName: string | undefined;
+    needAnswerOpen?: boolean | undefined;
+    setNeedAnswerOpen: Dispatch<SetStateAction<boolean | undefined>>;
 };
 
 type InternalMessage = {
@@ -40,6 +46,7 @@ type InternalMessage = {
         text: string;
         action: () => void;
     }[];
+    type: "actionSheet" | "floating";
     active: boolean;
 };
 
@@ -51,7 +58,11 @@ export const InternalMessages = ({
     likeToAnswer,
     contactName,
     paymentItems,
+    needAnswerOpen,
+    setNeedAnswerOpen,
 }: InternalMessagesProps) => {
+    const router = useRouter();
+
     const {
         isCreator,
         isFinished,
@@ -69,6 +80,7 @@ export const InternalMessages = ({
             fontSize: 17,
         },
         buttons: [],
+        type: "floating",
         active: false,
     });
 
@@ -76,10 +88,13 @@ export const InternalMessages = ({
         const hasToPay =
             messages.every((message) => message.deliveredAt == null) &&
             isCreator;
-
         const askForNeedAnswer = !!!paymentItems.find(
             (items) => items.name === "Resposta",
         );
+
+        if (needReply && !isCreator && needAnswerOpen === undefined) {
+            setNeedAnswerOpen(true);
+        }
 
         if (hasToPay) {
             if (askForNeedAnswer) {
@@ -103,6 +118,7 @@ export const InternalMessages = ({
                             action: () => likeToAnswer(false),
                         },
                     ],
+                    type: "actionSheet",
                     active: true,
                 });
                 return;
@@ -126,21 +142,53 @@ export const InternalMessages = ({
                             action: handleSendToPayment,
                         },
                     ],
+                    type: "actionSheet",
                     active: true,
                 });
                 return;
             }
         } else if (isFinished) {
-            setInternalMessage({
-                text: {
-                    content: "Conversa finalizada",
-                    color: "$negative",
-                    fontSize: 17,
-                },
-                buttons: [],
-                active: true,
-            });
-            return;
+            if (!isCreator) {
+                setInternalMessage({
+                    text: {
+                        content: "Conversa finalizada",
+                        color: "$negative",
+                        fontSize: 17,
+                    },
+                    buttons: [],
+                    type: "floating",
+                    active: true,
+                });
+                return;
+            } else {
+                setInternalMessage({
+                    text: {
+                        content:
+                            "Deseja enviar uma mensagem paga para o profissional?",
+                        color: "$gray900",
+                        fontSize: 17,
+                    },
+                    buttons: [
+                        {
+                            type: "positive",
+                            text: "Enviar mensagem paga",
+                            action: () => {
+                                return;
+                            },
+                        },
+                        {
+                            type: "negative",
+                            text: "Sair",
+                            action: () => {
+                                router.back();
+                            },
+                        },
+                    ],
+                    type: "actionSheet",
+                    active: true,
+                });
+                return;
+            }
         } else if (messages.length === 0) {
             setInternalMessage({
                 text: {
@@ -149,6 +197,7 @@ export const InternalMessages = ({
                     fontSize: 17,
                 },
                 buttons: [],
+                type: "floating",
                 active: !isCreator,
             });
             return;
@@ -158,10 +207,21 @@ export const InternalMessages = ({
                     content: isCreator
                         ? "Aguardando resposta"
                         : "Mensagem com resposta obrigatória",
-                    color: "$primaryDefault",
+                    color: isCreator ? "$primaryDefault" : "$gray900",
                     fontSize: 17,
                 },
-                buttons: [],
+                buttons: isCreator
+                    ? []
+                    : [
+                          {
+                              type: "positive",
+                              text: "Responder",
+                              action: () => {
+                                  setNeedAnswerOpen(false);
+                              },
+                          },
+                      ],
+                type: isCreator ? "floating" : "actionSheet",
                 active: true,
             });
             return;
@@ -173,6 +233,7 @@ export const InternalMessages = ({
                     fontSize: 17,
                 },
                 buttons: [],
+                type: "floating",
                 active: true,
             });
             return;
@@ -199,6 +260,7 @@ export const InternalMessages = ({
                         action: finishChat,
                     },
                 ],
+                type: "floating",
                 active: true,
             });
             return;
@@ -216,6 +278,7 @@ export const InternalMessages = ({
                         action: finishChat,
                     },
                 ],
+                type: "floating",
                 active: true,
             });
             return;
@@ -227,27 +290,32 @@ export const InternalMessages = ({
                     fontSize: 17,
                 },
                 buttons: [],
+                type: "floating",
                 active: false,
             });
         }
     }, [
+        contactName,
+        paymentItems,
         needReply,
         answersCount,
         messages,
         isCreator,
         isFinished,
-        contactName,
         contactAnswersCount,
         contactTotalAnswers,
-        paymentItems,
+        router,
         gaveRightAnswer,
         finishChat,
         likeToAnswer,
         handleSendToPayment,
+        needAnswerOpen,
+        setNeedAnswerOpen,
     ]);
 
     return (
-        internalMessage.active && (
+        internalMessage.active &&
+        (internalMessage.type === "floating" ? (
             <HStack
                 w="$full"
                 py="$6"
@@ -370,6 +438,135 @@ export const InternalMessages = ({
                     </VStack>
                 </VStack>
             </HStack>
-        )
+        ) : (
+            <Actionsheet
+                isOpen={needAnswerOpen ?? true}
+                onClose={() => {
+                    router.back();
+                }}
+                zIndex={999}
+            >
+                <ActionsheetContent zIndex={999} bgColor="white">
+                    <ActionsheetItem>
+                        <VStack gap="$2" w="$full">
+                            {internalMessage.text.title && (
+                                <Text
+                                    mt="$1"
+                                    textAlign="center"
+                                    fontFamily="$arialHeading"
+                                    fontWeight="$bold"
+                                    fontSize={19}
+                                    color="$black"
+                                    mb="$1"
+                                >
+                                    {internalMessage.text.title}
+                                </Text>
+                            )}
+                            <Text
+                                textAlign="center"
+                                fontFamily="$arialHeading"
+                                fontWeight="$bold"
+                                fontSize={internalMessage.text.fontSize}
+                                color={internalMessage.text.color}
+                                lineHeight={22}
+                                mb={
+                                    internalMessage.buttons.length > 0
+                                        ? "$4"
+                                        : "$0"
+                                }
+                            >
+                                {internalMessage.text.content}
+                            </Text>
+                            {internalMessage.items && (
+                                <Fragment>
+                                    <VStack gap="$1">
+                                        {internalMessage.items
+                                            .filter(
+                                                (item) =>
+                                                    parseFloat(item.value) > 0,
+                                            )
+                                            .map((item, index) => (
+                                                <HStack
+                                                    key={index}
+                                                    justifyContent="space-between"
+                                                >
+                                                    <Text
+                                                        color="$gray600"
+                                                        fontSize={14}
+                                                    >
+                                                        {item.name}
+                                                    </Text>
+                                                    <Text
+                                                        color="$gray600"
+                                                        fontSize={14}
+                                                    >
+                                                        R$ {item.value}
+                                                    </Text>
+                                                </HStack>
+                                            ))}
+                                    </VStack>
+                                    <Divider bgColor="$gray200" mt="$2" />
+                                    <HStack
+                                        justifyContent="space-between"
+                                        mt="$2"
+                                        mb="$3"
+                                    >
+                                        <Text
+                                            color="$black"
+                                            fontSize={17}
+                                            fontWeight="$bold"
+                                        >
+                                            Total
+                                        </Text>
+                                        <Text
+                                            color="$black"
+                                            fontSize={17}
+                                            fontWeight="$bold"
+                                        >
+                                            {formatMoney(
+                                                internalMessage.items.reduce(
+                                                    (acc, item) =>
+                                                        acc +
+                                                        parseFloat(item.value),
+                                                    0,
+                                                ),
+                                            )}
+                                        </Text>
+                                    </HStack>
+                                </Fragment>
+                            )}
+                            <VStack gap="$2">
+                                {internalMessage.buttons.map(
+                                    (button, index) => (
+                                        <Button
+                                            key={index}
+                                            bgColor="$gray100"
+                                            onPress={button.action}
+                                        >
+                                            <ButtonText
+                                                textAlign="center"
+                                                fontFamily="$heading"
+                                                size="lg"
+                                                color={
+                                                    button.textColor
+                                                        ? button.textColor
+                                                        : button.type ===
+                                                            "positive"
+                                                          ? "$primaryDefault"
+                                                          : "$negative"
+                                                }
+                                                fontWeight="$bold"
+                                            >
+                                                {button.text}
+                                            </ButtonText>
+                                        </Button>
+                                    ),
+                                )}
+                            </VStack>
+                        </VStack>
+                    </ActionsheetItem>
+                </ActionsheetContent>
+            </Actionsheet>
+        ))
     );
 };

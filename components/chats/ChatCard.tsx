@@ -24,6 +24,9 @@ import { formatMessageTime } from "@/utils/dateFormat";
 
 import { MessageText } from "./MessageText";
 
+import Read from "@/assets/icons/appIcons/read.svg";
+import { Colors } from "@/constants/Colors";
+
 export type ChatCardProps = {
     icon: string | null;
     name: string;
@@ -110,14 +113,28 @@ export const ChatCard = ({
                                 Imagem
                             </Text>
                         ) : (
-                            <MessageText
-                                content={
-                                    newMessages.length > 0
-                                        ? lastMessage.content
-                                        : "Envie a primeira mensagem"
-                                }
-                                preview
-                            />
+                            <>
+                                {newMessages.length > 1 &&
+                                    newMessages[newMessages.length - 1]
+                                        .readAt && (
+                                        <Read
+                                            width={15}
+                                            height={15}
+                                            stroke={Colors.primaryDefault}
+                                            style={{
+                                                marginRight: 4,
+                                            }}
+                                        />
+                                    )}
+                                <MessageText
+                                    content={
+                                        newMessages.length > 0
+                                            ? lastMessage.content
+                                            : "Envie a primeira mensagem"
+                                    }
+                                    preview
+                                />
+                            </>
                         )}
                     </HStack>
                 </VStack>

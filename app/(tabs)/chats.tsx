@@ -40,7 +40,7 @@ import { CircleUserRound, Search, X } from "lucide-react-native";
 import { DeleteConversation } from "@/components/tabs/conversations/DeleteConversation";
 import { ClearConversation } from "@/components/tabs/conversations/ClearConversation";
 import { BlockUser } from "@/components/tabs/conversations/BlockUser";
-import { CategoryTabs } from "@/components/tabs/explore/CategoryTabs";
+import { Category, CategoryTabs } from "@/components/tabs/explore/CategoryTabs";
 import { BaseContainer } from "@/components/BaseContainer";
 import { ChatCard } from "@/components/chats/ChatCard";
 import { MainTitle } from "@/components/MainTitle";
@@ -49,13 +49,25 @@ const ChatsScreen = () => {
     const router = useRouter();
     const { notificationsCount } = useNotifications();
 
+    const categories: Category[] = [
+        { name: "Todas", filterName: "" },
+        { name: "Não lidas", filterName: "unread" },
+        { name: "Expiradas", filterName: "expired" },
+        { name: "Finalizadas", filterName: "finished" },
+    ];
+
+    const [selectedCategory, setSelectedCategory] = useState<string>(
+        categories[0].filterName,
+    );
+
     const {
         data: queryChats,
         fetchNextPage: fetchNextChats,
         isLoading,
     } = useInfiniteQuery({
-        queryKey: ["conversations"],
-        queryFn: findConversations,
+        queryKey: ["conversations", selectedCategory],
+        queryFn: ({ pageParam }) =>
+            findConversations(pageParam, selectedCategory),
         initialPageParam: 0,
         getNextPageParam: (lastPage) => lastPage.nextPage,
     });
@@ -64,10 +76,9 @@ const ChatsScreen = () => {
         queryChats?.pages.map((page) => page.conversations).flat() ?? [];
 
     const [searchTerm, setSearchTerm] = useState("");
-    const [selectedCategory, setSelectedCategory] = useState("Todas");
+
     const [idSelectedChat, setIdSelectedChat] = useState<string | null>(null);
 
-    const categories = ["Todas", "Não lidas", "Expiradas"];
     const selectedChat = chats?.find((chat) => chat.id === idSelectedChat);
 
     const hasMore =
@@ -75,6 +86,13 @@ const ChatsScreen = () => {
 
     const handleSearch = (term: string) => {
         setSearchTerm(term);
+    };
+
+    const handleCategorySelect = (filterName: string) => {
+        setSelectedCategory(
+            categories.find((category) => category.filterName === filterName)
+                ?.filterName ?? "",
+        );
     };
 
     const fetchMoreConversations = async () => {
@@ -124,9 +142,7 @@ const ChatsScreen = () => {
                 <CategoryTabs
                     categories={categories}
                     selectedCategory={selectedCategory}
-                    onSelectCategory={(category) =>
-                        setSelectedCategory(category)
-                    }
+                    onSelectCategory={handleCategorySelect}
                     type="lightBlue"
                 />
                 <Box flex={1}>

@@ -15,7 +15,7 @@ import {
 
 import { BaseContainer } from "@/components/BaseContainer";
 import { MainTitle } from "@/components/MainTitle";
-import { CategoryTabs } from "@/components/tabs/explore/CategoryTabs";
+import { Category, CategoryTabs } from "@/components/tabs/explore/CategoryTabs";
 import { FavoriteCard } from "@/components/tabs/explore/FavoriteCard";
 import { SearchInput } from "@/components/tabs/explore/SearchInput";
 import { ExploreCard } from "@/components/tabs/explore/ExploreCard";
@@ -28,7 +28,6 @@ import Animated, {
 } from "react-native-reanimated";
 
 import api from "@/utils/api";
-import { mockCategories } from "@/utils/mockDados";
 
 import { useSocket } from "@/Context/SocketProvider";
 
@@ -91,9 +90,28 @@ const ExploreScreen = () => {
 
     const [likedIds, setLikedIds] = useState<string[]>([]);
 
-    const [selectedCategory, setSelectedCategory] = useState<string>("Geral");
+    const categories: Category[] = [
+        {
+            name: "Geral",
+            filterName: "Geral",
+        },
+        {
+            name: "Beleza",
+            filterName: "Beleza",
+        },
+        {
+            name: "Tecnologia",
+            filterName: "Tecnologia",
+        },
+        {
+            name: "Finanças e Investimentos",
+            filterName: "Finanças e Investimentos",
+        },
+    ];
 
-    const categories = mockCategories;
+    const [selectedCategory, setSelectedCategory] = useState<string>(
+        categories[0].filterName,
+    );
 
     const hasMorePopularUsers =
         popularData?.pages[popularData.pages.length - 1].nextPage !== null;

@@ -63,7 +63,7 @@ const createSocket = async (): Promise<
     });
 
     socket.on("initialOnlineUsers", (data: { userIds: number[] }) => {
-        const { onlineUsers, addOnlineUser } = useOnlineUsersStore.getState();
+        const { addOnlineUser } = useOnlineUsersStore.getState();
 
         data.userIds.forEach((userId) => {
             addOnlineUser(userId);

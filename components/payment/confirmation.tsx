@@ -1,4 +1,10 @@
-import { Dispatch, Fragment, SetStateAction, useState } from "react";
+import React, {
+    Dispatch,
+    Fragment,
+    SetStateAction,
+    useMemo,
+    useState,
+} from "react";
 
 import {
     Actionsheet,
@@ -27,6 +33,7 @@ import { GoBack } from "../utils/GoBack";
 
 import { PaymentSheetComponent } from ".";
 import { Button } from "../ui/Button";
+import { Receipt } from "./receipt";
 
 type ConfirmationProps = {
     conversationId: string;
@@ -45,13 +52,18 @@ export const Confirmation = ({
 
     const queryClient = useQueryClient();
 
-    const [needConfirmation, setNeedConfirmation] = useState(true);
+    const [showSummary, setShowSummary] = useState(true);
+    const [showReceipt, setShowReceipt] = useState(false);
 
     const [clientSecret, setClientSecret] = useState<string | null>(null);
 
-    const handleClose = () => {
-        setNeedConfirmation(false);
+    const handleCloseSummary = ({ success = true }: { success?: boolean }) => {
+        setShowSummary(false);
+        setShowReceipt(success);
+    };
 
+    const handleCloseReceipt = () => {
+        setShowReceipt(false);
         setSendToPayment(false);
     };
 
@@ -64,7 +76,9 @@ export const Confirmation = ({
             if (data.status === "succeeded") {
                 await handleSuccess();
 
-                handleClose();
+                handleCloseSummary({
+                    success: true,
+                });
                 return;
             }
 
@@ -115,29 +129,31 @@ export const Confirmation = ({
     const handleSuccess = async () => {
         await queryClient.setQueryData(["conversations"], (oldData: any) => {
             if (!oldData) return;
+
+            const conversations =
+                oldData.pages[oldData.pages.length - 1].conversations;
+
             return {
                 ...oldData,
-                conversations: oldData.conversations.map(
-                    (conversation: any) => {
-                        if (conversation.id === conversationId) {
-                            return {
-                                ...conversation,
-                                messages: conversation.messages.map(
-                                    (message: any) => {
-                                        if (message.senderId === user?.id) {
-                                            return {
-                                                ...message,
-                                                deliveredAt: new Date(),
-                                            };
-                                        }
-                                        return message;
-                                    },
-                                ),
-                            };
-                        }
-                        return conversation;
-                    },
-                ),
+                conversations: conversations.map((conversation: any) => {
+                    if (conversation.id === conversationId) {
+                        return {
+                            ...conversation,
+                            messages: conversation.messages.map(
+                                (message: any) => {
+                                    if (message.senderId === user?.id) {
+                                        return {
+                                            ...message,
+                                            deliveredAt: new Date(),
+                                        };
+                                    }
+                                    return message;
+                                },
+                            ),
+                        };
+                    }
+                    return conversation;
+                }),
             };
         });
 
@@ -162,11 +178,22 @@ export const Confirmation = ({
         );
     };
 
+    const totalAmount = useMemo(() => {
+        return (
+            paymentItems.reduce(
+                (acc, item) => acc + item.amount * item.quantity,
+                0,
+            ) / 100
+        )
+            .toFixed(2)
+            .replace(".", ",");
+    }, [paymentItems]);
+
     return (
         <Fragment>
             <Actionsheet
-                isOpen={needConfirmation}
-                onClose={handleClose}
+                isOpen={showSummary}
+                onClose={() => handleCloseSummary({ success: false })}
                 zIndex={999}
             >
                 <ActionsheetBackdrop bgColor="#000" />
@@ -184,7 +211,9 @@ export const Confirmation = ({
                                 position="relative"
                             >
                                 <GoBack
-                                    onPress={handleClose}
+                                    onPress={() =>
+                                        handleCloseSummary({ success: false })
+                                    }
                                     style={{
                                         position: "absolute",
                                         top: "-50%",
@@ -196,6 +225,7 @@ export const Confirmation = ({
                                     color="#000"
                                     fontFamily="$heading"
                                     lineHeight={20}
+                                    textAlign="center"
                                 >
                                     Resumo do pagamento
                                 </Text>
@@ -253,6 +283,7 @@ export const Confirmation = ({
                                     <HStack
                                         key={String(paymentItems.length + 1)}
                                         justifyContent="space-between"
+                                        mt="$1"
                                     >
                                         <Text color="$gray700" fontSize={17}>
                                             Valor total
@@ -262,18 +293,7 @@ export const Confirmation = ({
                                             color="#000"
                                             fontSize={18}
                                         >
-                                            R${" "}
-                                            {(
-                                                paymentItems.reduce(
-                                                    (acc, item) =>
-                                                        acc +
-                                                        item.amount *
-                                                            item.quantity,
-                                                    0,
-                                                ) / 100
-                                            )
-                                                .toFixed(2)
-                                                .replace(".", ",")}
+                                            R$ {totalAmount}
                                         </Text>
                                     </HStack>
                                 </VStack>
@@ -302,14 +322,25 @@ export const Confirmation = ({
                     autoPresent={true}
                     onSuccess={async () => {
                         await handleSuccess();
-                        handleClose();
+                        handleCloseSummary({
+                            success: true,
+                        });
                     }}
                     onError={(err) => {
                         console.error("Erro ao processar pagamento:", err);
-                        handleClose();
+                        handleCloseSummary({
+                            success: false,
+                        });
                     }}
                 />
             )}
+            <Receipt
+                showReceipt={showReceipt}
+                handleCloseReceipt={handleCloseReceipt}
+                paymentItems={paymentItems}
+                contact={contact}
+                totalAmount={totalAmount}
+            />
         </Fragment>
     );
 };

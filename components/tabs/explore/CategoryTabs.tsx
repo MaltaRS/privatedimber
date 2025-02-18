@@ -6,10 +6,15 @@ import {
     Box,
 } from "@/gluestackComponents";
 
+export type Category = {
+    name: string;
+    filterName: string;
+};
+
 type CategoryTabsProps = {
-    categories: string[];
+    categories: Category[];
     selectedCategory: string;
-    onSelectCategory: (category: string) => void;
+    onSelectCategory: (filterName: string) => void;
     type: "darkBlue" | "lightBlue";
 };
 
@@ -23,35 +28,42 @@ export const CategoryTabs = ({
         <Box mt="$1">
             <ScrollView horizontal showsHorizontalScrollIndicator={false}>
                 <HStack gap="$4">
-                    {categories.map((category, i) => (
-                        <Pressable
-                            key={i}
-                            bgColor={
-                                category === selectedCategory
-                                    ? type === "darkBlue"
-                                        ? "$primaryDefault"
-                                        : "#00A8FF25"
-                                    : "$gray200"
-                            }
-                            rounded="$full"
-                            px="$5"
-                            py="$2"
-                            onPress={() => onSelectCategory(category)}
-                        >
-                            <Text
-                                color={
-                                    category === selectedCategory
+                    {categories.map((category, i) => {
+                        const isSelectedCategory =
+                            category.filterName === selectedCategory;
+
+                        return (
+                            <Pressable
+                                key={i}
+                                bgColor={
+                                    isSelectedCategory
                                         ? type === "darkBlue"
-                                            ? "$white"
-                                            : "$primaryDefault"
-                                        : "$black"
+                                            ? "$primaryDefault"
+                                            : "#00A8FF25"
+                                        : "$gray200"
                                 }
-                                size="sm"
+                                rounded="$full"
+                                px="$5"
+                                py="$2"
+                                onPress={() =>
+                                    onSelectCategory(category.filterName)
+                                }
                             >
-                                {category}
-                            </Text>
-                        </Pressable>
-                    ))}
+                                <Text
+                                    color={
+                                        isSelectedCategory
+                                            ? type === "darkBlue"
+                                                ? "$white"
+                                                : "$primaryDefault"
+                                            : "$black"
+                                    }
+                                    size="sm"
+                                >
+                                    {category.name}
+                                </Text>
+                            </Pressable>
+                        );
+                    })}
                 </HStack>
             </ScrollView>
         </Box>
