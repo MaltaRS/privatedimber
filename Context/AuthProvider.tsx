@@ -19,6 +19,7 @@ export type User = {
     name: string;
     bio: string;
     icon: string;
+    type: "REGULAR" | "PROFESSIONAL";
     createdAt: string;
     verifiedAt?: string;
 };

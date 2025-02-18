@@ -25,13 +25,21 @@ import { formatMessageTime } from "@/utils/dateFormat";
 import { MessageText } from "./MessageText";
 
 import Read from "@/assets/icons/appIcons/read.svg";
+import Camera from "@/assets/icons/appIcons/camera.svg";
+import ImageSquare from "@/assets/icons/appIcons/imageSquare.svg";
+import ArrowLeft from "@/assets/icons/appIcons/arrowLeft.svg";
+
 import { Colors } from "@/constants/Colors";
+
+import { formatCentsToMoney } from "@/utils/money";
+import { Paperclip } from "lucide-react-native";
 
 export type ChatCardProps = {
     icon: string | null;
     name: string;
     chat: Conversation;
     isOnline: boolean;
+    isProfessional: boolean;
     onLongPress: () => void;
 };
 
@@ -40,6 +48,7 @@ export const ChatCard = ({
     name,
     chat,
     isOnline,
+    isProfessional,
     onLongPress,
 }: ChatCardProps) => {
     const router = useRouter();
@@ -66,75 +75,137 @@ export const ChatCard = ({
             onLongPress={onLongPress}
         >
             <HStack gap="$4" alignItems="center">
-                <Avatar width={54} height={54} ml="-$1">
-                    <AvatarFallbackText rounded="$lg">
-                        {name}
-                    </AvatarFallbackText>
-                    {icon && (
-                        <AvatarImage
-                            rounded="$full"
-                            source={{
-                                uri: icon,
-                            }}
-                            alt={`Foto de perfil de ${name}`}
-                        />
-                    )}
+                {!isProfessional ? (
+                    <Avatar
+                        width={54}
+                        height={54}
+                        ml="-$1"
+                        bgColor={
+                            !isProfessional
+                                ? Colors.primaryDefault
+                                : chat.priority === "HIGH"
+                                  ? "#E0A10A"
+                                  : "#bde6fd"
+                        }
+                    >
+                        <AvatarFallbackText rounded="$lg">
+                            {name}
+                        </AvatarFallbackText>
+                        {icon && (
+                            <AvatarImage
+                                rounded="$full"
+                                source={{
+                                    uri: icon,
+                                }}
+                                alt={`Foto de perfil de ${name}`}
+                            />
+                        )}
 
-                    {isOnline && <AvatarBadge bgColor="#339058" />}
-                </Avatar>
+                        {isOnline && <AvatarBadge bgColor="#339058" />}
+                    </Avatar>
+                ) : (
+                    <Box
+                        width={54}
+                        height={54}
+                        rounded="$full"
+                        bgColor={
+                            chat.priority === "HIGH" ? "#E0A10A" : "#bde6fd"
+                        }
+                        alignItems="center"
+                        justifyContent="center"
+                    >
+                        <Text
+                            fontFamily="$arialBody"
+                            size="xs"
+                            color={
+                                chat.priority === "HIGH" ? "#F1940A" : "#276EF1"
+                            }
+                        >
+                            {chat.priority === "HIGH"
+                                ? "Prioritario"
+                                : "Normal"}
+                        </Text>
+                    </Box>
+                )}
                 <VStack flex={1}>
                     <Text fontFamily="$arialBody" size="lg" color="#000">
-                        {name}
+                        {!isProfessional
+                            ? name
+                            : formatCentsToMoney(chat.paidPrice)}
                     </Text>
                     <HStack alignItems="center">
-                        {newMessages.length > 1 ? (
-                            <>
-                                <Box
-                                    width={5}
-                                    height={5}
-                                    borderRadius="$full"
-                                    bgColor="$primaryDefault"
-                                />
+                        {!isProfessional ? (
+                            newMessages.length > 1 ? (
+                                <>
+                                    <Box
+                                        width={5}
+                                        height={5}
+                                        borderRadius="$full"
+                                        bgColor="$primaryDefault"
+                                    />
+                                    <Text
+                                        fontFamily="$arialBody"
+                                        pl={6}
+                                        size="sm"
+                                        color="$primaryDefault"
+                                    >
+                                        {newMessages.length} novas mensagens
+                                    </Text>
+                                </>
+                            ) : lastMessage.image ? (
                                 <Text
                                     fontFamily="$arialBody"
-                                    pl={6}
                                     size="sm"
-                                    color="$primaryDefault"
+                                    color="#6B7280"
                                 >
-                                    {newMessages.length} novas mensagens
+                                    Imagem
                                 </Text>
-                            </>
-                        ) : lastMessage.image ? (
-                            <Text
-                                fontFamily="$arialBody"
-                                size="sm"
-                                color="#6B7280"
-                            >
-                                Imagem
-                            </Text>
+                            ) : (
+                                <>
+                                    {newMessages.length > 0 &&
+                                        newMessages[newMessages.length - 1]
+                                            .readAt && (
+                                            <Read
+                                                width={16}
+                                                height={16}
+                                                stroke={Colors.primaryDefault}
+                                                style={{
+                                                    marginTop: 3,
+                                                    marginRight: 2,
+                                                }}
+                                            />
+                                        )}
+                                    <MessageText
+                                        content={
+                                            newMessages.length > 0
+                                                ? lastMessage.content
+                                                : "Envie a primeira mensagem"
+                                        }
+                                        preview
+                                    />
+                                </>
+                            )
                         ) : (
-                            <>
-                                {newMessages.length > 1 &&
-                                    newMessages[newMessages.length - 1]
-                                        .readAt && (
-                                        <Read
-                                            width={15}
-                                            height={15}
-                                            stroke={Colors.primaryDefault}
-                                            style={{
-                                                marginRight: 4,
-                                            }}
-                                        />
-                                    )}
-                                <MessageText
-                                    content={
-                                        newMessages.length > 0
-                                            ? lastMessage.content
-                                            : "Envie a primeira mensagem"
-                                    }
-                                    preview
+                            <HStack gap="$1" mt="$2">
+                                {chat.apresentationDocument && (
+                                    <Paperclip size={18} color="#374151" />
+                                )}
+                                {chat.apresentationImage && (
+                                    <ImageSquare
+                                        width={16}
+                                        height={16}
+                                        color="#374151"
+                                    />
+                                )}
+                                {chat.apresentationVideo && (
+                                    <Camera width={16} height={16} />
+                                )}
+                                <ArrowLeft
+                                    width={17}
+                                    height={17}
+                                    color="#374151"
                                 />
-                            </>
+                            </HStack>
                         )}
                     </HStack>
                 </VStack>

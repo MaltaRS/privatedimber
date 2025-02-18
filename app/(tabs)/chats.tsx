@@ -1,5 +1,6 @@
-import { useState } from "react";
-import { useRouter } from "expo-router";
+import { useEffect, useState } from "react";
+
+import { useLocalSearchParams, useRouter } from "expo-router";
 
 import {
     Actionsheet,
@@ -45,11 +46,21 @@ import { BaseContainer } from "@/components/BaseContainer";
 import { ChatCard } from "@/components/chats/ChatCard";
 import { MainTitle } from "@/components/MainTitle";
 
+import { useAuth } from "@/Context/AuthProvider";
+
 const ChatsScreen = () => {
     const router = useRouter();
     const { notificationsCount } = useNotifications();
+    const { user } = useAuth();
+
+    let { category } = useLocalSearchParams<{
+        category: string;
+    }>();
+
+    category = category ?? "";
 
     const categories: Category[] = [
+        { name: "Novas", filterName: "priority" },
         { name: "Todas", filterName: "" },
         { name: "Não lidas", filterName: "unread" },
         { name: "Expiradas", filterName: "expired" },
@@ -57,7 +68,7 @@ const ChatsScreen = () => {
     ];
 
     const [selectedCategory, setSelectedCategory] = useState<string>(
-        categories[0].filterName,
+        category ?? categories[1].filterName,
     );
 
     const {
@@ -109,6 +120,10 @@ const ChatsScreen = () => {
         ) ?? [];
 
     const onlineUsers = useOnlineUsersStore((state) => state.onlineUsers);
+
+    useEffect(() => {
+        setSelectedCategory(category ?? categories[1].filterName);
+    }, [category]);
 
     return (
         <BaseContainer gap="$2">
@@ -176,6 +191,9 @@ const ChatsScreen = () => {
                                         name={item.participant.name}
                                         icon={item.participant.icon}
                                         isOnline={isOnline}
+                                        isProfessional={
+                                            user?.type === "PROFESSIONAL"
+                                        }
                                         onLongPress={() =>
                                             setIdSelectedChat(item.id)
                                         }

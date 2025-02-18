@@ -13,6 +13,7 @@ import DimberLogoWhite from "@/assets/icons/dimberLogoWhite.svg";
 import { useAuth } from "@/Context/AuthProvider";
 import { TabButton } from "@/components/tabs/TabButton";
 import { useKeyboardVisibility } from "@/hooks/KeyboardVisibilityHook";
+import { useRouter } from "expo-router";
 
 export type TabName = "chats" | "explore" | "wallet" | "config";
 
@@ -22,6 +23,8 @@ export type TabProps = {
 };
 
 export default function TabLayout() {
+    const router = useRouter();
+
     const { user } = useAuth();
 
     const isKeyboardVisible = useKeyboardVisibility();
@@ -33,7 +36,7 @@ export default function TabLayout() {
         },
         {
             name: "chats",
-            href: "/chats",
+            href: "/chats?category=",
         },
         {
             name: "chats",
@@ -94,6 +97,9 @@ export default function TabLayout() {
                                 elevation={120}
                                 alignItems="center"
                                 justifyContent="center"
+                                onPress={() => {
+                                    router.push("/chats?category=priority");
+                                }}
                             >
                                 <DimberLogoWhite width={32} height={32} />
                             </Pressable>

@@ -8,6 +8,7 @@ type CreatePaymentIntentResponse = {
 
 type CreatePaymentIntentParams = {
     amount: number;
+    intention: "CHAT_APRESENTATION";
     contact: User;
     items: {
         name: string;
@@ -23,11 +24,13 @@ export const createPaymentIntent = async ({
     contact,
     items,
     metadata,
+    intention,
 }: CreatePaymentIntentParams): Promise<CreatePaymentIntentResponse> => {
     const { data } = await api.post<CreatePaymentIntentResponse>(
         "/payments/create-payment-intent",
         {
             amount,
+            intention,
             description: "Envio de mensagem",
             destinationId: contact.id,
             destinationName: contact.name,

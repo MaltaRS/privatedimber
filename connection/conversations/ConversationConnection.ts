@@ -11,7 +11,12 @@ export type Conversation = {
         icon: string | null;
         verifiedAt: string | null;
     };
+    paidPrice: number;
+    apresentationImage: boolean;
+    apresentationVideo: boolean;
+    apresentationDocument: boolean;
     createdAt: string;
+    priority: "HIGH" | "MEDIUM" | "LOW";
     needReply: boolean;
     messages: Message[];
 };
@@ -53,8 +58,6 @@ export const findConversations = async (
     pageParam: number,
     filter: string,
 ): Promise<ConversationsResponse> => {
-    console.log("filter", filter);
-
     const { data } = await api.get<ConversationsResponse>("/conversation", {
         params: {
             offset: pageParam,

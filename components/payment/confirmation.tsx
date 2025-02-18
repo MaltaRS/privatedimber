@@ -120,6 +120,7 @@ export const Confirmation = ({
             amount: paymentItemsTotal,
             items,
             contact,
+            intention: "CHAT_APRESENTATION",
             metadata: {
                 conversationId,
             },
@@ -129,6 +130,8 @@ export const Confirmation = ({
     const handleSuccess = async () => {
         await queryClient.setQueryData(["conversations"], (oldData: any) => {
             if (!oldData) return;
+
+            if (!oldData.pages) return;
 
             const conversations =
                 oldData.pages[oldData.pages.length - 1].conversations;

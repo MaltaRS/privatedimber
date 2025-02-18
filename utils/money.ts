@@ -4,3 +4,7 @@ export const formatMoney = (amount: number | string) => {
         currency: "BRL",
     });
 };
+
+export const formatCentsToMoney = (amount: number | string) => {
+    return formatMoney(Number(amount) / 100);
+};
