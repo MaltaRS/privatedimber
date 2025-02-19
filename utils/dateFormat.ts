@@ -64,3 +64,13 @@ export const formatTime = (dateString: string) => {
         return "Data inválida";
     }
 };
+
+export const formatSuccessDate = (dateString: string) => {
+    try {
+        const date = parseISO(dateString);
+        return format(date, "dd 'de' MMMM, yyyy 'as' HH:mm", { locale: ptBR });
+    } catch (error) {
+        console.error("Erro ao formatar a data de sucesso:", error);
+        return "Data inválida";
+    }
+};

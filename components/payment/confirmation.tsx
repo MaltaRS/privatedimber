@@ -1,10 +1,4 @@
-import React, {
-    Dispatch,
-    Fragment,
-    SetStateAction,
-    useMemo,
-    useState,
-} from "react";
+import { Dispatch, Fragment, SetStateAction, useMemo, useState } from "react";
 
 import {
     Actionsheet,
@@ -14,9 +8,12 @@ import {
     ActionsheetDragIndicatorWrapper,
     ActionsheetItem,
     ButtonText,
+    Divider,
     HStack,
     Text,
     VStack,
+    Box,
+    Spinner,
 } from "@/gluestackComponents";
 
 import { PaymentItems } from "@/app/(conversations)/[conversationId]";
@@ -25,14 +22,19 @@ import { useAuth, User } from "@/Context/AuthProvider";
 
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 
-import { createPaymentIntent } from "@/connection/stripe/StripeConnection";
+import {
+    createPaymentIntent,
+    findTransactionById,
+} from "@/connection/stripe/StripeConnection";
 
 import { toast } from "burnt";
 
 import { GoBack } from "../utils/GoBack";
 
 import { PaymentSheetComponent } from ".";
+
 import { Button } from "../ui/Button";
+
 import { Receipt } from "./receipt";
 
 type ConfirmationProps = {
@@ -49,22 +51,69 @@ export const Confirmation = ({
     setSendToPayment,
 }: ConfirmationProps) => {
     const { user } = useAuth();
-
     const queryClient = useQueryClient();
 
     const [showSummary, setShowSummary] = useState(true);
+
     const [showReceipt, setShowReceipt] = useState(false);
 
     const [clientSecret, setClientSecret] = useState<string | null>(null);
 
+    const [transactionId, setTransactionId] = useState<string | null>(null);
+
+    const [isPolling, setIsPolling] = useState(false);
+
+    const [transactionInfo, setTransactionInfo] = useState<{
+        cardBrand?: string;
+        last4?: string;
+        installments?: number;
+        successfullAt?: string;
+    }>({});
+
     const handleCloseSummary = ({ success = true }: { success?: boolean }) => {
         setShowSummary(false);
         setShowReceipt(success);
+        setSendToPayment(success);
     };
 
     const handleCloseReceipt = () => {
         setShowReceipt(false);
         setSendToPayment(false);
+    };
+
+    const pollTransaction = async (id: string) => {
+        setIsPolling(true);
+        const intervalId = setInterval(async () => {
+            try {
+                const transaction = await findTransactionById(id);
+                if (transaction.status === "SUCCESS") {
+                    clearInterval(intervalId);
+                    setIsPolling(false);
+
+                    const successEvent = Array.isArray(
+                        transaction.statusHistory,
+                    )
+                        ? transaction.statusHistory.find(
+                              (e: { event: string; at: string }) =>
+                                  e.event === "payment_intent.succeeded",
+                          )
+                        : null;
+
+                    setTransactionInfo({
+                        cardBrand: transaction.cardBrand,
+                        last4: transaction.last4,
+                        installments: transaction.installments,
+                        successfullAt: successEvent?.at,
+                    });
+                    setShowReceipt(true);
+                }
+            } catch (error) {
+                console.error("Erro ao buscar transação:", error);
+                clearInterval(intervalId);
+                setIsPolling(false);
+                toast({ title: "Erro ao buscar transação", preset: "error" });
+            }
+        }, 1200);
     };
 
     const {
@@ -74,16 +123,13 @@ export const Confirmation = ({
         mutationFn: createPaymentIntent,
         onSuccess: async (data) => {
             if (data.status === "succeeded") {
-                await handleSuccess();
-
-                handleCloseSummary({
-                    success: true,
-                });
+                setTransactionId(data.transactionId);
+                pollTransaction(data.transactionId);
                 return;
             }
-
             if (data.clientSecret) {
                 setClientSecret(data.clientSecret);
+                setTransactionId(data.transactionId);
             } else {
                 toast({
                     title: "Não foi possivel criar o pagamento!",
@@ -102,40 +148,29 @@ export const Confirmation = ({
 
     const HandleCreatePaymentIntent = () => {
         if (!contact) {
-            toast({
-                title: "Usuário não encontrado!",
-                preset: "error",
-            });
+            toast({ title: "Usuário não encontrado!", preset: "error" });
             return;
         }
-
         const paymentItemsTotal = paymentItems.reduce(
             (acc, item) => acc + item.amount * item.quantity,
             0,
         );
-
         const items = paymentItems.filter((item) => item.quantity > 0);
-
         handleCreatePaymentIntent({
             amount: paymentItemsTotal,
             items,
             contact,
             intention: "CHAT_APRESENTATION",
-            metadata: {
-                conversationId,
-            },
+            metadata: { conversationId },
         });
     };
 
     const handleSuccess = async () => {
         await queryClient.setQueryData(["conversations"], (oldData: any) => {
             if (!oldData) return;
-
             if (!oldData.pages) return;
-
             const conversations =
                 oldData.pages[oldData.pages.length - 1].conversations;
-
             return {
                 ...oldData,
                 conversations: conversations.map((conversation: any) => {
@@ -159,20 +194,15 @@ export const Confirmation = ({
                 }),
             };
         });
-
         await queryClient.setQueryData(
             ["conversationMessage", conversationId],
             (oldData: any) => {
                 if (!oldData) return;
-
                 return {
                     ...oldData,
                     messages: oldData.messages.map((message: any) => {
                         if (message.senderId === user?.id) {
-                            return {
-                                ...message,
-                                deliveredAt: new Date(),
-                            };
+                            return { ...message, deliveredAt: new Date() };
                         }
                         return message;
                     }),
@@ -194,148 +224,240 @@ export const Confirmation = ({
 
     return (
         <Fragment>
-            <Actionsheet
-                isOpen={showSummary}
-                onClose={() => handleCloseSummary({ success: false })}
-                zIndex={999}
-            >
-                <ActionsheetBackdrop bgColor="#000" />
-                <ActionsheetContent zIndex={999} bgColor="white">
-                    <ActionsheetDragIndicatorWrapper>
-                        <ActionsheetDragIndicator bgColor="#000" />
-                    </ActionsheetDragIndicatorWrapper>
-                    <ActionsheetItem>
-                        <VStack pt="$2" gap="$2" w="$full">
-                            <HStack
-                                gap="$2"
-                                h={22}
-                                alignItems="center"
-                                justifyContent="center"
-                                position="relative"
-                            >
-                                <GoBack
-                                    onPress={() =>
-                                        handleCloseSummary({ success: false })
-                                    }
-                                    style={{
-                                        position: "absolute",
-                                        top: "-50%",
-                                        left: 0,
-                                    }}
-                                />
-                                <Text
-                                    size="lg"
-                                    color="#000"
-                                    fontFamily="$heading"
-                                    lineHeight={20}
-                                    textAlign="center"
-                                >
-                                    Resumo do pagamento
-                                </Text>
-                            </HStack>
-                            <Text
-                                size="2xl"
-                                fontFamily="$heading"
-                                color="$black"
-                                pt="$7"
-                                pb="$9"
-                            >
-                                Enviando mensagem para {contact?.name}
-                            </Text>
-                            <VStack gap="$4">
-                                <Text
-                                    fontFamily="$heading"
-                                    color="$black"
-                                    size="xl"
-                                    lineHeight={20}
-                                >
-                                    Detalhes do envio
-                                </Text>
-                                <VStack gap="$2">
-                                    {paymentItems
-                                        .filter(
-                                            (item: any) =>
-                                                parseFloat(item.amount) > 0,
-                                        )
-                                        .map((item: any, index: number) => (
+            {isPolling ? (
+                <Box
+                    flex={1}
+                    bg="white"
+                    justifyContent="center"
+                    alignItems="center"
+                >
+                    <Spinner size="large" />
+                </Box>
+            ) : (
+                <>
+                    <Actionsheet
+                        isOpen={showSummary}
+                        onClose={() => handleCloseSummary({ success: false })}
+                        zIndex={999}
+                    >
+                        <ActionsheetBackdrop bgColor="#000" />
+                        <ActionsheetContent zIndex={999} bgColor="white">
+                            <ActionsheetDragIndicatorWrapper>
+                                <ActionsheetDragIndicator bgColor="#000" />
+                            </ActionsheetDragIndicatorWrapper>
+                            <ActionsheetItem>
+                                <VStack pt="$2" gap="$2" w="$full">
+                                    <HStack
+                                        gap="$2"
+                                        h={22}
+                                        alignItems="center"
+                                        justifyContent="center"
+                                        position="relative"
+                                    >
+                                        <GoBack
+                                            onPress={() =>
+                                                handleCloseSummary({
+                                                    success: false,
+                                                })
+                                            }
+                                            style={{
+                                                position: "absolute",
+                                                top: "-50%",
+                                                left: 0,
+                                            }}
+                                        />
+                                        <Text
+                                            size="lg"
+                                            color="#000"
+                                            fontFamily="$heading"
+                                            lineHeight={20}
+                                            textAlign="center"
+                                        >
+                                            Resumo do pagamento
+                                        </Text>
+                                    </HStack>
+                                    <Text
+                                        size="2xl"
+                                        fontFamily="$heading"
+                                        color="$black"
+                                        pt="$7"
+                                        pb="$9"
+                                    >
+                                        Enviando mensagem para {contact?.name}
+                                    </Text>
+                                    <VStack gap="$4">
+                                        <Text
+                                            fontFamily="$heading"
+                                            color="$black"
+                                            size="xl"
+                                            lineHeight={20}
+                                        >
+                                            Detalhes do envio
+                                        </Text>
+                                        <VStack gap="$2">
+                                            {paymentItems
+                                                .filter(
+                                                    (item: any) =>
+                                                        parseFloat(
+                                                            item.amount,
+                                                        ) > 0,
+                                                )
+                                                .map(
+                                                    (
+                                                        item: any,
+                                                        index: number,
+                                                    ) => (
+                                                        <HStack
+                                                            key={index}
+                                                            justifyContent="space-between"
+                                                        >
+                                                            <Text
+                                                                color="$gray700"
+                                                                fontSize={17}
+                                                            >
+                                                                {item.name}
+                                                            </Text>
+                                                            <Text
+                                                                color="$gray700"
+                                                                fontSize={18}
+                                                            >
+                                                                R${" "}
+                                                                {(
+                                                                    (item.amount *
+                                                                        item.quantity) /
+                                                                    100
+                                                                )
+                                                                    .toFixed(2)
+                                                                    .replace(
+                                                                        ".",
+                                                                        ",",
+                                                                    )}
+                                                            </Text>
+                                                        </HStack>
+                                                    ),
+                                                )}
                                             <HStack
-                                                key={index}
+                                                key={String(
+                                                    paymentItems.length + 1,
+                                                )}
                                                 justifyContent="space-between"
+                                                mt="$1"
                                             >
                                                 <Text
                                                     color="$gray700"
                                                     fontSize={17}
                                                 >
-                                                    {item.name}
+                                                    Valor total
                                                 </Text>
                                                 <Text
-                                                    color="$gray700"
+                                                    fontFamily="$jakartHeading"
+                                                    color="#000"
                                                     fontSize={18}
                                                 >
-                                                    R${" "}
-                                                    {(
-                                                        (item.amount *
-                                                            item.quantity) /
-                                                        100
-                                                    )
-                                                        .toFixed(2)
-                                                        .replace(".", ",")}
+                                                    R$ {totalAmount}
                                                 </Text>
                                             </HStack>
-                                        ))}
-                                    <HStack
-                                        key={String(paymentItems.length + 1)}
-                                        justifyContent="space-between"
-                                        mt="$1"
-                                    >
-                                        <Text color="$gray700" fontSize={17}>
-                                            Valor total
-                                        </Text>
+                                        </VStack>
+                                    </VStack>
+                                    <Divider
+                                        mb="$2"
+                                        bgColor="$gray200"
+                                        mt="$4"
+                                    />
+                                    <VStack gap="$4" mt="$4">
                                         <Text
-                                            fontFamily="$jakartHeading"
-                                            color="#000"
-                                            fontSize={18}
+                                            fontFamily="$heading"
+                                            color="$black"
+                                            size="xl"
+                                            lineHeight={20}
                                         >
-                                            R$ {totalAmount}
+                                            Forma de pagamento
                                         </Text>
-                                    </HStack>
+                                        <VStack>
+                                            <HStack justifyContent="space-between">
+                                                <Text
+                                                    color="$gray800"
+                                                    fontSize={17}
+                                                >
+                                                    Cartão de crédito
+                                                </Text>
+                                                <Text
+                                                    fontFamily="$jakartHeading"
+                                                    color="#000"
+                                                    fontSize={18}
+                                                >
+                                                    R$ {totalAmount}
+                                                </Text>
+                                            </HStack>
+                                            {user?.defaultPaymentMethodBrand !=
+                                                null &&
+                                                user?.defaultPaymentMethodLast4 !=
+                                                    null && (
+                                                    <HStack justifyContent="space-between">
+                                                        <Text
+                                                            fontFamily="novaBody"
+                                                            lineHeight={22}
+                                                            color="$gray400"
+                                                            fontSize={16}
+                                                        >
+                                                            {
+                                                                user?.defaultPaymentMethodBrand
+                                                            }{" "}
+                                                            ••••
+                                                            {
+                                                                user?.defaultPaymentMethodLast4
+                                                            }
+                                                        </Text>
+                                                        <Text
+                                                            fontFamily="novaBody"
+                                                            lineHeight={22}
+                                                            color="$gray400"
+                                                            fontSize={14}
+                                                        >
+                                                            1x de R${" "}
+                                                            {totalAmount} sem
+                                                            juros
+                                                        </Text>
+                                                    </HStack>
+                                                )}
+                                        </VStack>
+                                    </VStack>
+                                    <Button
+                                        mt="$4"
+                                        onPress={HandleCreatePaymentIntent}
+                                        disabled={isCreatingPaymentIntent}
+                                    >
+                                        <ButtonText
+                                            textAlign="center"
+                                            fontFamily="$heading"
+                                            size="lg"
+                                            fontWeight="$bold"
+                                        >
+                                            Confirmar pagamento
+                                        </ButtonText>
+                                    </Button>
                                 </VStack>
-                            </VStack>
-                            <Button
-                                mt="$4"
-                                onPress={HandleCreatePaymentIntent}
-                                disabled={isCreatingPaymentIntent}
-                            >
-                                <ButtonText
-                                    textAlign="center"
-                                    fontFamily="$heading"
-                                    size="lg"
-                                    fontWeight="$bold"
-                                >
-                                    Confirmar pagamento
-                                </ButtonText>
-                            </Button>
-                        </VStack>
-                    </ActionsheetItem>
-                </ActionsheetContent>
-            </Actionsheet>
-            {clientSecret && (
-                <PaymentSheetComponent
-                    clientSecret={clientSecret}
-                    autoPresent={true}
-                    onSuccess={async () => {
-                        await handleSuccess();
-                        handleCloseSummary({
-                            success: true,
-                        });
-                    }}
-                    onError={(err) => {
-                        console.error("Erro ao processar pagamento:", err);
-                        handleCloseSummary({
-                            success: false,
-                        });
-                    }}
-                />
+                            </ActionsheetItem>
+                        </ActionsheetContent>
+                    </Actionsheet>
+                    {clientSecret && (
+                        <PaymentSheetComponent
+                            clientSecret={clientSecret}
+                            autoPresent={true}
+                            onSuccess={async () => {
+                                await handleSuccess();
+                                transactionId && pollTransaction(transactionId);
+                            }}
+                            onError={(err) => {
+                                console.error(
+                                    "Erro ao processar pagamento:",
+                                    err,
+                                );
+                                handleCloseSummary({ success: false });
+                            }}
+                        />
+                    )}
+                </>
             )}
             <Receipt
                 showReceipt={showReceipt}
@@ -343,6 +465,13 @@ export const Confirmation = ({
                 paymentItems={paymentItems}
                 contact={contact}
                 totalAmount={totalAmount}
+                transactionId={
+                    transactionId ?? "Id da transação não encontrado"
+                }
+                cardBrand={transactionInfo.cardBrand}
+                cardLast4={transactionInfo.last4}
+                installments={transactionInfo.installments}
+                successfullAt={transactionInfo.successfullAt}
             />
         </Fragment>
     );

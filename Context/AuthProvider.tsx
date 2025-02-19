@@ -21,6 +21,8 @@ export type User = {
     icon: string;
     type: "REGULAR" | "PROFESSIONAL";
     createdAt: string;
+    defaultPaymentMethodLast4?: string;
+    defaultPaymentMethodBrand?: string;
     verifiedAt?: string;
 };
 

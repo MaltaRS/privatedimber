@@ -3,6 +3,7 @@ import api from "@/utils/api";
 
 type CreatePaymentIntentResponse = {
     clientSecret: string;
+    transactionId: string;
     status: "requires_payment_method" | "requires_confirmation" | "succeeded";
 };
 
@@ -17,6 +18,12 @@ type CreatePaymentIntentParams = {
         quantity: number;
     }[];
     metadata?: Record<string, unknown>;
+};
+
+export const findTransactionById = async (transactionId: string) => {
+    const { data } = await api.get(`/payments/${transactionId}`);
+
+    return data;
 };
 
 export const createPaymentIntent = async ({

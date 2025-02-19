@@ -21,7 +21,9 @@ import DimberGrayLogo from "@/assets/icons/DimberLogoGray.svg";
 import { PaymentItems } from "@/app/(conversations)/[conversationId]";
 
 import { User } from "@/Context/AuthProvider";
+
 import { Colors } from "@/constants/Colors";
+import { formatSuccessDate } from "@/utils/dateFormat";
 
 type ReceiptProps = {
     showReceipt: boolean;
@@ -29,6 +31,11 @@ type ReceiptProps = {
     contact: User | undefined;
     paymentItems: PaymentItems;
     totalAmount: string;
+    transactionId: string;
+    cardBrand?: string;
+    cardLast4?: string;
+    installments?: number;
+    successfullAt?: string;
 };
 
 export const Receipt = ({
@@ -37,7 +44,20 @@ export const Receipt = ({
     contact,
     paymentItems,
     totalAmount,
+    transactionId,
+    cardBrand,
+    cardLast4,
+    installments,
+    successfullAt,
 }: ReceiptProps) => {
+    const installmentText =
+        installments && installments > 1
+            ? `${installments}x de R$ ${(
+                  parseFloat(totalAmount.replace(",", ".")) / installments
+              )
+                  .toFixed(2)
+                  .replace(".", ",")} sem juros`
+            : `1x de R$ ${totalAmount} sem juros`;
     return (
         <Actionsheet
             isOpen={showReceipt}
@@ -87,9 +107,7 @@ export const Receipt = ({
                                 <DimberGrayLogo
                                     height={28}
                                     width={28}
-                                    style={{
-                                        marginBottom: 6,
-                                    }}
+                                    style={{ marginBottom: 6 }}
                                 />
                                 <Text
                                     fontFamily="$heading"
@@ -116,7 +134,9 @@ export const Receipt = ({
                                     color="$gray500"
                                     pt={2}
                                 >
-                                    25 de setembro, 2025 as 15:00
+                                    {successfullAt
+                                        ? formatSuccessDate(successfullAt)
+                                        : ""}
                                 </Text>
                             </VStack>
                         </VStack>
@@ -209,7 +229,9 @@ export const Receipt = ({
                                             color="$gray400"
                                             fontSize={16}
                                         >
-                                            Mastercard ••••7076
+                                            {cardBrand && cardLast4
+                                                ? `${cardBrand} ••••${cardLast4}`
+                                                : "Cartão não informado"}
                                         </Text>
                                         <Text
                                             fontFamily="novaBody"
@@ -217,7 +239,7 @@ export const Receipt = ({
                                             color="$gray400"
                                             fontSize={14}
                                         >
-                                            1x de R$ {totalAmount} sem juros
+                                            {installmentText}
                                         </Text>
                                     </HStack>
                                 </VStack>
@@ -238,7 +260,7 @@ export const Receipt = ({
                                     fontFamily="$novaBody"
                                     lineHeight={20}
                                 >
-                                    9fc648fd-4557-4330-9cff-3ddc69e9b3a9
+                                    {transactionId}
                                 </Text>
                             </VStack>
                         </VStack>
