@@ -16,23 +16,26 @@ import {
 import { formatMoney } from "@/utils/money";
 import { Button } from "../ui/Button";
 import { useRouter } from "expo-router";
+import { ConversationPriority } from "@/Context/ChatProvider";
 
 type InternalMessagesProps = {
+    sendToPayment: boolean;
     contactConversation: MessagesPayload;
+    paymentItems: PaymentItems;
+    contactName: string | undefined;
+    needAnswerOpen?: boolean | undefined;
+    changePriority: (priority: ConversationPriority) => void;
     handleSendToPayment: () => void;
     gaveRightAnswer: () => void;
     finishChat: () => void;
     likeToAnswer: (need: boolean) => void;
-    paymentItems: PaymentItems;
-    contactName: string | undefined;
-    needAnswerOpen?: boolean | undefined;
     setNeedAnswerOpen: Dispatch<SetStateAction<boolean | undefined>>;
 };
 
 type InternalMessage = {
     text: {
         title?: string;
-        content: string;
+        content?: string;
         color: any;
         fontSize: number;
     };
@@ -51,17 +54,23 @@ type InternalMessage = {
 };
 
 export const InternalMessages = ({
-    handleSendToPayment,
-    contactConversation,
-    gaveRightAnswer,
-    finishChat,
-    likeToAnswer,
+    sendToPayment,
     contactName,
     paymentItems,
     needAnswerOpen,
+    contactConversation,
+    changePriority,
+    finishChat,
+    likeToAnswer,
+    gaveRightAnswer,
     setNeedAnswerOpen,
+    handleSendToPayment,
 }: InternalMessagesProps) => {
     const router = useRouter();
+
+    const [answerNotNeeded, setAnswerNotNeeded] = useState<boolean | undefined>(
+        undefined,
+    );
 
     const {
         isCreator,
@@ -69,8 +78,10 @@ export const InternalMessages = ({
         needReply,
         answersCount,
         messages,
+        isPresenting,
         contactAnswersCount,
         contactTotalAnswers,
+        priority,
     } = contactConversation;
 
     const [internalMessage, setInternalMessage] = useState<InternalMessage>({
@@ -94,6 +105,24 @@ export const InternalMessages = ({
 
         if (needReply && !isCreator && needAnswerOpen === undefined) {
             setNeedAnswerOpen(true);
+        } else if (!needReply && !isCreator && needAnswerOpen !== undefined) {
+            setNeedAnswerOpen(undefined);
+        }
+
+        if (
+            answerNotNeeded &&
+            isPresenting &&
+            !isCreator &&
+            messages.length > 0 &&
+            answerNotNeeded === undefined
+        ) {
+            setAnswerNotNeeded(true);
+        } else if (
+            answerNotNeeded !== undefined &&
+            !isCreator &&
+            !isPresenting
+        ) {
+            setAnswerNotNeeded(undefined);
         }
 
         if (hasToPay) {
@@ -151,8 +180,8 @@ export const InternalMessages = ({
             if (!isCreator) {
                 setInternalMessage({
                     text: {
-                        content: "Conversa finalizada",
-                        color: "$negative",
+                        content: "Conversa encerrada e arquivada",
+                        color: "$primaryDefault",
                         fontSize: 17,
                     },
                     buttons: [],
@@ -189,7 +218,7 @@ export const InternalMessages = ({
                 });
                 return;
             }
-        } else if (messages.length === 0) {
+        } else if (isPresenting && messages.length === 0) {
             setInternalMessage({
                 text: {
                     content: "Aguardando apresentação",
@@ -225,6 +254,33 @@ export const InternalMessages = ({
                 active: true,
             });
             return;
+        } else if (isPresenting && !isCreator && messages.length > 0) {
+            setInternalMessage({
+                text: {
+                    title: "Mensagem sem resposta obrigatória",
+                    content:
+                        "A resposta é opcional, deseja responder essa mensagem?",
+                    color: "$gray900",
+                    fontSize: 17,
+                },
+                buttons: [
+                    {
+                        type: "positive",
+                        text: "Responder",
+                        action: () => {
+                            setAnswerNotNeeded(false);
+                        },
+                    },
+                    {
+                        type: "negative",
+                        text: "Encerrar e arquivar",
+                        action: finishChat,
+                    },
+                ],
+                type: "actionSheet",
+                active: !isCreator,
+            });
+            return;
         } else if (answersCount <= 0 && isCreator) {
             setInternalMessage({
                 text: {
@@ -238,13 +294,16 @@ export const InternalMessages = ({
             });
             return;
         } else if (
+            (answerNotNeeded === undefined || answerNotNeeded === false) &&
             contactAnswersCount === 0 &&
             !isCreator &&
             contactTotalAnswers <= 2
         ) {
             setInternalMessage({
                 text: {
-                    content: `${contactName?.split(" ")[0]} pode te responder até 3 vezes. Deseja conceder 1 direito de resposta, ou encerrar a conversa?`,
+                    title: `${contactName?.split(" ")[0]} pode te responder até 3 vezes.`,
+                    content:
+                        "Deseja conceder 1 direito de resposta, ou encerrar a conversa?",
                     color: "$gray900",
                     fontSize: 17,
                 },
@@ -260,7 +319,7 @@ export const InternalMessages = ({
                         action: finishChat,
                     },
                 ],
-                type: "floating",
+                type: "actionSheet",
                 active: true,
             });
             return;
@@ -278,6 +337,42 @@ export const InternalMessages = ({
                         action: finishChat,
                     },
                 ],
+                type: "actionSheet",
+                active: true,
+            });
+            return;
+        } else if (!isCreator && priority === "LOW") {
+            setInternalMessage({
+                text: {
+                    title: "Qual a prioridade dessa resposta na sua fila de leitura",
+                    color: "$gray900",
+                    fontSize: 17,
+                },
+                buttons: [
+                    {
+                        type: "positive",
+                        text: "Normal",
+                        action: () => changePriority("MEDIUM"),
+                    },
+                    {
+                        type: "negative",
+                        text: "Prioritário",
+                        textColor: "$warning",
+                        action: () => changePriority("HIGH"),
+                    },
+                ],
+                type: "actionSheet",
+                active: true,
+            });
+            return;
+        } else if (answersCount <= 0 && !isCreator) {
+            setInternalMessage({
+                text: {
+                    content: "Aguardando resposta",
+                    color: priority === "HIGH" ? "$warning" : "$primaryDefault",
+                    fontSize: 17,
+                },
+                buttons: [],
                 type: "floating",
                 active: true,
             });
@@ -296,21 +391,26 @@ export const InternalMessages = ({
         }
     }, [
         contactName,
+        needAnswerOpen,
         paymentItems,
+        answerNotNeeded,
+        priority,
         needReply,
         answersCount,
         messages,
+        isPresenting,
         isCreator,
         isFinished,
         contactAnswersCount,
         contactTotalAnswers,
         router,
+        changePriority,
         gaveRightAnswer,
         finishChat,
         likeToAnswer,
         handleSendToPayment,
-        needAnswerOpen,
         setNeedAnswerOpen,
+        setAnswerNotNeeded,
     ]);
 
     return (
@@ -342,17 +442,21 @@ export const InternalMessages = ({
                             {internalMessage.text.title}
                         </Text>
                     )}
-                    <Text
-                        textAlign="center"
-                        fontFamily="$arialHeading"
-                        fontWeight="$bold"
-                        fontSize={internalMessage.text.fontSize}
-                        color={internalMessage.text.color}
-                        lineHeight={22}
-                        mb={internalMessage.buttons.length > 0 ? "$4" : "$0"}
-                    >
-                        {internalMessage.text.content}
-                    </Text>
+                    {internalMessage.text.content && (
+                        <Text
+                            textAlign="center"
+                            fontFamily="$arialHeading"
+                            fontWeight="$bold"
+                            fontSize={internalMessage.text.fontSize}
+                            color={internalMessage.text.color}
+                            lineHeight={22}
+                            mb={
+                                internalMessage.buttons.length > 0 ? "$4" : "$0"
+                            }
+                        >
+                            {internalMessage.text.content}
+                        </Text>
+                    )}
                     {internalMessage.items && (
                         <Fragment>
                             <VStack gap="$1">
@@ -440,7 +544,11 @@ export const InternalMessages = ({
             </HStack>
         ) : (
             <Actionsheet
-                isOpen={needAnswerOpen ?? true}
+                isOpen={
+                    sendToPayment === false
+                        ? (needAnswerOpen ?? answerNotNeeded ?? true)
+                        : false
+                }
                 onClose={() => {
                     router.back();
                 }}
@@ -462,21 +570,23 @@ export const InternalMessages = ({
                                     {internalMessage.text.title}
                                 </Text>
                             )}
-                            <Text
-                                textAlign="center"
-                                fontFamily="$arialHeading"
-                                fontWeight="$bold"
-                                fontSize={internalMessage.text.fontSize}
-                                color={internalMessage.text.color}
-                                lineHeight={22}
-                                mb={
-                                    internalMessage.buttons.length > 0
-                                        ? "$4"
-                                        : "$0"
-                                }
-                            >
-                                {internalMessage.text.content}
-                            </Text>
+                            {internalMessage.text.content && (
+                                <Text
+                                    textAlign="center"
+                                    fontFamily="$arialHeading"
+                                    fontWeight="$bold"
+                                    fontSize={internalMessage.text.fontSize}
+                                    color={internalMessage.text.color}
+                                    lineHeight={22}
+                                    mb={
+                                        internalMessage.buttons.length > 0
+                                            ? "$4"
+                                            : "$0"
+                                    }
+                                >
+                                    {internalMessage.text.content}
+                                </Text>
+                            )}
                             {internalMessage.items && (
                                 <Fragment>
                                     <VStack gap="$1">
@@ -540,7 +650,11 @@ export const InternalMessages = ({
                                     (button, index) => (
                                         <Button
                                             key={index}
-                                            bgColor="$gray100"
+                                            bgColor={
+                                                button.type === "positive"
+                                                    ? "$primaryDefault"
+                                                    : "$transparent"
+                                            }
                                             onPress={button.action}
                                         >
                                             <ButtonText
@@ -552,8 +666,8 @@ export const InternalMessages = ({
                                                         ? button.textColor
                                                         : button.type ===
                                                             "positive"
-                                                          ? "$primaryDefault"
-                                                          : "$negative"
+                                                          ? "$white"
+                                                          : "$primaryDefault"
                                                 }
                                                 fontWeight="$bold"
                                             >

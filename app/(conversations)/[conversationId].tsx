@@ -25,7 +25,7 @@ import {
 import { useQuery } from "@tanstack/react-query";
 
 import { useAuth } from "@/Context/AuthProvider";
-import { useChatContext } from "@/Context/ChatProvider";
+import { ConversationPriority, useChatContext } from "@/Context/ChatProvider";
 
 import { useOnlineUsersStore } from "@/stores/onlineUsersStore";
 
@@ -70,6 +70,7 @@ const ChatsScreen = () => {
         gaveAnswerRight,
         finishConversation,
         markMessagesAsRead,
+        changeConversationPriority,
     } = useChatContext();
 
     const [formActive, setFormActive] = useState(false);
@@ -282,6 +283,7 @@ const ChatsScreen = () => {
                                         handleSendToPayment={() => {
                                             setSendToPayment(true);
                                         }}
+                                        sendToPayment={sendToPayment}
                                         likeToAnswer={likeAnswer}
                                         contactConversation={
                                             contactConversation
@@ -294,6 +296,14 @@ const ChatsScreen = () => {
                                         finishChat={() =>
                                             finishConversation({
                                                 conversationId,
+                                            })
+                                        }
+                                        changePriority={(
+                                            priority: ConversationPriority,
+                                        ) =>
+                                            changeConversationPriority({
+                                                conversationId,
+                                                priority,
                                             })
                                         }
                                         paymentItems={paymentItems}

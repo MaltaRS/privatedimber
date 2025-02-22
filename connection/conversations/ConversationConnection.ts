@@ -1,4 +1,5 @@
 import { User } from "@/Context/AuthProvider";
+import { ConversationPriority } from "@/Context/ChatProvider";
 
 import api from "@/utils/api";
 
@@ -12,11 +13,12 @@ export type Conversation = {
         verifiedAt: string | null;
     };
     paidPrice: number;
+    isPresenting: boolean;
     apresentationImage: boolean;
     apresentationVideo: boolean;
     apresentationDocument: boolean;
     createdAt: string;
-    priority: "HIGH" | "MEDIUM" | "LOW";
+    priority: ConversationPriority;
     needReply: boolean;
     messages: Message[];
 };
@@ -43,9 +45,11 @@ export type MessagesPayload = {
     totalAnswers: number;
     contactTotalAnswers: number;
     contactAnswersCount: number;
+    isPresenting: boolean;
     isCreator: boolean;
-    needReply: boolean;
     isFinished: boolean;
+    priority: ConversationPriority;
+    needReply: boolean;
 };
 
 export type ConversationsResponse = {

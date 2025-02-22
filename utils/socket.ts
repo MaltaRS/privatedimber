@@ -21,6 +21,7 @@ const createSocket = async (): Promise<
             token: `Bearer ${accessToken}`,
         },
         transports: ["websocket"],
+        reconnection: true,
     });
 
     socket.on("connect", () => {
@@ -86,7 +87,10 @@ const createSocket = async (): Promise<
 export const getSocket = async (): Promise<
     Socket<DefaultEventsMap, DefaultEventsMap>
 > => {
-    if (!socket || !socket.active) {
+    if (!socket || !socket.connected) {
+        if (socket) {
+            socket.disconnect();
+        }
         socket = await createSocket();
     }
     return socket;

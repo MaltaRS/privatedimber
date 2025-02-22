@@ -46,7 +46,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({
 
     const queryClient = useQueryClient();
 
-    const { recreate, disconnect } = useSocket();
+    const { socket, recreate, disconnect } = useSocket();
 
     const { data: user, isLoading } = useQuery<User | null>({
         queryKey: ["authenticatedUser"],
@@ -83,19 +83,39 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({
     };
 
     const signOut = async () => {
-        disconnect();
-
-        SecureStoreEncrypted.deleteItem("accessToken");
-        SecureStoreEncrypted.deleteItem("refreshToken");
-
-        queryClient.clear();
-
         setIsSigningOut(true);
 
-        removeAuthorizationHeader();
+        try {
+            if (socket) {
+                socket.io.opts.reconnection = false;
 
-        // @ts-ignore
-        router.replace("(auth)/");
+                await new Promise<void>((resolve, reject) => {
+                    socket.on("disconnect", () => {
+                        console.log(
+                            "Socket desconectado com sucesso no cliente",
+                        );
+                        resolve();
+                    });
+                    socket.on("connect_error", (err) => {
+                        console.error("Erro na desconexão:", err);
+                        reject(err);
+                    });
+                    socket.disconnect();
+                });
+            }
+
+            SecureStoreEncrypted.deleteItem("accessToken");
+            SecureStoreEncrypted.deleteItem("refreshToken");
+            queryClient.clear();
+            removeAuthorizationHeader();
+
+            // @ts-expect-error
+            router.replace("(auth)/");
+        } catch (error) {
+            console.error("Erro durante o signOut:", error);
+        } finally {
+            setIsSigningOut(false);
+        }
     };
 
     const isAuthenticated = !!user;

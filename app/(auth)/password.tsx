@@ -88,7 +88,7 @@ const PasswordScreen = () => {
 
             await signIn(access_token, refresh_token);
 
-            router.push("/(tabs)/explore");
+            router.replace("/(tabs)/explore");
         } catch (error: any) {
             console.error("Erro durante o login:", error);
 

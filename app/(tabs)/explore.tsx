@@ -345,7 +345,11 @@ const ExploreScreen = () => {
                                 data={popularUsers}
                                 keyExtractor={(item: any) => item.id.toString()}
                                 refreshing={isLoadingPopularUsers}
-                                onRefresh={() => {}}
+                                onRefresh={() => {
+                                    queryClient.invalidateQueries({
+                                        queryKey: ["popularUsers"],
+                                    });
+                                }}
                                 renderItem={({ item }: any) => (
                                     <ExploreCard
                                         id={item.id}

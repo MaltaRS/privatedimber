@@ -303,7 +303,7 @@ const SignUp = () => {
 
             SecureStoreUnencrypted.deleteItem("verified_email");
 
-            router.push("/(tabs)/explore");
+            router.replace("/(tabs)/explore");
         } catch (error: any) {
             console.error(error.request?._response);
             Alert.alert(

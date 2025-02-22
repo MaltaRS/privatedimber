@@ -36,6 +36,7 @@ import { PaymentSheetComponent } from ".";
 import { Button } from "../ui/Button";
 
 import { Receipt } from "./receipt";
+import { Dimensions } from "react-native";
 
 type ConfirmationProps = {
     conversationId: string;
@@ -70,19 +71,24 @@ export const Confirmation = ({
         successfullAt?: string;
     }>({});
 
+    const { width, height } = Dimensions.get("window");
+
+    console.log(width, height);
+
     const handleCloseSummary = ({ success = true }: { success?: boolean }) => {
         setShowSummary(false);
-        setShowReceipt(success);
         setSendToPayment(success);
     };
 
     const handleCloseReceipt = () => {
         setShowReceipt(false);
+        setShowSummary(false);
         setSendToPayment(false);
     };
 
     const pollTransaction = async (id: string) => {
         setIsPolling(true);
+        setShowSummary(false);
         const intervalId = setInterval(async () => {
             try {
                 const transaction = await findTransactionById(id);
@@ -224,240 +230,218 @@ export const Confirmation = ({
 
     return (
         <Fragment>
-            {isPolling ? (
+            {isPolling && (
                 <Box
-                    flex={1}
-                    bg="white"
+                    style={{
+                        position: "absolute",
+                        top: 0,
+                        left: 0,
+                        width,
+                        height,
+                        backgroundColor: "white",
+                    }}
                     justifyContent="center"
                     alignItems="center"
+                    zIndex={2000}
                 >
                     <Spinner size="large" />
                 </Box>
-            ) : (
-                <>
-                    <Actionsheet
-                        isOpen={showSummary}
-                        onClose={() => handleCloseSummary({ success: false })}
-                        zIndex={999}
-                    >
-                        <ActionsheetBackdrop bgColor="#000" />
-                        <ActionsheetContent zIndex={999} bgColor="white">
-                            <ActionsheetDragIndicatorWrapper>
-                                <ActionsheetDragIndicator bgColor="#000" />
-                            </ActionsheetDragIndicatorWrapper>
-                            <ActionsheetItem>
-                                <VStack pt="$2" gap="$2" w="$full">
-                                    <HStack
-                                        gap="$2"
-                                        h={22}
-                                        alignItems="center"
-                                        justifyContent="center"
-                                        position="relative"
-                                    >
-                                        <GoBack
-                                            onPress={() =>
-                                                handleCloseSummary({
-                                                    success: false,
-                                                })
-                                            }
-                                            style={{
-                                                position: "absolute",
-                                                top: "-50%",
-                                                left: 0,
-                                            }}
-                                        />
-                                        <Text
-                                            size="lg"
-                                            color="#000"
-                                            fontFamily="$heading"
-                                            lineHeight={20}
-                                            textAlign="center"
-                                        >
-                                            Resumo do pagamento
-                                        </Text>
-                                    </HStack>
-                                    <Text
-                                        size="2xl"
-                                        fontFamily="$heading"
-                                        color="$black"
-                                        pt="$7"
-                                        pb="$9"
-                                    >
-                                        Enviando mensagem para {contact?.name}
-                                    </Text>
-                                    <VStack gap="$4">
-                                        <Text
-                                            fontFamily="$heading"
-                                            color="$black"
-                                            size="xl"
-                                            lineHeight={20}
-                                        >
-                                            Detalhes do envio
-                                        </Text>
-                                        <VStack gap="$2">
-                                            {paymentItems
-                                                .filter(
-                                                    (item: any) =>
-                                                        parseFloat(
-                                                            item.amount,
-                                                        ) > 0,
-                                                )
-                                                .map(
-                                                    (
-                                                        item: any,
-                                                        index: number,
-                                                    ) => (
-                                                        <HStack
-                                                            key={index}
-                                                            justifyContent="space-between"
-                                                        >
-                                                            <Text
-                                                                color="$gray700"
-                                                                fontSize={17}
-                                                            >
-                                                                {item.name}
-                                                            </Text>
-                                                            <Text
-                                                                color="$gray700"
-                                                                fontSize={18}
-                                                            >
-                                                                R${" "}
-                                                                {(
-                                                                    (item.amount *
-                                                                        item.quantity) /
-                                                                    100
-                                                                )
-                                                                    .toFixed(2)
-                                                                    .replace(
-                                                                        ".",
-                                                                        ",",
-                                                                    )}
-                                                            </Text>
-                                                        </HStack>
-                                                    ),
-                                                )}
+            )}
+            <Actionsheet
+                isOpen={showSummary}
+                onClose={() => handleCloseSummary({ success: false })}
+            >
+                <ActionsheetBackdrop bgColor="#000" />
+                <ActionsheetContent zIndex={999} bgColor="white">
+                    <ActionsheetDragIndicatorWrapper>
+                        <ActionsheetDragIndicator bgColor="#000" />
+                    </ActionsheetDragIndicatorWrapper>
+                    <ActionsheetItem>
+                        <VStack pt="$2" gap="$2" w="$full">
+                            <HStack
+                                gap="$2"
+                                h={22}
+                                alignItems="center"
+                                justifyContent="center"
+                                position="relative"
+                            >
+                                <GoBack
+                                    onPress={() =>
+                                        handleCloseSummary({
+                                            success: false,
+                                        })
+                                    }
+                                    style={{
+                                        position: "absolute",
+                                        top: "-50%",
+                                        left: 0,
+                                    }}
+                                />
+                                <Text
+                                    size="lg"
+                                    color="#000"
+                                    fontFamily="$heading"
+                                    lineHeight={20}
+                                    textAlign="center"
+                                >
+                                    Resumo do pagamento
+                                </Text>
+                            </HStack>
+                            <Text
+                                size="2xl"
+                                fontFamily="$heading"
+                                color="$black"
+                                pt="$7"
+                                pb="$9"
+                            >
+                                Enviando mensagem para {contact?.name}
+                            </Text>
+                            <VStack gap="$4">
+                                <Text
+                                    fontFamily="$heading"
+                                    color="$black"
+                                    size="xl"
+                                    lineHeight={20}
+                                >
+                                    Detalhes do envio
+                                </Text>
+                                <VStack gap="$2">
+                                    {paymentItems
+                                        .filter(
+                                            (item: any) =>
+                                                Number(
+                                                    item.amount * item.quantity,
+                                                ) > 0,
+                                        )
+                                        .map((item: any, index: number) => (
                                             <HStack
-                                                key={String(
-                                                    paymentItems.length + 1,
-                                                )}
+                                                key={index}
                                                 justifyContent="space-between"
-                                                mt="$1"
                                             >
                                                 <Text
                                                     color="$gray700"
                                                     fontSize={17}
                                                 >
-                                                    Valor total
+                                                    {item.name}
                                                 </Text>
                                                 <Text
-                                                    fontFamily="$jakartHeading"
-                                                    color="#000"
+                                                    color="$gray700"
                                                     fontSize={18}
                                                 >
-                                                    R$ {totalAmount}
+                                                    R${" "}
+                                                    {(
+                                                        (item.amount *
+                                                            item.quantity) /
+                                                        100
+                                                    )
+                                                        .toFixed(2)
+                                                        .replace(".", ",")}
                                                 </Text>
                                             </HStack>
-                                        </VStack>
-                                    </VStack>
-                                    <Divider
-                                        mb="$2"
-                                        bgColor="$gray200"
-                                        mt="$4"
-                                    />
-                                    <VStack gap="$4" mt="$4">
-                                        <Text
-                                            fontFamily="$heading"
-                                            color="$black"
-                                            size="xl"
-                                            lineHeight={20}
-                                        >
-                                            Forma de pagamento
+                                        ))}
+                                    <HStack
+                                        key={String(paymentItems.length + 1)}
+                                        justifyContent="space-between"
+                                        mt="$1"
+                                    >
+                                        <Text color="$gray700" fontSize={17}>
+                                            Valor total
                                         </Text>
-                                        <VStack>
+                                        <Text
+                                            fontFamily="$jakartHeading"
+                                            color="#000"
+                                            fontSize={18}
+                                        >
+                                            R$ {totalAmount}
+                                        </Text>
+                                    </HStack>
+                                </VStack>
+                            </VStack>
+                            <Divider mb="$2" bgColor="$gray200" mt="$4" />
+                            <VStack gap="$4" mt="$4">
+                                <Text
+                                    fontFamily="$heading"
+                                    color="$black"
+                                    size="xl"
+                                    lineHeight={20}
+                                >
+                                    Forma de pagamento
+                                </Text>
+                                <VStack>
+                                    <HStack justifyContent="space-between">
+                                        <Text color="$gray800" fontSize={17}>
+                                            Cartão de crédito
+                                        </Text>
+                                        <Text
+                                            fontFamily="$jakartHeading"
+                                            color="#000"
+                                            fontSize={18}
+                                        >
+                                            R$ {totalAmount}
+                                        </Text>
+                                    </HStack>
+                                    {user?.defaultPaymentMethodBrand != null &&
+                                        user?.defaultPaymentMethodLast4 !=
+                                            null && (
                                             <HStack justifyContent="space-between">
                                                 <Text
-                                                    color="$gray800"
-                                                    fontSize={17}
+                                                    fontFamily="novaBody"
+                                                    lineHeight={22}
+                                                    color="$gray400"
+                                                    fontSize={16}
                                                 >
-                                                    Cartão de crédito
+                                                    {
+                                                        user?.defaultPaymentMethodBrand
+                                                    }{" "}
+                                                    ••••
+                                                    {
+                                                        user?.defaultPaymentMethodLast4
+                                                    }
                                                 </Text>
                                                 <Text
-                                                    fontFamily="$jakartHeading"
-                                                    color="#000"
-                                                    fontSize={18}
+                                                    fontFamily="novaBody"
+                                                    lineHeight={22}
+                                                    color="$gray400"
+                                                    fontSize={14}
                                                 >
-                                                    R$ {totalAmount}
+                                                    1x de R$ {totalAmount} sem
+                                                    juros
                                                 </Text>
                                             </HStack>
-                                            {user?.defaultPaymentMethodBrand !=
-                                                null &&
-                                                user?.defaultPaymentMethodLast4 !=
-                                                    null && (
-                                                    <HStack justifyContent="space-between">
-                                                        <Text
-                                                            fontFamily="novaBody"
-                                                            lineHeight={22}
-                                                            color="$gray400"
-                                                            fontSize={16}
-                                                        >
-                                                            {
-                                                                user?.defaultPaymentMethodBrand
-                                                            }{" "}
-                                                            ••••
-                                                            {
-                                                                user?.defaultPaymentMethodLast4
-                                                            }
-                                                        </Text>
-                                                        <Text
-                                                            fontFamily="novaBody"
-                                                            lineHeight={22}
-                                                            color="$gray400"
-                                                            fontSize={14}
-                                                        >
-                                                            1x de R${" "}
-                                                            {totalAmount} sem
-                                                            juros
-                                                        </Text>
-                                                    </HStack>
-                                                )}
-                                        </VStack>
-                                    </VStack>
-                                    <Button
-                                        mt="$4"
-                                        onPress={HandleCreatePaymentIntent}
-                                        disabled={isCreatingPaymentIntent}
-                                    >
-                                        <ButtonText
-                                            textAlign="center"
-                                            fontFamily="$heading"
-                                            size="lg"
-                                            fontWeight="$bold"
-                                        >
-                                            Confirmar pagamento
-                                        </ButtonText>
-                                    </Button>
+                                        )}
                                 </VStack>
-                            </ActionsheetItem>
-                        </ActionsheetContent>
-                    </Actionsheet>
-                    {clientSecret && (
-                        <PaymentSheetComponent
-                            clientSecret={clientSecret}
-                            autoPresent={true}
-                            onSuccess={async () => {
-                                await handleSuccess();
-                                transactionId && pollTransaction(transactionId);
-                            }}
-                            onError={(err) => {
-                                console.error(
-                                    "Erro ao processar pagamento:",
-                                    err,
-                                );
-                                handleCloseSummary({ success: false });
-                            }}
-                        />
-                    )}
-                </>
+                            </VStack>
+                            <Button
+                                mt="$4"
+                                onPress={HandleCreatePaymentIntent}
+                                disabled={isCreatingPaymentIntent}
+                            >
+                                <ButtonText
+                                    textAlign="center"
+                                    fontFamily="$heading"
+                                    size="lg"
+                                    fontWeight="$bold"
+                                >
+                                    Confirmar pagamento
+                                </ButtonText>
+                            </Button>
+                        </VStack>
+                    </ActionsheetItem>
+                </ActionsheetContent>
+            </Actionsheet>
+            {clientSecret && (
+                <PaymentSheetComponent
+                    clientSecret={clientSecret}
+                    autoPresent={true}
+                    onSuccess={async () => {
+                        await handleSuccess();
+                        transactionId && pollTransaction(transactionId);
+                    }}
+                    onError={(err) => {
+                        console.error("Erro ao processar pagamento:", err);
+                        handleCloseSummary({ success: false });
+                    }}
+                />
             )}
             <Receipt
                 showReceipt={showReceipt}

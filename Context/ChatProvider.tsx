@@ -21,6 +21,13 @@ export type SendMessageParams = {
     shouldDeliver?: boolean;
 };
 
+export type ConversationPriority = "LOW" | "MEDIUM" | "HIGH";
+
+export type ChangeConversationPriorityParams = {
+    conversationId: string;
+    priority: ConversationPriority;
+};
+
 type ChatContextData = {
     joinConversation: (params: { conversationId: string }) => void;
     leaveConversation: (params: { conversationId: string }) => void;
@@ -28,6 +35,9 @@ type ChatContextData = {
     gaveAnswerRight: (params: { conversationId: string }) => void;
     finishConversation: (params: { conversationId: string }) => void;
     markMessagesAsRead: (params: { conversationId: string }) => void;
+    changeConversationPriority: (
+        params: ChangeConversationPriorityParams,
+    ) => void;
 };
 
 const ChatContext = createContext<ChatContextData>({} as ChatContextData);
@@ -162,8 +172,13 @@ export function ChatProvider({ children }: { children: ReactNode }) {
             });
         }
 
-        const handleNewAnswerRight = (data: { conversationId: string }) => {
-            const { conversationId } = data;
+        const handleNewAnswerRight = (data: {
+            conversationId: string;
+            userId: number;
+        }) => {
+            const { conversationId, userId } = data;
+
+            if (userId !== Number(user.id)) return;
 
             queryClient.setQueryData(
                 ["conversationMessage", conversationId],
@@ -229,12 +244,32 @@ export function ChatProvider({ children }: { children: ReactNode }) {
             );
         }
 
+        function handlePriorityChanged(data: {
+            conversationId: number;
+            priority: ConversationPriority;
+        }) {
+            const { conversationId, priority } = data;
+
+            queryClient.setQueryData(
+                ["conversationMessage", String(conversationId)],
+                (oldData: any) => {
+                    if (!oldData) return oldData;
+
+                    return {
+                        ...oldData,
+                        priority,
+                    };
+                },
+            );
+        }
+
         socket.on("newMessage", handleNewMessage);
         socket.on(`conversationCreated_${user.id}`, handleConversationCreated);
 
         socket.on("newAnswerRight", handleNewAnswerRight);
         socket.on("conversationFinished", handleConversationFinished);
         socket.on("markedAsRead", handleMarkedAsRead);
+        socket.on("priorityChanged", handlePriorityChanged);
 
         return () => {
             socket.off("newMessage", handleNewMessage);
@@ -246,6 +281,7 @@ export function ChatProvider({ children }: { children: ReactNode }) {
             socket.off("newAnswerRight", handleNewAnswerRight);
             socket.off("conversationFinished", handleConversationFinished);
             socket.off("markedAsRead", handleMarkedAsRead);
+            socket.off("priorityChanged", handlePriorityChanged);
         };
     }, [socket, user, queryClient]);
 
@@ -309,6 +345,23 @@ export function ChatProvider({ children }: { children: ReactNode }) {
         [socket],
     );
 
+    const changeConversationPriority = useCallback(
+        ({
+            conversationId,
+            priority,
+        }: {
+            conversationId: string;
+            priority: ConversationPriority;
+        }) => {
+            if (!socket) return;
+            socket.emit("changeConversationPriority", {
+                conversationId: Number(conversationId),
+                priority,
+            });
+        },
+        [socket],
+    );
+
     const finishConversation = useCallback(
         ({ conversationId }: { conversationId: string }) => {
             if (!socket) return;
@@ -333,6 +386,7 @@ export function ChatProvider({ children }: { children: ReactNode }) {
             gaveAnswerRight,
             finishConversation,
             markMessagesAsRead,
+            changeConversationPriority,
         }),
         [
             joinConversation,
@@ -341,6 +395,7 @@ export function ChatProvider({ children }: { children: ReactNode }) {
             gaveAnswerRight,
             finishConversation,
             markMessagesAsRead,
+            changeConversationPriority,
         ],
     );
 

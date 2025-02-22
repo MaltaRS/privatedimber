@@ -154,7 +154,9 @@ export const Receipt = ({
                                 {paymentItems
                                     .filter(
                                         (item: any) =>
-                                            parseFloat(item.amount) > 0,
+                                            Number(
+                                                item.amount * item.quantity,
+                                            ) > 0,
                                     )
                                     .map((item: any, index: number) => (
                                         <HStack

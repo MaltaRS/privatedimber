@@ -77,8 +77,8 @@ export const ChatCard = ({
             <HStack gap="$4" alignItems="center">
                 {!isProfessional ? (
                     <Avatar
-                        width={54}
-                        height={54}
+                        width={66}
+                        height={66}
                         ml="-$1"
                         bgColor={
                             !isProfessional
@@ -105,18 +105,18 @@ export const ChatCard = ({
                     </Avatar>
                 ) : (
                     <Box
-                        width={54}
-                        height={54}
+                        width={66}
+                        height={66}
                         rounded="$full"
                         bgColor={
-                            chat.priority === "HIGH" ? "#E0A10A" : "#bde6fd"
+                            chat.priority === "HIGH" ? "#fcefdc" : "#bde6fd"
                         }
                         alignItems="center"
                         justifyContent="center"
                     >
                         <Text
-                            fontFamily="$arialBody"
-                            size="xs"
+                            fontFamily="$heading"
+                            fontSize={chat.priority === "HIGH" ? 12.2 : 14}
                             color={
                                 chat.priority === "HIGH" ? "#F1940A" : "#276EF1"
                             }
@@ -131,7 +131,9 @@ export const ChatCard = ({
                     <Text fontFamily="$arialBody" size="lg" color="#000">
                         {!isProfessional
                             ? name
-                            : formatCentsToMoney(chat.paidPrice)}
+                            : chat.paidPrice > 0
+                              ? formatCentsToMoney(chat.paidPrice)
+                              : "Não pago"}
                     </Text>
                     <HStack alignItems="center">
                         {!isProfessional ? (
@@ -200,16 +202,18 @@ export const ChatCard = ({
                                 {chat.apresentationVideo && (
                                     <Camera width={16} height={16} />
                                 )}
-                                <ArrowLeft
-                                    width={17}
-                                    height={17}
-                                    color="#374151"
-                                />
+                                {newMessages.length > 0 && (
+                                    <ArrowLeft
+                                        width={17}
+                                        height={17}
+                                        color="#374151"
+                                    />
+                                )}
                             </HStack>
                         )}
                     </HStack>
                 </VStack>
-                <Text fontFamily="$arialBody" size="xs" color="#6B7280">
+                <Text fontFamily="$heading" size="xs" color="#6B7280">
                     {newMessages.length > 0
                         ? formatMessageTime(
                               newMessages[newMessages.length - 1].createdAt,
