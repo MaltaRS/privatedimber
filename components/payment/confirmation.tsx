@@ -73,8 +73,6 @@ export const Confirmation = ({
 
     const { width, height } = Dimensions.get("window");
 
-    console.log(width, height);
-
     const handleCloseSummary = ({ success = true }: { success?: boolean }) => {
         setShowSummary(false);
         setSendToPayment(success);
