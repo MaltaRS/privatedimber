@@ -311,7 +311,7 @@ export function ChatProvider({ children }: { children: ReactNode }) {
             shouldDeliver,
         }: SendMessageParams) => {
             if (!socket) return;
-            if (!content.trim() && !image && !video) return;
+            if (!content.trim() && !image && !video && !document) return;
             socket.emit("sendMessage", {
                 conversationId: Number(conversationId),
                 content,

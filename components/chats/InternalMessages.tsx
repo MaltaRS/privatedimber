@@ -5,6 +5,7 @@ import { MessagesPayload } from "@/connection/conversations/ConversationConnecti
 
 import {
     Actionsheet,
+    ActionsheetBackdrop,
     ActionsheetContent,
     ActionsheetItem,
     ButtonText,
@@ -95,6 +96,8 @@ export const InternalMessages = ({
         active: false,
     });
 
+    console.log(answerNotNeeded);
+
     useEffect(() => {
         const hasToPay =
             messages.every((message) => message.deliveredAt == null) &&
@@ -110,17 +113,17 @@ export const InternalMessages = ({
         }
 
         if (
-            answerNotNeeded &&
-            isPresenting &&
+            answerNotNeeded === undefined &&
+            (isPresenting || (contactTotalAnswers > 1 && answersCount > 0)) &&
             !isCreator &&
-            messages.length > 0 &&
-            answerNotNeeded === undefined
+            messages.length > 0
         ) {
             setAnswerNotNeeded(true);
         } else if (
             answerNotNeeded !== undefined &&
             !isCreator &&
-            !isPresenting
+            !isPresenting &&
+            answersCount <= 0
         ) {
             setAnswerNotNeeded(undefined);
         }
@@ -200,7 +203,7 @@ export const InternalMessages = ({
                     buttons: [
                         {
                             type: "positive",
-                            text: "Enviar mensagem paga",
+                            text: "Enviar nova mensagem paga",
                             action: () => {
                                 return;
                             },
@@ -254,12 +257,19 @@ export const InternalMessages = ({
                 active: true,
             });
             return;
-        } else if (isPresenting && !isCreator && messages.length > 0) {
+        } else if (
+            (isPresenting || (contactTotalAnswers > 1 && answersCount > 0)) &&
+            !isCreator &&
+            messages.length > 0
+        ) {
+            let isReplic = contactTotalAnswers > 1 && answersCount > 0;
+
             setInternalMessage({
                 text: {
                     title: "Mensagem sem resposta obrigatória",
-                    content:
-                        "A resposta é opcional, deseja responder essa mensagem?",
+                    content: !isReplic
+                        ? "A resposta é opcional, deseja responder essa mensagem?"
+                        : "As respostas das réplicas não são obrigatórias. O que deseja fazer?",
                     color: "$gray900",
                     fontSize: 17,
                 },
@@ -552,8 +562,10 @@ export const InternalMessages = ({
                 onClose={() => {
                     router.back();
                 }}
+                closeOnOverlayClick={false}
                 zIndex={999}
             >
+                <ActionsheetBackdrop pointerEvents="none" />
                 <ActionsheetContent zIndex={999} bgColor="white">
                     <ActionsheetItem>
                         <VStack gap="$2" w="$full">

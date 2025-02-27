@@ -267,11 +267,6 @@ export const SendMessageForm = ({
         }
 
         const paymentItems = [
-            {
-                name: "Mensagem",
-                amount: 10000,
-                quantity: 1,
-            },
             ...(previewImagesToSend.length > 0
                 ? [
                       {
@@ -309,6 +304,8 @@ export const SendMessageForm = ({
                   ]
                 : []),
         ];
+
+        console.log(paymentItems);
 
         setPaymentItems((prev) => [...prev, ...paymentItems]);
         setFormActive(false);

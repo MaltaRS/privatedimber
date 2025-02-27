@@ -75,13 +75,13 @@ export const ChatCard = ({
             onLongPress={onLongPress}
         >
             <HStack gap="$4" alignItems="center">
-                {!isProfessional ? (
+                {!false ? ( // TODO: verify if this is the correct logic to an professional
                     <Avatar
                         width={66}
                         height={66}
                         ml="-$1"
                         bgColor={
-                            !isProfessional
+                            !false
                                 ? Colors.primaryDefault
                                 : chat.priority === "HIGH"
                                   ? "#E0A10A"
@@ -129,14 +129,14 @@ export const ChatCard = ({
                 )}
                 <VStack flex={1}>
                     <Text fontFamily="$arialBody" size="lg" color="#000">
-                        {!isProfessional
+                        {!false
                             ? name
                             : chat.paidPrice > 0
                               ? formatCentsToMoney(chat.paidPrice)
                               : "Não pago"}
                     </Text>
                     <HStack alignItems="center">
-                        {!isProfessional ? (
+                        {!false ? (
                             newMessages.length > 1 ? (
                                 <>
                                     <Box
@@ -155,13 +155,49 @@ export const ChatCard = ({
                                     </Text>
                                 </>
                             ) : lastMessage.image ? (
-                                <Text
-                                    fontFamily="$arialBody"
-                                    size="sm"
-                                    color="#6B7280"
-                                >
-                                    Imagem
-                                </Text>
+                                <>
+                                    <ImageSquare
+                                        width={14}
+                                        height={14}
+                                        color="#6B7280"
+                                    />
+                                    <Text
+                                        ml="$1"
+                                        fontFamily="$arialBody"
+                                        size="sm"
+                                        color="#6B7280"
+                                    >
+                                        Imagem
+                                    </Text>
+                                </>
+                            ) : lastMessage.video ? (
+                                <>
+                                    <Camera
+                                        width={16}
+                                        height={16}
+                                        color="#6B7280"
+                                    />
+                                    <Text
+                                        ml="$1"
+                                        fontFamily="$arialBody"
+                                        size="sm"
+                                        color="#6B7280"
+                                    >
+                                        Vídeo
+                                    </Text>
+                                </>
+                            ) : lastMessage.document ? (
+                                <>
+                                    <Paperclip size={16} color="#6B7280" />
+                                    <Text
+                                        ml="$1"
+                                        fontFamily="$arialBody"
+                                        size="sm"
+                                        color="#6B7280"
+                                    >
+                                        Documento
+                                    </Text>
+                                </>
                             ) : (
                                 <>
                                     {newMessages.length > 0 &&

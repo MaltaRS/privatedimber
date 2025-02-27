@@ -144,16 +144,20 @@ const ChatsScreen = () => {
                     quantity: 1,
                 },
                 ...messages.slice(1).map((message) => ({
-                    name: "Imagem",
+                    name: message.document
+                        ? "Documento"
+                        : message.image
+                          ? "Imagem"
+                          : "Vídeo",
                     amount: 1000,
                     quantity: 1,
                 })),
             ]);
         }
     }, [
+        user,
         isLoading,
         contactConversation,
-        user,
         conversationId,
         markMessagesAsRead,
     ]);
@@ -164,10 +168,17 @@ const ChatsScreen = () => {
     const isOnline = onlineUsers.includes(Number(contact?.id));
 
     return (
-        <BaseContainer px="$0">
-            <HStack gap="$3" px="$3" alignItems="center">
+        <BaseContainer px="$0" pt={27}>
+            <HStack
+                gap="$3"
+                px="$3"
+                py="$2"
+                alignItems="center"
+                borderColor="$gray300"
+                bgColor="$white"
+                borderBottomWidth={1}
+            >
                 <GoBack
-                    transparent
                     onPress={() => {
                         if (
                             formActive &&
@@ -217,7 +228,6 @@ const ChatsScreen = () => {
                     )}
                 </HStack>
             </HStack>
-            <Divider mt="$3" bgColor="$gray300" zIndex={5} />
             <VStack flex={1}>
                 {formActive ? (
                     <SendMessageForm

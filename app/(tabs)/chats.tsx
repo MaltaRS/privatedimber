@@ -65,6 +65,7 @@ const ChatsScreen = () => {
         { name: "Não lidas", filterName: "unread" },
         { name: "Expiradas", filterName: "expired" },
         { name: "Finalizadas", filterName: "finished" },
+        { name: "Arquivadas", filterName: "archived" },
     ];
 
     const [selectedCategory, setSelectedCategory] = useState<string>(

@@ -63,10 +63,6 @@ export const AttachmentModal = ({
         onClose();
     }, [onSend, selectedFile, caption, onClose]);
 
-    const handleBlur = useCallback(() => {
-        setCaption(caption.trim());
-    }, [caption]);
-
     return (
         <Modal
             pt="$6"

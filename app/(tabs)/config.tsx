@@ -1,3 +1,5 @@
+import React, { useState } from "react";
+
 import {
     Avatar,
     AvatarFallbackText,
@@ -13,6 +15,7 @@ import {
 import { useRouter } from "expo-router";
 
 import { useGoogleAuth } from "@/Context/GoogleAuthProvider";
+
 import { useAuth } from "@/Context/AuthProvider";
 
 import { ChevronRight } from "lucide-react-native";
@@ -21,6 +24,7 @@ import { Colors } from "@/constants/Colors";
 
 import { ConfigCard } from "@/components/tabs/config/configCard";
 import { BaseContainer } from "@/components/BaseContainer";
+import { ConfirmationModal } from "@/components/ui/ConfirmationModal";
 
 const ConfigScreen = () => {
     const router = useRouter();
@@ -28,6 +32,12 @@ const ConfigScreen = () => {
     const { user } = useAuth();
 
     const { signOut } = useGoogleAuth();
+
+    const [modalVisible, setModalVisible] = useState(false);
+
+    const handleSignOut = async () => {
+        await signOut();
+    };
 
     return (
         <BaseContainer bgColor="$gray50">
@@ -155,14 +165,22 @@ const ConfigScreen = () => {
                                 {
                                     title: "Sair",
                                     color: "$negative",
-                                    action: signOut,
+                                    action: () => setModalVisible(true),
                                 },
                             ]}
                         />
                     </VStack>
                 </ScrollView>
             </VStack>
+            <ConfirmationModal
+                isOpen={modalVisible}
+                onClose={() => setModalVisible(false)}
+                onConfirm={handleSignOut}
+                title="Deseja realmente sair?"
+                message="Você realmente deseja sair da sua conta?"
+            />
         </BaseContainer>
     );
 };
+
 export default ConfigScreen;
