@@ -1,3 +1,5 @@
+import { useState } from "react";
+
 import {
     Avatar,
     AvatarFallbackText,
@@ -10,32 +12,36 @@ import {
     VStack,
 } from "@/gluestackComponents";
 
-import { StatusBar } from 'expo-status-bar';
-
+import { StatusBar } from "expo-status-bar";
 
 import { useRouter } from "expo-router";
 
+import { ChevronRight } from "lucide-react-native";
+
 import { useGoogleAuth } from "@/Context/GoogleAuthProvider";
 import { useAuth } from "@/Context/AuthProvider";
-
-import { ChevronRight } from "lucide-react-native";
 
 import { Colors } from "@/constants/Colors";
 
 import { ConfigCard } from "@/components/tabs/config/configCard";
 import { BaseContainer } from "@/components/BaseContainer";
+import { ConfirmationModal } from "@/components/ui/ConfirmationModal";
 
 const ConfigScreen = () => {
     const router = useRouter();
-    
+
     const { user } = useAuth();
-    
 
     const { signOut } = useGoogleAuth();
 
+    const [modalVisible, setModalVisible] = useState(false);
+
+    const handleSignOut = async () => {
+        await signOut();
+    };
+
     return (
         <BaseContainer bgColor="$gray50">
-            
             <VStack gap="$4">
                 <Text
                     size="lg"
@@ -76,7 +82,9 @@ const ConfigScreen = () => {
                                 </Avatar>
                                 <VStack gap="$1">
                                     <Text
-                                        onPress={() => router.push("/myprofile")}
+                                        onPress={() =>
+                                            router.push("/myprofile")
+                                        }
                                         size="lg"
                                         fontFamily="$heading"
                                         color="#000"
@@ -118,7 +126,6 @@ const ConfigScreen = () => {
                                 {
                                     title: "Notificações",
                                     href: "/confignotific",
-                                    
                                 },
                                 {
                                     title: "Definir valores",
@@ -203,7 +210,13 @@ const ConfigScreen = () => {
                 </ScrollView>
             </VStack>
             <StatusBar style="auto" />
-
+            <ConfirmationModal
+                isOpen={modalVisible}
+                onClose={() => setModalVisible(false)}
+                onConfirm={handleSignOut}
+                title="Deseja realmente sair?"
+                message="Você realmente deseja sair da sua conta?"
+            />
         </BaseContainer>
     );
 };
