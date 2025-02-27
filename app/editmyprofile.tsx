@@ -1,3 +1,4 @@
+import { StatusBar } from 'expo-status-bar';
 import { View, ScrollView, TextInput, StyleSheet } from 'react-native';
 
 import { 
@@ -13,6 +14,7 @@ import {
 import { useAuth } from "@/Context/AuthProvider";
 
 import { BaseContainer } from '@/components/BaseContainer';
+import HeaderContainer from '../components/HeaderContainer'
 import { ConfigCard } from "@/components/tabs/config/configCard";
 
 
@@ -24,7 +26,7 @@ export default function EditProfileScreen() {
         return(
             <Heading
                 style={{marginTop: 13, marginBottom: 13}}
-                size="lg" className="mb-1 mt-10" >
+                fontSize={17} className="mb-1 mt-10" >
                 {title.name}
             </Heading>
         );
@@ -38,8 +40,8 @@ export default function EditProfileScreen() {
                      alignItems: 'center',  justifyContent: 'space-between', marginTop: 20 
                     }}  className="bg-white  " >
                           
-                        <VStack>
-                              <Text  size="xl"  >{notific.name}</Text>
+                        <VStack style={{width: '100%'}}  >
+                              <Text  size="17"  >{notific.name}</Text>
                               <TextInput
                                 style={styles.input}
                                 placeholder={notific.place}
@@ -66,7 +68,7 @@ export default function EditProfileScreen() {
                             }}
                               alt={user?.name} >
                     </AvatarImage>
-               </Avatar>
+              </Avatar>
             
             </VStack>
         
@@ -77,24 +79,22 @@ export default function EditProfileScreen() {
 
     const AboutProfile = () => {
         return(
-            <View>
+          <View>
+            <TitleContainer name="Sobre" />
 
-                <TitleContainer name="Sobre" />
-
-                <VStack  
-                   style={{
-                        marginTop: 12 , borderWidth: 1, borderColor: '#f2f2f2', padding: 2, borderRadius: 6
-                    }} >
-                    
-                    
+                <VStack 
+                  style={{
+                    marginTop: 0 , borderWidth: 1, borderColor: '#f2f2f2', padding: 2, borderRadius: 6
+                      }} >
+                       
                     <Text 
-                        size="lg" style={{marginTop: 10, color: '#999'}} >
+                        size="15" style={{marginTop: 10, color: '#999'}} >
                         O meu grande objetivo de vida é ajudar você e sua empresa a expandir sua capacidade e visão empreendedora
                     </Text>
                    <View style={{ marginTop: 25, width: '100%', height: 3, backgroundColor: '#f2f2f2', borderRadius: 10}}  />
 
                 </VStack>
-            </View>
+          </View>
         );
     }
 
@@ -103,58 +103,57 @@ export default function EditProfileScreen() {
   return (
     <ScrollView style={{flex: 1}} >
         <BaseContainer
-         style={{marginTop: 70}}
          backgroundColor="#fff"
          gap="$2" >
 
-
+            <HeaderContainer name="Editar perfil" namebuttontab="Salvar" />
             <HeaderLogoProfile />
 
             <ContainerInput
              name="Nome" 
-             description="444 555 666 888" 
              place={user.name}
-             nav="profile" 
             />
 
             <ContainerInput
              name="Bio" 
-             description="444 555 666 888" 
              place="O meu grande objetivo de vida é ajudar você e sua empresa a expandir sua capacidade e visão empreendedora"
-             nav="profile" 
             />
 
             <ContainerInput
              name="Usuario" 
-             description="444 555 666 888" 
              place="@CamilaFarani"
-             nav="profile" 
             />
 
             <AboutProfile />
         
 
             <VStack>
-              <TitleContainer name="Minhas Categoris" />
+              <TitleContainer name="Informações profissionais" />
                 <ConfigCard
                     items={[
                         {
                            title: "Categorias",
-                            href: "/config/messages",
+                           href: "/editcategorysmyprofile",
                                                    
                         },
                         {
                             title: "Interesses",
-                            href: "/config/values",
+                            href: "/editmyinterestsprofile",
                         },
                         {
                             title: "Social",
-                            href: "/config/conversas",
+                            href: "editsocialinfosmyprofile",
                         },
+
+                        {
+                          title: "Verificar Conta",
+                          href: "verifyaccount",
+                      },
                     ]} >
                 </ConfigCard>
             </VStack>
 
+          <StatusBar style="auto" />
        </BaseContainer>
     </ScrollView>
   );
@@ -166,7 +165,7 @@ const styles = StyleSheet.create({
     backgroundColor: '#fff',
   },
   input: {
-    width: '98%',
+    width: '100%',
     borderWidth: 1,
     borderColor: '#f2f2f2',
     borderRadius: 7,

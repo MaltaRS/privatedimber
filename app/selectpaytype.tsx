@@ -11,6 +11,8 @@ import {
  
 import { BaseContainer } from "@/components/BaseContainer";
 import { MainTitle } from "@/components/MainTitle";
+import  HeaderContainer from "@/components/HeaderContainer";
+
 import  ButtonPadrao  from "@/components/ButtonPadrao";
 
 import  Row  from "../components/Row"
@@ -104,8 +106,10 @@ export default function SelectPayTypeScreen() {
        <VStack className="mt-5 " >
 
             <MainTitle  title="Selecione o Cartao" />
+            <HeaderContainer name="Pagamentos"  />
+            
             <Heading style={{fontSize: 15, marginTop: 20}}  >
-                Você está utilizando R$ 402,00 do seu saldo, o valor restante de R$ 638,00 será cobrado no cartão de crédito selecionado.
+                Você está utilizando R$ 402,00 do seu saldo,o valor restante de R$ 638,00 será cobrado no cartão de crédito selecionado.
             </Heading>
 
             

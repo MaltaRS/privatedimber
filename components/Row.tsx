@@ -7,9 +7,8 @@ export default function Row() {
         marginTop: 20, 
         width: '100%', 
         height: 2, 
-        backgroundColor: '#f1f1f1', 
+        backgroundColor: '#1111', 
         borderRadius: 10}} >
     </View>
   );
 }
-

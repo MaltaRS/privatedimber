@@ -1,13 +1,6 @@
-import {
-    Divider,
-    HStack,
-    Pressable,
-    Text,
-    VStack,
-} from "@/gluestackComponents";
-
+import { Divider, HStack, Pressable, Text, VStack } from "@/gluestackComponents";
+import { useRouter } from "expo-router";
 import { Colors } from "@/constants/Colors";
-
 import { ChevronRight } from "lucide-react-native";
 
 type ConfigCardItem = React.ComponentProps<typeof Text> & {
@@ -22,12 +15,21 @@ type ConfigCardProps = {
 };
 
 export const ConfigCard = ({ items }: ConfigCardProps) => {
+    const router = useRouter();
+
     return (
         <VStack bgColor="#fff" pl="$4" borderRadius="$xl" elevation={2}>
             {items.map((item, index) => (
                 <Pressable
                     key={item.title}
-                    {...(item.action && { onPress: item.action })}
+                    onPress={() => {
+                        if (item.href) {
+                            router.push(item.href);
+                        }
+                        if (item.action) {
+                            item.action();
+                        }
+                    }}
                 >
                     <HStack
                         pr="$4"

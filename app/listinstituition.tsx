@@ -1,3 +1,4 @@
+import { StatusBar } from 'expo-status-bar';
 import React, { useEffect, useState } from "react";
 
 import {View, TouchableOpacity, } from 'react-native'
@@ -8,11 +9,6 @@ import {
     VStack,
     HStack,
     Image,
-    Input,
-    InputSlot,
-    InputIcon,
-    InputField,
-
  } from "@/gluestackComponents";
 
  import {
@@ -20,23 +16,14 @@ import {
 } from "lucide-react-native";
 
 import { BaseContainer } from "@/components/BaseContainer";
-import { MainTitle } from "@/components/MainTitle";
-import { CategoryTabs } from "@/components/tabs/explore/CategoryTabs";
-
+import HeaderContainer from '../components/HeaderContainer'
 
  import MaterialIcons from '@expo/vector-icons/MaterialIcons';
-import { mockCategories } from "@/utils/mockDados";
-
 
 
 export default function ListInstituition() { 
      const router = useRouter();
      const logoInstituto = "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcS5z03a91O5qAqycFrTXVjaBcpy1rOjeBERaw&s"
-
-
-     const [categories, setCategories] = useState<string[]>(mockCategories);
-         const [selectedCategory, setSelectedCategory] = useState<string>("Geral");
-     
 
     const ItemListProfile = () => {
         return(
@@ -77,41 +64,7 @@ export default function ListInstituition() {
 
     return(
         <BaseContainer >
-          <MainTitle title="Doar" />
-
-
-            <Input
-                mt="$2"
-                variant="rounded"
-                bgColor="#E5E7EB"
-                size="xl"
-                borderWidth={0}
-            >
-                <InputSlot bgColor="#E5E7EB" pl="$5" pt="$1">
-                    <InputIcon>
-                        <Search size={20} color="#6B7280" />
-                    </InputIcon>
-                </InputSlot>
-                <InputField
-                    pl="$3"
-                    bgColor="#E5E7EB"
-                    placeholder="Pesquisar"
-                    placeholderTextColor="#6B7280"
-                    size="lg"
-                />
-            </Input>
-
-            <VStack style={{marginTop: 20, marginBottom: 20}} > 
-                <CategoryTabs
-                    categories={categories}
-                    selectedCategory={selectedCategory}
-                    onSelectCategory={(category) =>
-                        setSelectedCategory(category)
-                    }
-                    type="darkBlue"
-                />
-           </VStack>
-
+          <HeaderContainer name="Doar" />
 
             <ItemListProfile />
             <ItemListProfile />
@@ -120,7 +73,7 @@ export default function ListInstituition() {
             <ItemListProfile />
             <ItemListProfile />
 
-
+          <StatusBar style="auto" />
         </BaseContainer>
 
     );

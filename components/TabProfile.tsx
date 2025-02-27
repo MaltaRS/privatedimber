@@ -1,16 +1,10 @@
-import { View, ScrollView,  } from 'react-native';
+import { View, } from 'react-native';
 
 import { 
     Text,
     VStack,
     HStack,
-    Heading,
-    Box,
-    Button,
-    ButtonText
  } from "@/gluestackComponents";
-
- import AntDesign from '@expo/vector-icons/AntDesign';
 
 
 export default function TabProfile() {

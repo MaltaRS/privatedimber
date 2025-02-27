@@ -102,9 +102,14 @@ const RootLayout = () => {
                 <Stack.Screen name="(auth)/signup" />
                 <Stack.Screen name="notifications" />
                 <Stack.Screen name="myprofile" />
+                
                 <Stack.Screen name="profileusermsg" />
                 <Stack.Screen name="editmyprofile" />
+                <Stack.Screen name="editcategorysmyprofile" />
+                <Stack.Screen name="editsocialinfosmyprofile" />
+                <Stack.Screen name="editmyinterestsprofile" />
                 <Stack.Screen name="profileinstituition" />
+                
                 <Stack.Screen name="donationinstituition" />
                 <Stack.Screen name="listinstituition" />
                 <Stack.Screen name="mycarts" />
@@ -116,6 +121,26 @@ const RootLayout = () => {
                 <Stack.Screen name="confirmpaymsg" />
                 <Stack.Screen name="selectpaytype" />
                 <Stack.Screen name="saketype" />
+                
+
+                <Stack.Screen name="privacit" />
+                <Stack.Screen name="permisions" />
+                <Stack.Screen name="confignotific" />
+                <Stack.Screen name="configchatoptions" />
+                <Stack.Screen name="configdefinedvaluemsg" />
+                <Stack.Screen name="createnewcart" />
+                <Stack.Screen name="sakeconfirmsucess" />
+                <Stack.Screen name="confirmsake" />
+                <Stack.Screen name="help" />
+                <Stack.Screen name="totalbalance" />
+                <Stack.Screen name="historicbalance" />
+                <Stack.Screen name="detailinfomsg" />
+                <Stack.Screen name="listblockusers" />
+                <Stack.Screen name="configsecurity" />
+                <Stack.Screen name="configsecurity2fa" />
+                <Stack.Screen name="changepassword" />
+                
+
 
             </Stack>
         </GluestackUIProvider>

@@ -1,4 +1,7 @@
-import {View, TouchableOpacity, StyleSheet} from 'react-native'
+import React, {useState } from 'react'
+import { useRouter } from "expo-router";
+
+import {View, TouchableOpacity, StyleSheet, Animated} from 'react-native'
 
 import { 
     Text,
@@ -8,7 +11,8 @@ import {
     AvatarImage,
     HStack,
     Input,
-    InputField
+    InputField,
+    Modal
  } from "@/gluestackComponents";
 
  import { BaseContainer } from '@/components/BaseContainer';
@@ -20,6 +24,12 @@ import {
 
 export default function DonationInstituitionValuescreen() { 
 const logoInstituto = "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcS5z03a91O5qAqycFrTXVjaBcpy1rOjeBERaw&s"
+
+
+    const router = useRouter();
+    const [modalVisible, setModalVisible] = useState(false);
+    const [buttonOpacity] = useState(new Animated.Value(0.3));
+
 
 
 
@@ -57,7 +67,7 @@ const logoInstituto = "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcS5z
     }
 
 
-    const PayInput = () => {
+    const SelectValueInput = () => {
       return(
       <View style={{marginTop: 20}}  >
 
@@ -97,12 +107,10 @@ const logoInstituto = "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcS5z
               </HStack>
 
               <VStack>
-
-
-              <HStack style={{width: '100%', alignItems: 'center', marginTop: 10 }} >
-                <Text style={{fontSize: 15}} >Saldo disponivel: </Text>
-                <Heading style={{fontSize: 15}}>R$ 1.400,00</Heading>
-              </HStack>
+                <HStack style={{width: '100%', alignItems: 'center', marginTop: 10 }} >
+                  <Text style={{fontSize: 15}} >Saldo disponivel: </Text>
+                  <Heading style={{fontSize: 15}}>R$ 1.400,00</Heading>
+                </HStack>
             </VStack>
             
   
@@ -114,59 +122,116 @@ const logoInstituto = "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcS5z
         <BaseContainer className=" flex-1" >
 
           <HeaderInfoProfile />
-          <PayInput />
+          <SelectValueInput />
+          
+          <Modal isOpen={modalVisible} onClose={() => setModalVisible(false)}>
+                <Modal.Content style={styles.modalBottom}>
+                    <Modal.Header>
+                        <Text style={styles.modalTitle}>Confirmação de doação</Text>
+                    </Modal.Header>
+                    <Modal.Body>
+                        <Text style={styles.modalBody}>Você está prestes a doar R$ 500,00 para Instituto Neymar. Deseja confirmar essa ação? Sua contribuição fará a diferença.</Text>
+                    </Modal.Body>
+                    <Modal.Footer>
+                        <VStack alignItems="center" marginTop={20}>
+                            <TouchableOpacity 
+                                onPress={() => {
+                                    router.push("/comprovantpix");
+                                    setModalVisible(false);
+                                }}
+                                style={styles.confirmButton}
+                            >
+                                <Text color="white">Confirmar</Text>
+                            </TouchableOpacity>
+                        </VStack>
+                    </Modal.Footer>
+                </Modal.Content>
+          </Modal>
+          
+          <VStack style={{width: '100%', marginBottom: 280}}>
+              <HStack marginTop={20}  >
+                  <Text color="#000" paddingRight={15}  >R$ 300,00</Text>
+                  <Text color="#000" paddingRight={15}  >R$ 300,00</Text>
+                  <Text color="#000" paddingRight={15}  >R$ 300,00</Text>
+              </HStack>
+          </VStack>
 
-          <ButtonPadrao 
-            nav="/saketype"
-            name="Confirmar Doacao" 
-           />
-           <Text>Ola mundo</Text>
+            <VStack alignItems="center" marginTop={20}>
 
+                <TouchableOpacity 
+                onPress={() => { 
+                  setModalVisible(true); 
+                }}
+                  style={{width: 358,
+                    height: 48,
+                    alignItems: 'center',
+                    justifyContent: 'center',
+                    backgroundColor: '#00A8FF',
+                    borderRadius: 40,}}
+                  >
+                           
+                    <Text color="white" >Confirmar</Text> 
+       
+                </TouchableOpacity>
 
-          <TouchableOpacity style={{width: '100%', alignItems: 'center'}}>
-
-           <Text>Ola mundo</Text>
-
-            
-          </TouchableOpacity>
-                    
-
-           
+                </VStack>
+         
+                
             
         </BaseContainer>
     );
 }
 
+
 const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: "#f0f0f0",
-    justifyContent: "center",
-    alignItems: "center",
+  optionContainer: {
+      marginTop: 20,
+      padding: 15,
+      borderWidth: 1,
+      borderColor: '#999',
+      borderRadius: 10,
+      alignItems: 'center'
   },
-  floatingButton: {
-    position: "absolute",
-    bottom: 20,
-    right: 20,
-    backgroundColor: "#007bff",
-    width: 60,
-    height: 60,
-    borderRadius: 30,
-    justifyContent: "center",
-    alignItems: "center",
-    shadowColor: "#000",
-    shadowOffset: { width: 0, height: 2 },
-    shadowOpacity: 0.3,
-    shadowRadius: 4,
-    elevation: 5, // Para Android
+  input: {
+      borderWidth: 1,
+      borderColor: '#ccc',
+      padding: 10,
+      marginTop: 10,
+      borderRadius: 5
   },
-  buttonText: {
-    color: "#000",
-    fontSize: 24,
-    fontWeight: "bold",
+  confirmButton: {
+      width: 358,
+      height: 48,
+      alignItems: 'center',
+      justifyContent: 'center',
+      backgroundColor: '#00A8FF',
+      borderRadius: 40,
+  },
+  floatingButtonContainer: {
+      position: 'absolute',
+      bottom: 20,
+      left: 0,
+      right: 0,
+      alignItems: 'center',
+  },
+  modalBottom: {
+      position: "absolute",
+      bottom: 0,
+      paddingTop: 12,
+      width: "100%",
+      backgroundColor: "white",
+      borderTopLeftRadius: 10,
+      borderTopRightRadius: 10,
+  },
+  modalTitle: {
+      fontSize: 20,
+      fontWeight: "bold",
+      textAlign: "center",
+  },
+  modalBody: {
+      fontSize: 16,
+      margin: 4,
   },
 });
-
-
 
     

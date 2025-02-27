@@ -18,6 +18,8 @@ import {
     InputField
  } from "@/gluestackComponents";
 import { MainTitle } from '@/components/MainTitle';
+import  HeaderContainer  from "@/components/HeaderContainer";
+
 
 
 export default function SakeScreen() {
@@ -31,8 +33,8 @@ export default function SakeScreen() {
   
         <VStack>
           <HStack 
-            style={{width: '100%', alignItems: 'center', justifyContent: 'space-between'}} >
-            <Heading style={{fontSize: 15}}>Quanto voce quer sacar ?</Heading>
+            style={{width: '100%', alignItems: 'center', justifyContent: 'space-between', marginTop: 25}} >
+            <Text style={{fontSize: 15}}>Quanto voce quer sacar ?</Text>
           </HStack>
         </VStack>
             
@@ -108,8 +110,8 @@ export default function SakeScreen() {
 
                 
                 <HStack style={{ alignItems: 'center'}} > 
-                    <MaterialIcons name="pix" size={24} color="black" />
-                    <Text bold size="17" style={{marginLeft: 5}} >Transferencia Bancaria via PIX</Text>
+                    <MaterialIcons name="pix" size={24} color="#777" />
+                    <Text  size="17" style={{marginLeft: 5}} >Transferencia Bancaria via PIX</Text>
                 </HStack>
               </HStack>
             </TouchableOpacity>
@@ -125,7 +127,7 @@ export default function SakeScreen() {
   return (
     <BaseContainer>
 
-      <MainTitle title="Sacar" />
+      <HeaderContainer name="Saque"/>
 
       <ContainerInputTransf />
       <ComponentTransf />
@@ -138,5 +140,3 @@ export default function SakeScreen() {
     </BaseContainer>
   );
 }
-
-
