@@ -272,19 +272,19 @@ export const SearchInput = ({
                 <Input
                     w={isSearching ? "90%" : "$full"}
                     variant="rounded"
-                    bgColor="#E5E7EB"
+                    bgColor="$gray100"
                     size="xl"
                     borderWidth={0}
                     alignItems="center"
                 >
-                    <InputSlot bgColor="#E5E7EB" pl="$5" pt="$1">
+                    <InputSlot bgColor="$gray100" pl="$5" pt="$1">
                         <InputIcon>
                             <Search size={20} color="#6B7280" />
                         </InputIcon>
                     </InputSlot>
                     <InputField
                         pl="$3"
-                        bgColor="#E5E7EB"
+                        bgColor="$gray100"
                         placeholder="Pesquisar"
                         placeholderTextColor="#6B7280"
                         size="lg"
@@ -294,7 +294,7 @@ export const SearchInput = ({
                     />
                     {!isSearching ? (
                         <InputSlot
-                            bgColor="#E5E7EB"
+                            bgColor="$gray100"
                             pr="$3"
                             pt="$1"
                             onPress={() => {

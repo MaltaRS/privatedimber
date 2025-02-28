@@ -39,7 +39,7 @@ const ChatsScreen = () => {
         <BaseContainer>
             <HStack
                 gap="$6"
-                pt="$1"
+                pt="$5"
                 justifyContent="center"
                 alignItems="center"
                 position="relative"
@@ -49,7 +49,7 @@ const ChatsScreen = () => {
                     position="absolute"
                     left="$0"
                     rounded="$full"
-                    bgColor="$gray200"
+                    bgColor="$gray100"
                     p="$2"
                 >
                     <MoveLeft size={24} color="#555" />

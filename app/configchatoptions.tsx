@@ -23,7 +23,7 @@ export default function ConfigNotificScreen() {
   return (
       <BaseContainer backgroundColor="#fff"  >
 
-        <HeaderContainer name="Conversas" />
+        <HeaderContainer title="Conversas" />
 
          <VStack bgColor="#fff" pl="$4" borderRadius="$xl" elevation={2} marginTop={30} >
 

@@ -41,7 +41,7 @@ export default function TotalBalanceScreen() {
   return (
       <BaseContainer backgroundColor="#fff"  >
 
-        <HeaderContainer name="Saldos" />
+        <HeaderContainer title="Saldos" />
 
         <ContainerNewCart logo={logoCard4} />
         <ContainerNewCart logo={logoCard4} />

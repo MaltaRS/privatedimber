@@ -24,7 +24,7 @@ export default function PermisionsScreen() {
   return (
       <BaseContainer backgroundColor="#fff"  >
 
-        <HeaderContainer name="Permissões" />
+        <HeaderContainer title="Permissões" />
 
 
                 <Text bold style={{fontSize: 17}} marginTop={20} >

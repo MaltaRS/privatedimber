@@ -199,10 +199,10 @@ export default function ProfileScreen() {
 
         <BaseContainer
          gap="$2" 
-         style={{flex: 1, backgroundColor: '#FFF', marginTop: 10  }}  >
+         style={{flex: 1, backgroundColor: '#FFF' }}  >
 
 
-         <HeaderContainer name="Meu Perfil"  />
+         <HeaderContainer title="Meu Perfil"  />
             
 
 

@@ -22,7 +22,7 @@ export const FavoriteCard = ({
 }: FavoriteCardProps) => {
     return (
         <Pressable onPress={onPress}>
-            <Avatar width={80} height={80} rounded="$2xl">
+            <Avatar width={80} height={80} rounded="$xl">
                 <AvatarFallbackText size="3xl">{name}</AvatarFallbackText>
                 <AvatarImage
                     rounded="$lg"
@@ -37,10 +37,11 @@ export const FavoriteCard = ({
                 width="$full"
                 maxWidth={80}
                 textAlign="center"
-                fontWeight="$bold"
+                fontWeight="$regular"
                 color="$gray900"
                 numberOfLines={1}
-                pt="$1"
+                fontSize={12}
+                pt="$1"                                     
             >
                 {name}
             </Text>

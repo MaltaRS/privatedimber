@@ -18,7 +18,7 @@ export const ConfigCard = ({ items }: ConfigCardProps) => {
     const router = useRouter();
 
     return (
-        <VStack bgColor="#fff" pl="$4" borderRadius="$xl" elevation={2}>
+        <VStack bgColor="#fff" pl="$4" borderRadius="$xl" elevation={1}>
             {items.map((item, index) => (
                 <Pressable
                     key={item.title}

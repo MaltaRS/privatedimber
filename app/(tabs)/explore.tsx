@@ -227,7 +227,7 @@ const ExploreScreen = () => {
     const onlineUsers = useOnlineUsersStore((state) => state.onlineUsers);
 
     return (
-        <BaseContainer gap="$2">
+        <BaseContainer gap="$2" >
             <MainTitle
                 title="Explorar"
                 onPress={() => router.push("/notifications")}
@@ -266,7 +266,7 @@ const ExploreScreen = () => {
                                 <Text
                                     py="$1"
                                     fontFamily="$heading"
-                                    fontSize={27}
+                                    fontSize={20}
                                     color="#000"
                                     fontWeight="$semibold"
                                     lineHeight={28}
@@ -315,7 +315,7 @@ const ExploreScreen = () => {
                         <Text
                             py="$1"
                             fontFamily="$heading"
-                            fontSize={27}
+                            fontSize={20}
                             color="#000"
                             fontWeight="$semibold"
                             lineHeight={28}

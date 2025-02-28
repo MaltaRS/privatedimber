@@ -36,10 +36,25 @@ const CardAvatar = ({
     liked: boolean;
     onLike: () => void;
 }) => (
-    <Avatar w="$full" height={180} rounded={24} position="relative">
-        <AvatarFallbackText fontSize={60}>{name}</AvatarFallbackText>
-        <AvatarImage
-            rounded={24}
+  <Avatar
+      w="$full"
+      height={180}
+      position="relative"
+      style={{
+          borderTopLeftRadius:16,  // Arredondado apenas no topo esquerdo
+          borderTopRightRadius:16, // Arredondado apenas no topo direito
+          borderBottomLeftRadius: 0, // Mantém a parte inferior reta
+          borderBottomRightRadius: 0, // Mantém a parte inferior reta
+      }}
+  >
+      <AvatarFallbackText fontSize={60}>{name}</AvatarFallbackText>
+      <AvatarImage 
+                style={{
+                     borderTopLeftRadius:16,  // Arredondado apenas no topo esquerdo
+                     borderTopRightRadius:16, // Arredondado apenas no topo direito
+                     borderBottomLeftRadius: 0, // Mantém a parte inferior reta
+                     borderBottomRightRadius: 0, // Mantém a parte inferior reta
+                 }}
             source={{
                 uri: imageLink,
             }}
@@ -70,7 +85,7 @@ const CardPrice = ({ price }: { price: string }) => (
         <HStack
             p={2}
             px="$1"
-            bgColor="$gray200"
+            bgColor="$gray100"
             rounded="$sm"
             alignItems="center"
             gap="$1"
@@ -122,7 +137,7 @@ export const ExploreCard = ({
     onPress,
 }: ExploreCardProps) => {
     return (
-        <Pressable onPress={onPress} w="47.5%">
+        <Pressable onPress={onPress} w="47.5%" >
             <Card variant="ghost" p="$0">
                 <VStack alignItems="center">
                     <CardAvatar
@@ -136,6 +151,7 @@ export const ExploreCard = ({
                             alignItems="center"
                             gap="$1"
                             justifyContent="flex-start"
+                          
                         >
                             <Text size="lg" color="#000" fontWeight="$bold">
                                 {name}

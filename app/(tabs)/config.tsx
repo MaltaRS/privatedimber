@@ -41,7 +41,7 @@ const ConfigScreen = () => {
     };
 
     return (
-        <BaseContainer bgColor="$gray50">
+        <BaseContainer>
             <VStack gap="$4">
                 <Text
                     size="lg"

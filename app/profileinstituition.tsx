@@ -11,12 +11,12 @@ import {
 
  import { BaseContainer } from '@/components/BaseContainer';
  import  ButtonPadrao  from "@/components/ButtonPadrao";
+ import HeaderContainer from "@/components/HeaderContainer";
  import MaterialIcons from '@expo/vector-icons/MaterialIcons';
 
 
 export default function ProfileInstituition() { 
 const logoInstituto = "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcS5z03a91O5qAqycFrTXVjaBcpy1rOjeBERaw&s"
-
 
     const TitleContainer = (title) => {
       return(
@@ -40,7 +40,6 @@ const logoInstituto = "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcS5z
            />
          </Avatar>
 
-
         <HStack alignItems="center" >
             
             <Heading size="lg" className="mb-1 mt-10" >
@@ -50,10 +49,6 @@ const logoInstituto = "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcS5z
             <MaterialIcons name="verified" size={20} color="#00A8FF" style={{paddingLeft: 4}} />
 
          </HStack>
-
-
-
-
 
          <Text 
             className="text-sm font-normal  text-typography-900" >
@@ -65,7 +60,6 @@ const logoInstituto = "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcS5z
      </View>
       );
     }
-
 
     const InfoProfile = () => {
       return(
@@ -86,7 +80,7 @@ const logoInstituto = "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcS5z
 
     return(
         <BaseContainer className=" flex-1" >
-
+          <HeaderContainer title="Instituição" />
           <HeaderInfoProfile />
           <InfoProfile />
 
@@ -98,6 +92,3 @@ const logoInstituto = "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcS5z
         </BaseContainer>
     );
 }
-
-
-    
