@@ -190,7 +190,16 @@ const ChatsScreen = () => {
                         router.back();
                     }}
                 />
-                <HStack gap="$3" alignItems="center">
+                <Pressable
+                    gap="$3"
+                    alignItems="center"
+                    flexDirection="row"
+                    onPress={() => {
+                        if (!contact || isLoading) return;
+
+                        router.push(`/myprofile?userUuid=${contact.uuid}`);
+                    }}
+                >
                     {isLoading && <Spinner size="small" />}
                     {contact && (
                         <Fragment>
@@ -226,7 +235,7 @@ const ChatsScreen = () => {
                             </VStack>
                         </Fragment>
                     )}
-                </HStack>
+                </Pressable>
             </HStack>
             <VStack flex={1}>
                 {formActive ? (

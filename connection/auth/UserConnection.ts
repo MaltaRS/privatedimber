@@ -2,10 +2,31 @@ import { User } from "@/Context/AuthProvider";
 
 import api, { setAuthorizationHeader } from "@/utils/api";
 
+type FetchUserByIdResponse = {
+    user: User;
+    isBlocked: boolean;
+    isFavorited: boolean;
+};
+
 export const fetchUser = async (): Promise<User | null> => {
     try {
         await setAuthorizationHeader();
         const response = await api.get<User>("/user");
+        return response.data;
+        // eslint-disable-next-line @typescript-eslint/no-unused-vars
+    } catch (_) {
+        return null;
+    }
+};
+
+export const fetchUserById = async (
+    userId: string,
+): Promise<FetchUserByIdResponse | null> => {
+    try {
+        await setAuthorizationHeader();
+        const response = await api.get<FetchUserByIdResponse>(
+            `/user/details/${userId}`,
+        );
         return response.data;
         // eslint-disable-next-line @typescript-eslint/no-unused-vars
     } catch (_) {

@@ -12,7 +12,7 @@ import {
 import TitleContainer from "@/components/TitleContainer";
 import { StatusBar } from "expo-status-bar";
 import { useRouter } from "expo-router";
-import { ChevronRight } from "lucide-react-native";
+import { Box, ChevronRight } from "lucide-react-native";
 
 import { useGoogleAuth } from "@/Context/GoogleAuthProvider";
 import { useAuth } from "@/Context/AuthProvider";
@@ -67,58 +67,64 @@ const ConfigScreen = () => {
                 >
                     <VStack p="$1" pt="$2" gap="$2">
                         <Pressable
+                            bgColor="#fff"
+                            px="$4"
+                            py="$3"
+                            borderRadius="$xl"
+                            alignItems="center"
+                            justifyContent="space-between"
+                            elevation={2}
+                            flexDirection="row"
                             onPress={() => router.push("/myprofile")}
-                            style={{
-                                borderRadius: 16,
-                                elevation: 1,
-                                backgroundColor: "#fff",
-                                padding: 16,
-                            }}
                         >
-                            <HStack
-                                alignItems="center"
-                                justifyContent="space-between"
-                            >
-                                <HStack gap="$5" alignItems="center">
-                                    <Avatar width={56} height={56}>
-                                        <AvatarFallbackText>
-                                            {user?.name || "Usuário"}
-                                        </AvatarFallbackText>
-                                        {user?.icon && (
-                                            <AvatarImage
-                                                source={{ uri: user.icon }}
-                                                alt={user.name}
-                                            />
-                                        )}
-                                    </Avatar>
-                                    <VStack gap="$1">
-                                        <Text
-                                            fontFamily="$novaTitle"
-                                            fontSize="$lg"
-                                            textAlign="center"
-                                            lineHeight="24"
-                                        >
-                                            {user?.name || "Usuário"}
-                                        </Text>
-                                        <Text
-                                            fontSize={16}
-                                            color="#6B7280"
-                                            fontFamily="$NovaBody"
-                                            lineHeight={20}
-                                        >
-                                            Ver perfil
-                                        </Text>
-                                    </VStack>
-                                </HStack>
-                                <ChevronRight
-                                    size={20}
-                                    color={Colors.gray400}
-                                    strokeWidth={2}
-                                />
+                            <HStack gap="$5" alignItems="center">
+                                <Avatar width={56} height={56}>
+                                    <AvatarFallbackText>
+                                        {user?.name}
+                                    </AvatarFallbackText>
+                                    <AvatarImage
+                                        source={{
+                                            uri: user?.icon,
+                                        }}
+                                        alt={user?.name}
+                                    />
+                                </Avatar>
+                                <VStack gap="$1">
+                                    <Text
+                                        size="lg"
+                                        fontFamily="$heading"
+                                        color="#000"
+                                        lineHeight={24}
+                                    >
+                                        {user?.name}
+                                    </Text>
+                                    <Text
+                                        fontSize={17}
+                                        color="#6B7280"
+                                        fontFamily="$novaBody"
+                                        lineHeight={20}
+                                    >
+                                        Ver perfil
+                                    </Text>
+                                </VStack>
                             </HStack>
+                            <Box>
+                                <ChevronRight
+                                    size={24}
+                                    color={Colors.gray500}
+                                    strokeWidth={3}
+                                />
+                            </Box>
                         </Pressable>
-
-                        <TitleContainer name="Mensagens" />
+                        <Text
+                            my="$4"
+                            fontSize={21}
+                            fontFamily="$heading"
+                            color="#000"
+                            lineHeight={24}
+                        >
+                            Mensagens
+                        </Text>
                         <ConfigCard
                             items={[
                                 {
