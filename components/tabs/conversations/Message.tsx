@@ -67,6 +67,9 @@ export const Message = ({ isFirst, message, user, contact }: MessageProps) => {
         }
     };
 
+    const widthOfTimeContainer =
+        isLoggedUser && (read || !!deliveredAt) ? 56 : 36;
+
     return (
         <VStack mb="$3" mt={isFirst ? "$2" : "$0"}>
             <HStack justifyContent={isLoggedUser ? "flex-end" : "flex-start"}>
@@ -78,48 +81,53 @@ export const Message = ({ isFirst, message, user, contact }: MessageProps) => {
                     maxWidth="85%"
                     borderBottomRightRadius={isLoggedUser ? 0 : "$xl"}
                     borderBottomLeftRadius={isLoggedUser ? "$xl" : 0}
+                    position="relative"
+                    flexDirection="row"
                 >
-                    <HStack gap="$2" alignItems="flex-end">
-                        <Box flexShrink={1} flexGrow={1}>
-                            {image && (
-                                <Image
-                                    source={{ uri: image }}
-                                    width={150}
-                                    height={150}
-                                    alt="image"
-                                />
-                            )}
-                            {video && (
-                                <Video
-                                    source={{ uri: video }}
-                                    style={{ width: 150, height: 150 }}
-                                    useNativeControls
-                                    resizeMode={ResizeMode.CONTAIN}
-                                    isLooping
-                                />
-                            )}
-                            {document && (
-                                <Pressable
-                                    onPress={() => openDocument(document)}
-                                >
-                                    <HStack alignItems="center" gap="$2">
-                                        <FileText
-                                            size={20}
-                                            color={Colors.gray600}
-                                        />
-                                        <Text
-                                            color="$primaryDefault"
-                                            fontFamily="$heading"
-                                            fontWeight="$bold"
-                                            size="md"
-                                        >
-                                            {document.split("/").pop()}
-                                        </Text>
-                                    </HStack>
-                                </Pressable>
-                            )}
-                            <MessageText content={content} />
-                        </Box>
+                    <Box>
+                        {image && (
+                            <Image
+                                source={{ uri: image }}
+                                width={150}
+                                height={150}
+                                alt="image"
+                            />
+                        )}
+                        {video && (
+                            <Video
+                                source={{ uri: video }}
+                                style={{ width: 150, height: 150 }}
+                                useNativeControls
+                                resizeMode={ResizeMode.CONTAIN}
+                                isLooping
+                            />
+                        )}
+                        {document && (
+                            <Pressable onPress={() => openDocument(document)}>
+                                <HStack alignItems="center" gap="$2">
+                                    <FileText
+                                        size={20}
+                                        color={Colors.gray600}
+                                    />
+                                    <Text
+                                        color="$primaryDefault"
+                                        fontFamily="$heading"
+                                        fontWeight="$bold"
+                                        size="md"
+                                    >
+                                        {document.split("/").pop()}
+                                    </Text>
+                                </HStack>
+                            </Pressable>
+                        )}
+                        <HStack maxWidth="$full">
+                            <MessageText
+                                content={content}
+                                rightSpace={widthOfTimeContainer}
+                            />
+                        </HStack>
+                    </Box>
+                    <Box position="absolute" right="$4" bottom="$2">
                         <HStack gap="$1" flexShrink={0}>
                             <Text
                                 fontSize={11.5}
@@ -148,7 +156,7 @@ export const Message = ({ isFirst, message, user, contact }: MessageProps) => {
                                     />
                                 ))}
                         </HStack>
-                    </HStack>
+                    </Box>
                 </Box>
             </HStack>
         </VStack>

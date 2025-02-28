@@ -379,28 +379,39 @@ export const SendMessageForm = ({
                 contentContainerStyle={{ flexGrow: 1 }}
             >
                 <VStack gap="$4" px="$3" flex={1}>
-                    <Controller
-                        control={control}
-                        name="title"
-                        render={({ field: { onChange, value } }) => (
-                            <Input
-                                variant="underlined"
-                                size="lg"
-                                borderWidth={0}
-                                borderBottomColor="#9CA3AF"
-                                isInvalid={!!errors.title}
-                                $invalid-borderColor="$negative"
-                            >
-                                <InputField
-                                    placeholder="Assunto:"
-                                    placeholderTextColor="#9CA3AF"
+                    <HStack gap="$2" alignItems="center">
+                        <Controller
+                            control={control}
+                            name="title"
+                            render={({ field: { onChange, value } }) => (
+                                <Input
+                                    flex={1}
+                                    variant="underlined"
                                     size="lg"
-                                    value={value}
-                                    onChangeText={onChange}
-                                />
-                            </Input>
-                        )}
-                    />
+                                    borderBottomColor="#9CA3AF"
+                                    isInvalid={!!errors.title}
+                                    $invalid-borderColor="$negative"
+                                >
+                                    <InputField
+                                        placeholder="Assunto:"
+                                        placeholderTextColor="#9CA3AF"
+                                        size="lg"
+                                        maxLength={50}
+                                        value={value}
+                                        onChangeText={onChange}
+                                    />
+                                </Input>
+                            )}
+                        />
+                        <Text
+                            textAlign="right"
+                            size="md"
+                            fontWeight="$bold"
+                            color="#9CA3AF"
+                        >
+                            {(watch("title") ?? "").length}/50
+                        </Text>
+                    </HStack>
                     <Controller
                         control={control}
                         name="content"

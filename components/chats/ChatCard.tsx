@@ -67,6 +67,9 @@ export const ChatCard = ({
 
     const lastMessage = newMessages[newMessages.length - 1] ?? "";
 
+    const lastMessageRead =
+        newMessages.length > 0 && !!newMessages[newMessages.length - 1].readAt;
+
     return (
         <Pressable
             pt="$5"
@@ -75,177 +78,126 @@ export const ChatCard = ({
             onLongPress={onLongPress}
         >
             <HStack gap="$4" alignItems="center">
-                {!false ? ( // TODO: verify if this is the correct logic to an professional
-                    <Avatar
-                        width={66}
-                        height={66}
-                        ml="-$1"
-                        bgColor={
-                            !false
-                                ? Colors.primaryDefault
-                                : chat.priority === "HIGH"
-                                  ? "#E0A10A"
-                                  : "#bde6fd"
-                        }
-                    >
-                        <AvatarFallbackText rounded="$lg">
-                            {name}
-                        </AvatarFallbackText>
-                        {icon && (
-                            <AvatarImage
-                                rounded="$full"
-                                source={{
-                                    uri: icon,
-                                }}
-                                alt={`Foto de perfil de ${name}`}
-                            />
-                        )}
+                <Avatar
+                    width={56}
+                    height={56}
+                    ml="-$1"
+                    bgColor={
+                        !false
+                            ? Colors.primaryDefault
+                            : chat.priority === "HIGH"
+                              ? "#E0A10A"
+                              : "#bde6fd"
+                    }
+                >
+                    <AvatarFallbackText rounded="$lg">
+                        {name}
+                    </AvatarFallbackText>
+                    {icon && (
+                        <AvatarImage
+                            rounded="$full"
+                            source={{
+                                uri: icon,
+                            }}
+                            alt={`Foto de perfil de ${name}`}
+                        />
+                    )}
 
-                        {isOnline && <AvatarBadge bgColor="#339058" />}
-                    </Avatar>
-                ) : (
-                    <Box
-                        width={66}
-                        height={66}
-                        rounded="$full"
-                        bgColor={
-                            chat.priority === "HIGH" ? "#fcefdc" : "#bde6fd"
-                        }
-                        alignItems="center"
-                        justifyContent="center"
-                    >
-                        <Text
-                            fontFamily="$heading"
-                            fontSize={chat.priority === "HIGH" ? 12.2 : 14}
-                            color={
-                                chat.priority === "HIGH" ? "#F1940A" : "#276EF1"
-                            }
-                        >
-                            {chat.priority === "HIGH"
-                                ? "Prioritario"
-                                : "Normal"}
-                        </Text>
-                    </Box>
-                )}
+                    {isOnline && <AvatarBadge bgColor="#339058" />}
+                </Avatar>
                 <VStack flex={1}>
                     <Text fontFamily="$arialBody" size="lg" color="#000">
-                        {!false
+                        {!isProfessional
                             ? name
                             : chat.paidPrice > 0
                               ? formatCentsToMoney(chat.paidPrice)
                               : "Não pago"}
                     </Text>
                     <HStack alignItems="center">
-                        {!false ? (
-                            newMessages.length > 1 ? (
-                                <>
-                                    <Box
-                                        width={5}
-                                        height={5}
-                                        borderRadius="$full"
-                                        bgColor="$primaryDefault"
-                                    />
-                                    <Text
-                                        fontFamily="$arialBody"
-                                        pl={6}
-                                        size="sm"
-                                        color="$primaryDefault"
-                                    >
-                                        {newMessages.length} novas mensagens
-                                    </Text>
-                                </>
-                            ) : lastMessage.image ? (
-                                <>
-                                    <ImageSquare
-                                        width={14}
-                                        height={14}
-                                        color="#6B7280"
-                                    />
-                                    <Text
-                                        ml="$1"
-                                        fontFamily="$arialBody"
-                                        size="sm"
-                                        color="#6B7280"
-                                    >
-                                        Imagem
-                                    </Text>
-                                </>
-                            ) : lastMessage.video ? (
-                                <>
-                                    <Camera
-                                        width={16}
-                                        height={16}
-                                        color="#6B7280"
-                                    />
-                                    <Text
-                                        ml="$1"
-                                        fontFamily="$arialBody"
-                                        size="sm"
-                                        color="#6B7280"
-                                    >
-                                        Vídeo
-                                    </Text>
-                                </>
-                            ) : lastMessage.document ? (
-                                <>
-                                    <Paperclip size={16} color="#6B7280" />
-                                    <Text
-                                        ml="$1"
-                                        fontFamily="$arialBody"
-                                        size="sm"
-                                        color="#6B7280"
-                                    >
-                                        Documento
-                                    </Text>
-                                </>
-                            ) : (
-                                <>
-                                    {newMessages.length > 0 &&
-                                        newMessages[newMessages.length - 1]
-                                            .readAt && (
-                                            <Read
-                                                width={16}
-                                                height={16}
-                                                stroke={Colors.primaryDefault}
-                                                style={{
-                                                    marginTop: 3,
-                                                    marginRight: 2,
-                                                }}
-                                            />
-                                        )}
-                                    <MessageText
-                                        content={
-                                            newMessages.length > 0
-                                                ? lastMessage.content
-                                                : "Envie a primeira mensagem"
-                                        }
-                                        preview
-                                    />
-                                </>
-                            )
+                        {newMessages.length > 1 ? (
+                            <>
+                                <Box
+                                    width={5}
+                                    height={5}
+                                    borderRadius="$full"
+                                    bgColor="$primaryDefault"
+                                />
+                                <Text
+                                    fontFamily="$arialBody"
+                                    pl={6}
+                                    size="sm"
+                                    color="$primaryDefault"
+                                >
+                                    {newMessages.length} novas mensagens
+                                </Text>
+                            </>
+                        ) : lastMessage.image ? (
+                            <>
+                                <ImageSquare
+                                    width={14}
+                                    height={14}
+                                    color="#6B7280"
+                                />
+                                <Text
+                                    ml="$1"
+                                    fontFamily="$arialBody"
+                                    size="sm"
+                                    color="#6B7280"
+                                >
+                                    Imagem
+                                </Text>
+                            </>
+                        ) : lastMessage.video ? (
+                            <>
+                                <Camera
+                                    width={16}
+                                    height={16}
+                                    color="#6B7280"
+                                />
+                                <Text
+                                    ml="$1"
+                                    fontFamily="$arialBody"
+                                    size="sm"
+                                    color="#6B7280"
+                                >
+                                    Vídeo
+                                </Text>
+                            </>
+                        ) : lastMessage.document ? (
+                            <>
+                                <Paperclip size={16} color="#6B7280" />
+                                <Text
+                                    ml="$1"
+                                    fontFamily="$arialBody"
+                                    size="sm"
+                                    color="#6B7280"
+                                >
+                                    Documento
+                                </Text>
+                            </>
                         ) : (
-                            <HStack gap="$1" mt="$2">
-                                {chat.apresentationDocument && (
-                                    <Paperclip size={18} color="#374151" />
-                                )}
-                                {chat.apresentationImage && (
-                                    <ImageSquare
+                            <>
+                                {lastMessageRead && (
+                                    <Read
                                         width={16}
                                         height={16}
-                                        color="#374151"
+                                        stroke={Colors.primaryDefault}
+                                        style={{
+                                            marginTop: 3,
+                                            marginRight: 2,
+                                        }}
                                     />
                                 )}
-                                {chat.apresentationVideo && (
-                                    <Camera width={16} height={16} />
-                                )}
-                                {newMessages.length > 0 && (
-                                    <ArrowLeft
-                                        width={17}
-                                        height={17}
-                                        color="#374151"
-                                    />
-                                )}
-                            </HStack>
+                                <MessageText
+                                    content={
+                                        newMessages.length > 0
+                                            ? lastMessage.content
+                                            : "Envie a primeira mensagem"
+                                    }
+                                    preview
+                                    previewRead={lastMessageRead}
+                                />
+                            </>
                         )}
                     </HStack>
                 </VStack>

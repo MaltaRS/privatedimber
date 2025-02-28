@@ -1,11 +1,18 @@
-import { Text } from "@/gluestackComponents";
+import { Box, Text } from "@/gluestackComponents";
 
 type MessageTextProps = {
     content: string;
+    rightSpace?: number;
     preview?: boolean;
+    previewRead?: boolean;
 };
 
-export const MessageText = ({ content, preview = false }: MessageTextProps) => {
+export const MessageText = ({
+    content,
+    rightSpace,
+    preview = false,
+    previewRead = false,
+}: MessageTextProps) => {
     const parseMessageContent = (text: string) => {
         const regex = /\*(.*?)\*/g; // Captura texto entre *
         const parts = [];
@@ -30,11 +37,13 @@ export const MessageText = ({ content, preview = false }: MessageTextProps) => {
         return parts;
     };
 
+    const previewLenght = previewRead ? 23 : 27;
+
     let sanitizedContent = !preview
         ? content
-        : content.substring(0, 27).replace(/[\r\n]+/g, " ");
+        : content.substring(0, previewLenght).replace(/[\r\n]+/g, " ");
 
-    if (preview && content.length > 27) {
+    if (preview && content.length > previewLenght) {
         sanitizedContent += "...";
     }
 
@@ -45,6 +54,8 @@ export const MessageText = ({ content, preview = false }: MessageTextProps) => {
             size={preview ? "sm" : "md"}
             color={preview ? "$gray800" : "$gray900"}
             fontFamily="$arialBody"
+            numberOfLines={preview ? 1 : 0}
+            alignItems="center"
         >
             {parsedContent.map((part, index) => (
                 <Text
@@ -58,6 +69,9 @@ export const MessageText = ({ content, preview = false }: MessageTextProps) => {
                     {part.text}
                 </Text>
             ))}
+            {rightSpace && (
+                <Box width={rightSpace} height={17} marginBottom="-$2" />
+            )}
         </Text>
     );
 };
