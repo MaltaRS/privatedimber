@@ -305,8 +305,6 @@ export const SendMessageForm = ({
                 : []),
         ];
 
-        console.log(paymentItems);
-
         setPaymentItems((prev) => [...prev, ...paymentItems]);
         setFormActive(false);
     };

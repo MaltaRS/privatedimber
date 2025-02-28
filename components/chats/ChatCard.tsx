@@ -84,7 +84,7 @@ export const ChatCard = ({
                     ml="-$1"
                     bgColor={
                         !false
-                            ? Colors.primaryDefault
+                            ? "$primaryDark"
                             : chat.priority === "HIGH"
                               ? "#E0A10A"
                               : "#bde6fd"

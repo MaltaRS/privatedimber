@@ -1,4 +1,3 @@
-
 import {
     Avatar,
     AvatarFallbackText,
@@ -22,9 +21,14 @@ export const FavoriteCard = ({
     onPress,
 }: FavoriteCardProps) => {
     return (
-        <Pressable onPress={onPress} width={76} height={86} >
-            <Avatar width={61} height={61} rounded="$full">
-                <AvatarFallbackText size="2xl">{name}</AvatarFallbackText>
+        <Pressable onPress={onPress}>
+            <Avatar
+                width={80}
+                height={80}
+                rounded="$2xl"
+                bgColor="$primaryDark"
+            >
+                <AvatarFallbackText size="3xl">{name}</AvatarFallbackText>
                 <AvatarImage
                     rounded="$full"
                     source={{
@@ -43,7 +47,7 @@ export const FavoriteCard = ({
                 lineHeight={20}
                 numberOfLines={1}
                 fontSize={12}
-                pt="$1"                                     
+                pt="$1"
             >
                 {name}
             </Text>

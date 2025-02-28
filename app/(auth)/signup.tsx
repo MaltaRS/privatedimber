@@ -48,6 +48,7 @@ import { uploadImageToFirebase } from "@/utils/firebaseFunctions";
 import api from "@/utils/api";
 
 import { useGoogleAuth } from "@/Context/GoogleAuthProvider";
+import { useExpoPushToken } from "@/utils/expoNotification";
 
 const createUserFormSchema = z
     .object({
@@ -106,6 +107,8 @@ export type Step = {
 const SignUp = () => {
     const router = useRouter();
     const { user } = useGoogleAuth();
+
+    const expoPushToken = useExpoPushToken();
 
     const [revalidateEmail, setRevalidateEmail] = useState(false);
 
@@ -290,6 +293,7 @@ const SignUp = () => {
             await api.post("/user", {
                 ...data,
                 icon: imageUrl,
+                expoPushToken,
             });
 
             const responseToken = await api.post("/auth/token", {

@@ -37,7 +37,7 @@ export const MessageText = ({
         return parts;
     };
 
-    const previewLenght = previewRead ? 23 : 27;
+    const previewLenght = previewRead ? 23 : 30;
 
     let sanitizedContent = !preview
         ? content

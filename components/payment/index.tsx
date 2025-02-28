@@ -41,8 +41,6 @@ export function PaymentSheetComponent({
                 },
             });
 
-            console.log("PaymentSheet inicializado");
-
             if (error) {
                 console.error("Erro ao inicializar PaymentSheet:", error);
                 onError?.(new Error(error.message));
@@ -59,8 +57,6 @@ export function PaymentSheetComponent({
 
     async function present() {
         const { error } = await presentPaymentSheet();
-
-        console.log("error");
 
         if (error) {
             onError?.(new Error(error.message));

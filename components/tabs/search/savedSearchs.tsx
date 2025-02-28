@@ -43,7 +43,12 @@ export const SavedSearchCard = ({
                 pl="$0"
             >
                 <HStack gap="$3" w="$full">
-                    <Avatar width={92} height={92} rounded="$lg">
+                    <Avatar
+                        width={92}
+                        height={92}
+                        rounded="$lg"
+                        bgColor="$primaryDark"
+                    >
                         <AvatarFallbackText fontSize={30}>
                             {name}
                         </AvatarFallbackText>

@@ -442,6 +442,7 @@ export const SearchInput = ({
                                                                 width={60}
                                                                 height={60}
                                                                 rounded="$lg"
+                                                                bgColor="$primaryDark"
                                                             >
                                                                 <AvatarFallbackText>
                                                                     {

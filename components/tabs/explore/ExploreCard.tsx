@@ -36,8 +36,13 @@ const CardAvatar = ({
     liked: boolean;
     onLike: () => void;
 }) => (
-    <Avatar 
-    margin="16" width={128} rounded="$full" height={128} position="relative">
+    <Avatar
+        w="$full"
+        height={180}
+        rounded={24}
+        position="relative"
+        bgColor="$primaryDark"
+    >
         <AvatarFallbackText fontSize={60}>{name}</AvatarFallbackText>
         <AvatarImage
             width={128}
@@ -59,7 +64,16 @@ const CardTags = ({ tags }: { tags: string[] }) => (
 );
 
 const CardPrice = ({ price }: { price: string }) => (
-    <HStack  w="100%" mt="$2" alignItems="center" justifyContent="center" bgColor="#00A8FF" borderBottomLeftRadius={20} borderBottomRightRadius={20} p="$2">
+    <HStack
+        w="100%"
+        mt="$2"
+        alignItems="center"
+        justifyContent="center"
+        bgColor="#00A8FF"
+        borderBottomLeftRadius={20}
+        borderBottomRightRadius={20}
+        p="$2"
+    >
         <Text size="lg" fontFamily="$novaTitle" color="#fff" lineHeight={24}>
             {price}
         </Text>
@@ -85,7 +99,11 @@ const ImageLikeButton = ({
         bottom={8}
         right={8}
     >
-        <Heart size={25} color={liked ? "#FF6378" : "#fff"} fill={liked ? "#FF6378" : "none"} />
+        <Heart
+            size={25}
+            color={liked ? "#FF6378" : "#fff"}
+            fill={liked ? "#FF6378" : "none"}
+        />
     </Pressable>
 );
 
@@ -116,15 +134,24 @@ export const ExploreCard = ({
                     <VStack w="$full">
                         <VStack w="$full">
                             <HStack alignItems="center" justifyContent="center">
-                                <Text size="lg" color="#15161E" fontFamily="$novaTitle" lineHeight={24}>
+                                <Text
+                                    size="lg"
+                                    color="#15161E"
+                                    fontFamily="$novaTitle"
+                                    lineHeight={24}
+                                >
                                     {name}
                                 </Text>
                             </HStack>
-                            <HStack alignItems="center" gap="$1" justifyContent="center">
+                            <HStack
+                                alignItems="center"
+                                gap="$1"
+                                justifyContent="center"
+                            >
                                 <CardTags tags={["Atleta", "Investidor"]} />
                             </HStack>
                         </VStack>
-                        <HStack  alignItems="center" justifyContent="center">
+                        <HStack alignItems="center" justifyContent="center">
                             <CardPrice price={price} />
                         </HStack>
                     </VStack>

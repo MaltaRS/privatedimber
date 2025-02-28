@@ -1,12 +1,12 @@
 import React, { useState } from "react";
 import { ScrollView, Pressable, View } from "react-native";
-import { 
+import {
     Avatar,
     AvatarFallbackText,
     AvatarImage,
     HStack,
     VStack,
-    Text
+    Text,
 } from "@/gluestackComponents";
 
 import TitleContainer from "@/components/TitleContainer";
@@ -34,9 +34,22 @@ const ConfigScreen = () => {
     };
 
     const HeaderContainer = ({ title }) => (
-        <HStack pt="$1" justifyContent="space-between" width="100%" position="relative">
+        <HStack
+            pt="$1"
+            justifyContent="space-between"
+            width="100%"
+            position="relative"
+        >
             <GoBack onPress={() => router.push("/explore")} />
-            <Text fontFamily="$medium" fontSize={16} color="#000" textAlign="center" pt="$2" lineHeight={20} flex={1}>
+            <Text
+                fontFamily="$medium"
+                fontSize={16}
+                color="#000"
+                textAlign="center"
+                pt="$2"
+                lineHeight={20}
+                flex={1}
+            >
                 {title}
                 <View style={{ width: 50 }} />
             </Text>
@@ -47,11 +60,12 @@ const ConfigScreen = () => {
         <BaseContainer backgroundColor="$gray50">
             <VStack gap="$4">
                 <HeaderContainer title="Configurações" />
-    
-                <ScrollView showsVerticalScrollIndicator={false} contentContainerStyle={{ paddingBottom: 86 }}>
+
+                <ScrollView
+                    showsVerticalScrollIndicator={false}
+                    contentContainerStyle={{ paddingBottom: 86 }}
+                >
                     <VStack p="$1" pt="$2" gap="$2">
-
-
                         <Pressable
                             onPress={() => router.push("/myprofile")}
                             style={{
@@ -61,40 +75,75 @@ const ConfigScreen = () => {
                                 padding: 16,
                             }}
                         >
-                            <HStack alignItems="center" justifyContent="space-between">
+                            <HStack
+                                alignItems="center"
+                                justifyContent="space-between"
+                            >
                                 <HStack gap="$5" alignItems="center">
                                     <Avatar width={56} height={56}>
-                                        <AvatarFallbackText>{user?.name || "Usuário"}</AvatarFallbackText>
-                                        {user?.icon && <AvatarImage source={{ uri: user.icon }} alt={user.name} />}
+                                        <AvatarFallbackText>
+                                            {user?.name || "Usuário"}
+                                        </AvatarFallbackText>
+                                        {user?.icon && (
+                                            <AvatarImage
+                                                source={{ uri: user.icon }}
+                                                alt={user.name}
+                                            />
+                                        )}
                                     </Avatar>
                                     <VStack gap="$1">
-
-                                        <Text fontFamily="$novaTitle" fontSize="$lg" textAlign="center" lineHeight="24">
+                                        <Text
+                                            fontFamily="$novaTitle"
+                                            fontSize="$lg"
+                                            textAlign="center"
+                                            lineHeight="24"
+                                        >
                                             {user?.name || "Usuário"}
                                         </Text>
-                                        <Text fontSize={16} color="#6B7280" fontFamily="$NovaBody" lineHeight={20}>
+                                        <Text
+                                            fontSize={16}
+                                            color="#6B7280"
+                                            fontFamily="$NovaBody"
+                                            lineHeight={20}
+                                        >
                                             Ver perfil
                                         </Text>
                                     </VStack>
                                 </HStack>
-                                <ChevronRight size={20} color={Colors.gray400} strokeWidth={2} />
+                                <ChevronRight
+                                    size={20}
+                                    color={Colors.gray400}
+                                    strokeWidth={2}
+                                />
                             </HStack>
                         </Pressable>
 
                         <TitleContainer name="Mensagens" />
                         <ConfigCard
                             items={[
-                                { title: "Notificações", href: "/confignotific" },
-                                { title: "Definir valores", href: "/configdefinedvaluemsg" },
+                                {
+                                    title: "Notificações",
+                                    href: "/confignotific",
+                                },
+                                {
+                                    title: "Definir valores",
+                                    href: "/configdefinedvaluemsg",
+                                },
                                 { title: "Permissões", href: "/permisions" },
-                                { title: "Conversas", href: "/configchatoptions" },
+                                {
+                                    title: "Conversas",
+                                    href: "/configchatoptions",
+                                },
                             ]}
                         />
 
                         <TitleContainer name="Conta" />
                         <ConfigCard
                             items={[
-                                { title: "Tipo de conta", href: "/config/accountType" },
+                                {
+                                    title: "Tipo de conta",
+                                    href: "/config/accountType",
+                                },
                                 { title: "Privacidade", href: "/privacit" },
                                 { title: "Segurança", href: "/configsecurity" },
                             ]}
@@ -104,14 +153,55 @@ const ConfigScreen = () => {
                         <ConfigCard
                             items={[
                                 { title: "Ajuda", href: "/help" },
-                                { title: "Permissões do dispositivo", href: "/permisions" },
+                                {
+                                    title: "Permissões do dispositivo",
+                                    href: "/permisions",
+                                },
                                 { title: "Idioma", href: "/languages" },
-                                { title: "Convidar amigos", href: "/sharedimber" },
+                                {
+                                    title: "Convidar amigos",
+                                    href: "/sharedimber",
+                                },
                                 { title: "Sobre", href: "/aboutconfig" },
                                 {
                                     title: "Sair",
                                     color: "$negative",
                                     action: () => setModalVisible(true),
+                                },
+                            ]}
+                        />
+
+                        <Text
+                            my="$4"
+                            fontSize={21}
+                            fontFamily="$heading"
+                            color="#000"
+                            lineHeight={24}
+                        >
+                            Aplicativo
+                        </Text>
+                        <ConfigCard
+                            items={[
+                                {
+                                    title: "Ajuda",
+                                    href: "/help",
+                                },
+                                {
+                                    title: "Permissoes do dispositivo",
+                                    href: "/permisions",
+                                },
+                                {
+                                    title: "Idioma",
+                                    href: "/languages",
+                                },
+                                {
+                                    title: "Convidar amigos",
+                                    href: "/sharedimber",
+                                },
+
+                                {
+                                    title: "Sobre",
+                                    href: "/aboutconfig",
                                 },
                             ]}
                         />
