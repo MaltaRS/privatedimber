@@ -13,27 +13,27 @@ const HeaderContainer = ({ title, namebuttontab, onSave }) => {
             justifyContent="space-between"
             alignItems="center"
             width="100%"
-            px="$1"
+            px="1"
         >
-            {/* Botão Voltar usando o componente GoBack */}
             <GoBack onPress={() => router.back()} />
 
-            {/* Título Centralizado */}
-            <View style={{ position: 'absolute', left: 0, right: 0, alignItems: 'center' }}>
+
+            <View style={{ flex: 1, alignItems: 'center', position: 'absolute', left: 0, right: 0 }}>
                 <Text fontFamily="$arialHeading" size="lg" color="#000" textAlign="center">
                     {title}
                 </Text>
             </View>
 
-            {/* Botão "Salvar" (se existir) */}
+
             {namebuttontab ? (
-                <TouchableOpacity 
-                    onPress={onSave ? onSave : () => console.log(`${namebuttontab} pressionado`)}
+                <TouchableOpacity
+                    style={{ paddingHorizontal: 10, paddingVertical: 5 }}
+                    onPress={onSave || (() => console.log(`${namebuttontab} pressionado`))}
                 >
                     <Text color="#00A8FF" bold fontSize={17}>{namebuttontab}</Text>
                 </TouchableOpacity>
             ) : (
-                <View style={{ width: 50 }} /> // Para garantir alinhamento sem "Salvar"
+                <View style={{ width: 50, }} /> // Mantém alinhamento sem o botão "Salvar"
             )}
         </HStack>
     );

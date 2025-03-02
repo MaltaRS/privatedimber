@@ -1,94 +1,65 @@
-import { useState } from 'react';
-
-import { 
-    Text,
+import { useState } from "react";
+import {
+    Avatar,
+    AvatarFallbackText,
+    AvatarImage,
+    Box,
     HStack,
+    Pressable,
+    ScrollView,
+    Text,
     VStack,
-    Switch
- } from "@/gluestackComponents";
+} from "@/gluestackComponents";
 
- import { StatusBar } from 'expo-status-bar';
-
-import { BaseContainer } from "@/components/BaseContainer";
+import { StatusBar } from "expo-status-bar";
+import HeaderContainer from '../components/HeaderContainer'
+import { Colors } from "@/constants/Colors";
 import { MainTitle } from "@/components/MainTitle";
-import  HeaderContainer  from "@/components/HeaderContainer";
+import { ConfigCardSwitch } from "@/components/tabs/config/configCardSwitch";
+import { ConfigCard } from "@/components/tabs/config/configCard";
+import { BaseContainer } from "@/components/BaseContainer";
+import { ConfirmationModal } from "@/components/ui/ConfirmationModal";
 
+const ConfigNotifications = () => {
 
-export default function ConfigNotificScreen() {
-    const [isSwitchOn, setIsSwitchOn] = useState(false);
+    return (
+        <BaseContainer>
+            <VStack gap="$4">
+        <HeaderContainer title="Notificações" />
+                <ScrollView
+                    showsVerticalScrollIndicator={false}
+                    contentContainerStyle={{
+                        paddingBottom: 46,
+                    }}
+                >
+                    <VStack p="$1" pt="$2" gap="$4">
+                      <Text fontSize={21} fontFamily="$heading" color="#000" lineHeight={24}>
+                                                Notificações de mensagens
+                                            </Text>
 
+                      <ConfigCardSwitch 
+                                                                          items={[
+                                                                              { title: "Mostrar Notificações"}
+                                                                        
+                                                                          ]}
+                                                                      />
+                                                                        <Text pt="$4" fontSize={21} fontFamily="$heading" color="#000" lineHeight={24}>
+                                                                                                  Notificações de email
+                                                                                              </Text>
+                             <ConfigCardSwitch 
+                                                       items={[
+                                                           { title: "Solicitação de mensagem"},
+                                                           { title: "Pagamentos"},
+                                                           { title: "Suporte" },
+                                                       ]}
+                                                   />
 
-  return (
-      <BaseContainer backgroundColor="#fff" >
-
-        <HeaderContainer name="Notificações" />
-
-            <Text style={{fontSize: 17,}} color='#15161E' marginTop={30} bold >Notificações de mensagens</Text>
-
-            <VStack bgColor="#fff" pl="$4" borderRadius="$xl" elevation={2}  alignItems="center" padding={10} marginTop={15}  >
-                <HStack  style={{width: '100%', justifyContent: 'space-between', alignItems:"center", paddingTop: 7, paddingBottom: 7 }} >
-                 <Text fontFamily="$novaBody"  style={{fontSize: 17}} >Mostrar notificações</Text>
-                 <Switch
-                    value={isSwitchOn}
-                    onValueChange={() => setIsSwitchOn(!isSwitchOn)}
-                    trackColor={{ false: "#ccc", true: "#00A8FF" }}
-                    thumbColor={isSwitchOn ? "#fff" : "#f4f4f4"}
-                    />
-                </HStack>
+                    </VStack>
+                </ScrollView>
             </VStack>
+            <StatusBar style="auto" />
+        </BaseContainer>
+    );
+};
 
-            <Text style={{fontSize: 17,}} color='#15161E' marginTop={30} bold >Notificações de mensagens</Text>
-
-
-
-
-
-           <VStack bgColor="#fff"  >
-
-            <VStack bgColor="#fff" pl="$4" borderRadius="$xl" elevation={2}  alignItems="center" padding={10} marginTop={15}  >
-                <HStack  style={{width: '100%', justifyContent: 'space-between', alignItems:"center", paddingTop: 7, paddingBottom: 7 }} >
-                <Text fontFamily="$novaBody"  style={{fontSize: 17}} >Solicitacao de mensagens</Text>
-                <Switch
-                    value={isSwitchOn}
-                    onValueChange={() => setIsSwitchOn(!isSwitchOn)}
-                    trackColor={{ false: "#ccc", true: "#00A8FF" }}
-                    thumbColor={isSwitchOn ? "#fff" : "#f4f4f4"}
-                    />
-                </HStack>
-            </VStack>
-
-            <VStack bgColor="#fff" pl="$4" borderRadius="$xl" elevation={2}  alignItems="center" padding={10} marginTop={15}  >
-                <HStack  style={{width: '100%', justifyContent: 'space-between', alignItems:"center", paddingTop: 7, paddingBottom: 7 }} >
-                <Text fontFamily="$novaBody"  style={{fontSize: 17}} >Pagamentos</Text>
-                <Switch
-                    value={isSwitchOn}
-                    onValueChange={() => setIsSwitchOn(!isSwitchOn)}
-                    trackColor={{ false: "#ccc", true: "#00A8FF" }}
-                    thumbColor={isSwitchOn ? "#fff" : "#f4f4f4"}
-                    />
-                </HStack>
-            </VStack>
-
-            <VStack bgColor="#fff" pl="$4" borderRadius="$xl" elevation={2}  alignItems="center" padding={10} marginTop={15}  >
-                <HStack  style={{width: '100%', justifyContent: 'space-between', alignItems:"center", paddingTop: 7, paddingBottom: 7 }} >
-                <Text fontFamily="$novaBody"  style={{fontSize: 17}} >Suporte</Text>
-                <Switch
-                    value={isSwitchOn}
-                    onValueChange={() => setIsSwitchOn(!isSwitchOn)}
-                    trackColor={{ false: "#ccc", true: "#00A8FF" }}
-                    thumbColor={isSwitchOn ? "#fff" : "#f4f4f4"}
-                    />
-                </HStack>
-            </VStack>
-
-
-          </VStack>
-
-
-
-
-
-      <StatusBar style="auto" />
-    </BaseContainer>
-  );
-}
+export default ConfigNotifications;

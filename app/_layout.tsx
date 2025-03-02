@@ -113,7 +113,6 @@ const RootLayout = () => {
                 <Stack.Screen name="donationinstituition" />
                 <Stack.Screen name="listinstituition" />
                 <Stack.Screen name="mycarts" />
-                <Stack.Screen name="languages" />
                 <Stack.Screen name="comprovantpix" />
                 <Stack.Screen name="sake" />
                 <Stack.Screen name="sharedimber" />
@@ -131,7 +130,6 @@ const RootLayout = () => {
                 <Stack.Screen name="createnewcart" />
                 <Stack.Screen name="sakeconfirmsucess" />
                 <Stack.Screen name="confirmsake" />
-                <Stack.Screen name="help" />
                 <Stack.Screen name="totalbalance" />
                 <Stack.Screen name="historicbalance" />
                 <Stack.Screen name="detailinfomsg" />

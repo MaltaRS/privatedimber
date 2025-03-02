@@ -34,7 +34,7 @@ export const GoBack = ({
                       bgColor: "transparent",
                   }
                 : {
-                      bgColor: "$gray100",
+                      bgColor: "$gray50",
                   })}
             {...style}
         >

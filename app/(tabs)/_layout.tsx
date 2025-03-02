@@ -79,7 +79,8 @@ export default function TabLayout() {
                         left="$1/2"
                         transform={[{ translateX: "-6%" }]}
                         elevation={120}
-                        bg="$gray200"
+                        bg="$gray100"
+                        
                         h={36}
                         w={72}
                         borderBottomLeftRadius="$full"

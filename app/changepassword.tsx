@@ -14,7 +14,7 @@ export default function ChangePasswordScreen() {
        
     return(
         <BaseContainer >
-          <HeaderContainer name="Alterar senha" />
+          <HeaderContainer title="Alterar senha" />
     
           <StatusBar style="auto" />
         </BaseContainer>

@@ -123,7 +123,7 @@ const ContainerQRcode = () => {
 
   return (
     <BaseContainer>
-      <HeaderContainer name="Convidar amigos"/>
+      <HeaderContainer title="Convidar amigos"/>
 
       <ContainerGiftTitle />
        <ContainerQRcode />

@@ -19,7 +19,7 @@ export default function HelpScreen() {
   return (
       <BaseContainer>
 
-        <HeaderContainer name="Ajuda" />
+        <HeaderContainer title="Ajuda" />
          <VStack bgColor="#fff" pl="$4" borderRadius="$xl" elevation={2} marginTop={30} >
 
 

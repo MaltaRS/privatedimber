@@ -13,9 +13,9 @@ export default function EditMyProfileScreen() {
 
   return (
       <BaseContainer>
-
-        <HeaderContainer name="Social" />
-        
+      <VStack gap="$4">
+        <HeaderContainer title="Social" />
+         </VStack>
       <StatusBar style="auto" />
     </BaseContainer>
   );

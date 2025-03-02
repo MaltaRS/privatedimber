@@ -2,12 +2,12 @@ import { StatusBar } from 'expo-status-bar';
 import React, { useState } from 'react';
 import { useRouter } from "expo-router";
 import { View, TouchableOpacity, StyleSheet } from 'react-native';
-import { MoveLeft } from "lucide-react-native";
 import { 
     Text,
     VStack,
     HStack,
     Input,
+    ScrollView,
     InputSlot,
     InputIcon,
     Pressable,
@@ -30,20 +30,25 @@ export default function ExtractsPay() {
     const MiniButtonsWallet = ({ name, icon }) => (
         <TouchableOpacity
             onPress={() => setModalVisible(true)}
-            style={styles.miniButton}>
+            style={styles.miniButton}>   
             <HStack alignItems="center">
                 <FontAwesome name={icon} size={15} color="black" />
-                <Text size="0" style={styles.miniButtonText}>{name}</Text>
+                <Text style={styles.miniButtonText}>{name}</Text>
             </HStack>
         </TouchableOpacity>
     );
 
     const ContainerCategoryPay = () => (
         <HStack>
-            <MiniButtonsWallet name="Período" icon="calendar" />
-            <MiniButtonsWallet name="Pagamento" icon="credit-card" />
-            <MiniButtonsWallet name="Estorno" icon="undo" />
-        </HStack>
+        <ScrollView horizontal={true} showsHorizontalScrollIndicator={false} style={styles.scrollContainer}>
+            <HStack space="md">
+                <MiniButtonsWallet name="Período" icon="calendar" />
+                <MiniButtonsWallet name="Pagamento" icon="credit-card" />
+                <MiniButtonsWallet name="Pagamento" icon="credit-card" />
+                <MiniButtonsWallet name="Estorno" icon="undo" />
+            </HStack>
+        </ScrollView>
+           </HStack>
     );
 
     const ItemListPayWallet = ({ name, description }) => (
@@ -64,20 +69,28 @@ export default function ExtractsPay() {
 
     return (
         <BaseContainer>
-            <HStack gap="$6" pt="$1" justifyContent="center" alignItems="center" position="relative">
-                <Pressable onPress={() => router.back()} position="absolute" left="$0" rounded="$full" bgColor="$gray200" p="$2">
-                    <MoveLeft size={24} color="#555" />
-                </Pressable>
-                <Text fontFamily="$arialHeading" size="lg" color="#000">Extrato</Text>
-            </HStack>
-
-            <Input mt="$2" variant="rounded" bgColor="#E5E7EB" size="xl" borderWidth={0}>
-                <InputSlot bgColor="#E5E7EB" pl="$5" pt="$1">
+            <HeaderContainer title="Extrato" />
+            
+            <Input
+                mt="$2"
+                variant="rounded"
+                bgColor="#E5E7EB"
+                size="xl"
+                borderWidth={0}
+            >
+                <InputSlot bgColor="$gray100" pl="$5" pt="$1">
                     <InputIcon>
                         <Search size={20} color="#6B7280" />
                     </InputIcon>
                 </InputSlot>
-                <InputField pl="$3" bgColor="#E5E7EB" placeholder="Pesquisar" placeholderTextColor="#6B7280" size="lg" />
+                <InputField
+                    pl="$3"
+                    bgColor="$gray100"
+                    placeholder="Pesquisar"
+                    placeholderTextColor="#6B7280"
+                    size="lg"
+                    onChangeText={(text) => console.log("Pesquisar: ", text)} // Substituído `handleSearch`
+                />
             </Input>
 
             <ContainerCategoryPay />
@@ -115,17 +128,24 @@ export default function ExtractsPay() {
 }
 
 const styles = StyleSheet.create({
-    miniButton: {
+    scrollContainer: {
         marginTop: 20,
-        borderRadius: 300,
+        paddingHorizontal: 10
+    },
+    miniButton: {
+        borderRadius: 20,
+        borderColor: "#D1D5DB", 
+        borderWidth: 1 ,
         backgroundColor: '#fff',
-        width: 150,
-        height: 36,
+        paddingHorizontal: 15,
+        paddingVertical: 8,
         alignItems: 'center',
-        justifyContent: 'center'
+        justifyContent: 'center',
+
     },
     miniButtonText: {
-        marginLeft: 5
+        marginLeft: 5,
+        fontSize: 14
     },
     itemContainer: {
         alignItems: 'center',

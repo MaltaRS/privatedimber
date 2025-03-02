@@ -1,105 +1,65 @@
-
-import { useState } from 'react';
-
-import { 
-    Text,
+import { useState } from "react";
+import {
+    Avatar,
+    AvatarFallbackText,
+    AvatarImage,
+    Box,
     HStack,
-    Switch
- } from "@/gluestackComponents";
+    Pressable,
+    ScrollView,
+    Text,
+    VStack,
+} from "@/gluestackComponents";
 
-import { BaseContainer } from "@/components/BaseContainer";
-import { MainTitle } from "@/components/MainTitle";
-import Row from '../components/Row'
-import { StatusBar } from 'expo-status-bar';
+import { StatusBar } from "expo-status-bar";
 import HeaderContainer from '../components/HeaderContainer'
+import { Colors } from "@/constants/Colors";
+import { MainTitle } from "@/components/MainTitle";
+import { ConfigCardSwitch } from "@/components/tabs/config/configCardSwitch";
+import { ConfigCard } from "@/components/tabs/config/configCard";
+import { BaseContainer } from "@/components/BaseContainer";
+import { ConfirmationModal } from "@/components/ui/ConfirmationModal";
 
+const Permitions = () => {
 
-import Entypo from '@expo/vector-icons/Entypo';
+    return (
+        <BaseContainer>
+            <VStack gap="$4">
+        <HeaderContainer title="Permições" />
+                <ScrollView
+                    showsVerticalScrollIndicator={false}
+                    contentContainerStyle={{
+                        paddingBottom: 46,
+                    }}
+                >
+                    <VStack p="$1" pt="$2" gap="$4">
+                      <Text fontSize={21} fontFamily="$heading" color="#000" lineHeight={24}>
+                                                Direito a resposta
+                                            </Text>
 
+                      <ConfigCardSwitch 
+                                                                          items={[
+                                                                              { title: "Conceder resposta"}
+                                                                        
+                                                                          ]}
+                                                                      />
+                                                                        <Text pt="$4" fontSize={21} fontFamily="$heading" color="#000" lineHeight={24}>
+                                                                                                  Anexos
+                                                                                              </Text>
+                             <ConfigCardSwitch 
+                                                       items={[
+                                                           { title: "Permitir arquivo"},
+                                                           { title: "Permitir foto"},
+                                                           { title: "Permitir vídeo" },
+                                                       ]}
+                                                   />
 
-export default function PermisionsScreen() {
-    const [isSwitchOn, setIsSwitchOn] = useState(true);
+                    </VStack>
+                </ScrollView>
+            </VStack>
+            <StatusBar style="auto" />
+        </BaseContainer>
+    );
+};
 
-
-  return (
-      <BaseContainer backgroundColor="#fff"  >
-
-        <HeaderContainer title="Permissões" />
-
-
-                <Text bold style={{fontSize: 17}} marginTop={20} >
-                Anexo
-                </Text>
-
-
-                <HStack space="md" style={{width: '100%', justifyContent: 'space-between', marginTop: 20}}  >
-                 <Text  style={{fontSize: 17}} >Permitir Anexo</Text>
-                 <Switch
-                    value={isSwitchOn}
-                    onValueChange={() => setIsSwitchOn(!isSwitchOn)}
-                    trackColor={{ false: "#ccc", true: "#00A8FF" }}
-                    thumbColor={isSwitchOn ? "#fff" : "#00A8FF"}
-                    />
-                </HStack>
-
-                 <Text style={{fontSize: 19}} bold marginTop={30}>Midia</Text>
-
-
-                <HStack space="md" style={{width: '100%', justifyContent: 'space-between', marginTop: 20}}  >
-                 <Text style={{fontSize: 17}} >Permitir video</Text>
-                 <Switch
-                    value={isSwitchOn}
-                    onValueChange={() => setIsSwitchOn(!isSwitchOn)}
-                    trackColor={{ false: "#ccc", true: "#00A8FF" }}
-                    thumbColor={isSwitchOn ? "#fff" : "#f4f4f4"}
-                    />
-                </HStack>
-
-
-                <HStack alignItems="center" justifyContent="space-between"  marginBottom={28} marginTop={35} >
-                 <Text style={{fontSize: 17}} >Ativado</Text>
-
-                 <Entypo name="circle" size={18} color="black" />
-                </HStack>
-
-
-                <HStack alignItems="center" justifyContent="space-between" >
-                 <Text style={{fontSize: 17}} >Desativado</Text>
-
-                 <Entypo name="circle" size={18} color="black" />
-                </HStack>
-
-               
-
-                <Row />
-
-                <Text style={{fontSize: 19}} bold marginTop={20}>Permitir fotos</Text>
-                <Text size="17" marginTop={15}  >Limite de fotos ( foto unica ) </Text>
-
-
-                <HStack alignItems="center" justifyContent="space-between"  marginBottom={28} marginTop={25} >
-                    <Text style={{fontSize: 17}} >Ativado</Text>
-                    <Entypo name="circle" size={18} color="black" />
-                </HStack>
-
-                <HStack alignItems="center" justifyContent="space-between"  marginBottom={28}  >
-                    <Text style={{fontSize: 17}} >Desativado</Text>
-                    <Entypo name="circle" size={18} color="black" />
-                </HStack>
-
-
-                <Text style={{fontSize: 19}} bold marginTop={20}>Direito de respostas</Text>
-                <HStack space="md" style={{width: '100%', justifyContent: 'space-between', marginTop: 20}}  >
-                    <Text style={{fontSize: 17}} >Conceder resposta</Text>
-                    <Switch
-                        value={isSwitchOn}
-                        onValueChange={() => setIsSwitchOn(!isSwitchOn)}
-                        trackColor={{ false: "#ccc", true: "#00A8FF" }}
-                        thumbColor={isSwitchOn ? "#fff" : "#f4f4f4"}
-                        />
-                </HStack>
-
-      <StatusBar style="auto" />
-    </BaseContainer>
-  );
-}
+export default Permitions;

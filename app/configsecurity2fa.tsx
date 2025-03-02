@@ -15,7 +15,7 @@ export default function ConfigSecurity2fa() {
        
     return(
         <BaseContainer >
-          <HeaderContainer name="Ativar seguranca 2FA" />
+          <HeaderContainer title="Ativar seguranca 2FA" />
     
           <StatusBar style="auto" />
         </BaseContainer>

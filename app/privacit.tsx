@@ -1,87 +1,58 @@
-import { useState } from 'react';
-import { TouchableOpacity } from 'react-native';
-
-import { useRouter } from "expo-router";
-
-import { StatusBar } from 'expo-status-bar';
-import HeaderContainer from '../components/HeaderContainer'
-
-import { 
+import { useState } from "react";
+import {
+    HStack,
+    ScrollView,
     Text,
     VStack,
-    HStack,
-    Switch
- } from "@/gluestackComponents";
+} from "@/gluestackComponents";
 
+import { StatusBar } from "expo-status-bar";
+import HeaderContainer from '../components/HeaderContainer'
+import { Colors } from "@/constants/Colors";
+import { MainTitle } from "@/components/MainTitle";
+import { ConfigCardSwitch } from "@/components/tabs/config/configCardSwitch";
+import { ConfigCard } from "@/components/tabs/config/configCard";
 import { BaseContainer } from "@/components/BaseContainer";
-import Row from '../components/Row'
 
-import AntDesign from '@expo/vector-icons/AntDesign';
 
-export default function PrivacyScreen() {
-    const router = useRouter();
-    const [showOnline, setShowOnline] = useState(true);
-    const [lastSeen, setLastSeen] = useState(true);
-    const [showStats, setShowStats] = useState(true);
-    const [vacationMode, setVacationMode] = useState(false);
+const PrivacyScreen = () => {
+   
 
     return (
-        <BaseContainer backgroundColor="#fff"  >
-            <HeaderContainer title="Privacidade" />
+        <BaseContainer>
+            <VStack gap="$4">
+        <HeaderContainer title="Privacidade" />
+                <ScrollView
+                    showsVerticalScrollIndicator={false}
+                    contentContainerStyle={{
+                        paddingBottom: 46,
+                    }}
+                >
+                    <VStack p="$1" pt="$2" gap="$6">
 
-            <VStack bgColor="#fff" pl="$4" borderRadius="$xl" elevation={2} marginTop={30} >
-                <TouchableOpacity onPress={() => router.push("/listblockusers")} >
-                    <HStack space="md" style={{width: '100%', justifyContent: 'space-between', marginTop: 30, marginBottom: 20, paddingRight: 10}}  >
-                        <Text fontSize={17} >Bloqueados</Text>
-                        <AntDesign name="right" size={18} color="black" />
-                    </HStack>
-                </TouchableOpacity>
+                        <ConfigCard 
+                            items={[
+                                { title: "Bloqueados", href: "/listblockusers" },
+               
+                            ]}
+                        />
+                             <ConfigCardSwitch 
+                                                       items={[
+                                                           { title: "Mostrar Online"},
+                                                           { title: "Mostrar última atualização"},
+                                                           { title: "Exibir estatísticas"},
+                                                           { title: "Modo férias" },
+                                                       ]}
+                                                   />
 
-                <HStack space="md" style={{width: '100%', justifyContent: 'space-between', marginTop: 23, paddingRight: 5}}  >
-                    <Text style={{fontSize: 17}} >Mostrar online</Text>
-                    <Switch
-                        value={showOnline}
-                        onValueChange={(value) => setShowOnline(value)}
-                        trackColor={{ false: "#ccc", true: "#00A8FF" }}
-                        thumbColor={showOnline ? "#fff" : "#00A8FF"}
-                    />
-                </HStack>
-                <Row />
-
-                <HStack space="md" style={{width: '100%', justifyContent: 'space-between', marginTop: 23, paddingRight: 5}}  >
-                    <Text style={{fontSize: 17}}>Mostrar última visualização</Text>
-                    <Switch
-                        value={lastSeen}
-                        onValueChange={(value) => setLastSeen(value)}
-                        trackColor={{ false: "#ccc", true: "#00A8FF" }}
-                        thumbColor={lastSeen ? "#fff" : "#00A8FF"}
-                    />
-                </HStack>
-                <Row />
-
-                <HStack space="md" style={{width: '100%', justifyContent: 'space-between', marginTop: 23, paddingRight: 5}}  >
-                    <Text style={{fontSize: 17}}>Exibir estatísticas</Text>
-                    <Switch
-                        value={showStats}
-                        onValueChange={(value) => setShowStats(value)}
-                        trackColor={{ false: "#ccc", true: "#00A8FF" }}
-                        thumbColor={showStats ? "#fff" : "#f4f4f4"}
-                    />
-                </HStack>
-                <Row />
-
-                <HStack space="md" style={{width: '100%', justifyContent: 'space-between', marginTop: 23, paddingRight: 5, marginBottom: 7}}  >
-                    <Text style={{fontSize: 17}}>Modo férias</Text>
-                    <Switch
-                        value={vacationMode}
-                        onValueChange={(value) => setVacationMode(value)}
-                        trackColor={{ false: "#ccc", true: "#00A8FF" }}
-                        thumbColor={vacationMode ? "#fff" : "#f4f4f4"}
-                    />
-                </HStack>
-                <Row />
+                    </VStack>
+                    
+                </ScrollView>
             </VStack>
             <StatusBar style="auto" />
         </BaseContainer>
     );
-}
+};
+
+export default PrivacyScreen;
+

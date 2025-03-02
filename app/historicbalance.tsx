@@ -44,9 +44,9 @@ export default function HistoricBalanceScreen() {
       }
 
   return (
-      <BaseContainer backgroundColor="#fff"  >
+      <BaseContainer>
 
-        <HeaderContainer name="Saldo a receber" />
+        <HeaderContainer title="Saldo a receber" />
         <Text 
           style={{fontSize: 15, marginTop: 20, marginBottom: 20, color: '#15161E'}} >
           Seu saldo a receber é de R$ 1.400,00, correspondente a mensagens nao lidas ou ainda 

@@ -1,60 +1,51 @@
-import { StatusBar } from 'expo-status-bar';
-
-import {View, TouchableOpacity, } from 'react-native'
-import { useRouter } from "expo-router";
-
-import { 
+import { useState } from "react";
+import {
+    HStack,
+    ScrollView,
     Text,
     VStack,
-    HStack,
-    Image
+} from "@/gluestackComponents";
 
- } from "@/gluestackComponents";
-
- import {
-    Search,
-} from "lucide-react-native";
-
-import { BaseContainer } from "@/components/BaseContainer";
+import { StatusBar } from "expo-status-bar";
 import HeaderContainer from '../components/HeaderContainer'
-import Row from "../components/Row";
-
-import AntDesign from '@expo/vector-icons/AntDesign';
-
-
-export default function ConfigSecurityScreen() { 
-     const router = useRouter();
-
-    const ItemListProfile = (title) => {
-        return(
-            <TouchableOpacity onPress={() => router.push(title.nav)} >
-                <HStack space="md" style={{width: '100%', justifyContent: 'space-between', marginTop: 30, marginBottom: 20, paddingRight: 10}}  >
-                    <Text fontSize={17} >{title.name}</Text>
-                    <AntDesign name="right" size={18} color="black" />
-                </HStack>
-                <Row />
-           </TouchableOpacity>
-        );
-    }
+import { Colors } from "@/constants/Colors";
+import { MainTitle } from "@/components/MainTitle";
+import { ConfigCardSwitch } from "@/components/tabs/config/configCardSwitch";
+import { ConfigCard } from "@/components/tabs/config/configCard";
+import { BaseContainer } from "@/components/BaseContainer";
 
 
-      
+const Configsecurity = () => {
+   
 
-    return(
-        <BaseContainer >
-          <HeaderContainer name="Seguranca" />
-          <VStack bgColor="#fff" pl="$4" borderRadius="$xl" elevation={2} marginTop={30} >
+    return (
+        <BaseContainer>
+            <VStack gap="$4">
+        <HeaderContainer title="Segurança" />
+                <ScrollView
+                    showsVerticalScrollIndicator={false}
+                    contentContainerStyle={{
+                        paddingBottom: 46,
+                    }}
+                >
+                    <VStack p="$1" pt="$2" gap="$6">
 
-          <ItemListProfile name="Alterr senha"  nav="/changepassword" />
-          <ItemListProfile name="Ativar seguranca 2FA" nav="/configsecurity2fa"  />
+                        <ConfigCard 
+                            items={[
+                                { title: "Alterar senha", href: "/changepassword" },
+                                { title: "Ativar segurança 2FA", href: "/configsecurity2fa"  },
+               
+                            ]}
+                        />
 
-          </VStack>
-
-          <StatusBar style="auto" />
+                    </VStack>
+                    
+                </ScrollView>
+            </VStack>
+            <StatusBar style="auto" />
         </BaseContainer>
-
     );
-}
+};
 
+export default Configsecurity;
 
-    

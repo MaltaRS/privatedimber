@@ -1,7 +1,7 @@
 import { Divider, HStack, Pressable, Text, VStack } from "@/gluestackComponents";
 import { useRouter } from "expo-router";
 import { Colors } from "@/constants/Colors";
-import { ChevronRight } from "lucide-react-native";
+
 
 type ConfigCardItem = React.ComponentProps<typeof Text> & {
     title: string;
@@ -14,7 +14,7 @@ type ConfigCardProps = {
     items: ConfigCardItem[];
 };
 
-export const ConfigCard = ({ items }: ConfigCardProps) => {
+export const ConfigCardNoIcon = ({ items }: ConfigCardProps) => {
     const router = useRouter();
 
     return (
@@ -48,11 +48,7 @@ export const ConfigCard = ({ items }: ConfigCardProps) => {
                         >
                             {item.title}
                         </Text>
-                        {item.icon ? (
-                            item.icon
-                        ) : (
-                            <ChevronRight size={22} color={Colors.gray700} />
-                        )}
+           
                     </HStack>
                     {index < items.length - 1 && <Divider bgColor="$gray200" />}
                 </Pressable>

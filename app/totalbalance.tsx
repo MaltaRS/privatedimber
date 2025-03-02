@@ -1,6 +1,6 @@
 import {TouchableOpacity, } from 'react-native'
 import { useRouter } from "expo-router";
-
+import { Colors } from "@/constants/Colors";
 import { 
     Text,
     HStack,
@@ -25,7 +25,7 @@ export default function TotalBalanceScreen() {
           >
                 <HStack
                   style={{
-                    borderWidth: 1, borderColor: '#d6d6d6',  padding: 15, borderRadius: 10,
+                        backgroundColor:  '#f8f8f9', padding: 15, borderRadius: 10,
                     alignItems: 'center', width: '100%', justifyContent: 'space-between', marginTop: 20 
                     }} >
                         <VStack space="xs" marginLeft={12} style={{width: '100%', paddingRight: 50}} >
@@ -39,7 +39,7 @@ export default function TotalBalanceScreen() {
     }
 
   return (
-      <BaseContainer backgroundColor="#fff"  >
+      <BaseContainer>
 
         <HeaderContainer title="Saldos" />
 

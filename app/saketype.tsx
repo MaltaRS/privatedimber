@@ -99,7 +99,7 @@ export default function SakeTypeScreen() {
 
     return (
         <BaseContainer>
-            <HeaderContainer name="Pagamentos" />
+            <HeaderContainer title="Pagamentos" />
             <Text style={styles.title}>Escolha como quer sacar</Text>
             <RadioOption label="Chave Pix" value="pix" />
             {selectedOption === "pix" && (

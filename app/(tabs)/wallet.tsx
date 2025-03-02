@@ -2,12 +2,12 @@ import {View, TouchableOpacity, Image} from 'react-native'
 import { useRouter } from "expo-router";
 import { useState } from 'react';
 import { StatusBar } from 'expo-status-bar';
-
-
+import { useNotifications } from "@/hooks/NotificationHook";
 import { 
     Text,
     VStack,
     HStack,
+    Divider,
     Heading,
  } from "@/gluestackComponents";
 
@@ -24,8 +24,8 @@ import iconlistpay from '../../assets/images/iconlistpay.png'
 const WalletScreen = () => {
     const router = useRouter();
     const [isBalanceHidden, setIsBalanceHidden] = useState(false);
-  
-    const HeaaderInfosWallet = () => {
+    const { notificationsCount } = useNotifications();
+    const HeaderInfosWallet = () => {
       return(
         <VStack 
           alignItems="center"
@@ -73,21 +73,21 @@ const WalletScreen = () => {
 
     const MiniButtonsWallet = (title) => {
       return(
-        <VStack alignItems="center" justifyContent="center"  >
+        <VStack alignItems="center" justifyContent="center">
 
         <TouchableOpacity
           onPress={() => router.push(title.nav)}
           style={{
-            margin: 10,
+           
             borderRadius: 300,
             backgroundColor: '#F9F9F9',
-            width: 58, height: 58, 
+            width: 56, height:56, 
             alignItems: 'center',
             justifyContent: 'center'}}  
           > 
           <Image 
            source={title.icon}
-           style={{width: 45, height: 45}}
+           style={{width: 56, height:56}}
            />
        </TouchableOpacity>
        
@@ -103,7 +103,7 @@ const WalletScreen = () => {
             <HStack 
                 alignItems="center"
                 justifyContent="center"
-                style={{marginTop: 25, width: '100%'}} >
+                pt="$6" gap="25">
 
                 <MiniButtonsWallet 
                   name="Sacar"
@@ -124,9 +124,11 @@ const WalletScreen = () => {
                   />
 
             </HStack>
+        
       );
 }
 
+            
   const ItemListPayWallet = (title) => {
         return(
           <View>
@@ -189,12 +191,16 @@ const WalletScreen = () => {
   }
 
     return(
-        <BaseContainer backgroundColor="white" >
+        <BaseContainer>
           <StatusBar style="auto" />
-          <MainTitle title="Carteira" />
-          
-          <HeaaderInfosWallet />
+             <MainTitle
+                             title="Carteira"
+                             onPress={() => router.push("/notifications")}
+                             notificationsCount={notificationsCount}
+                         />
+          <HeaderInfosWallet />
           <ContainerMiniButtonsWallet />
+            <Divider bgColor="$gray300"  marginTop="16"/>
           <ContainerListPayWallet />
 
         </BaseContainer>

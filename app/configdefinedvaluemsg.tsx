@@ -79,7 +79,7 @@ export default function ConfigDefinedValueMsgScreen() {
   return (
     <BaseContainer backgroundColor="#fff"  >
 
-      <HeaderContainer name="Definir valores"/>
+      <HeaderContainer title="Definir valores"/>
 
       <VStack marginTop={20}  >
         <Text fontSize={17} color="#374151" >
@@ -95,7 +95,7 @@ export default function ConfigDefinedValueMsgScreen() {
       </VStack>
 
       <ButtonPadrao 
-       nav="/saketype"
+       nav="/configdefinedvaluemsg"
        name="Salvar"  />
 
      
