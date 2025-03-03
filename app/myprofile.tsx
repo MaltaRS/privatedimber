@@ -41,10 +41,10 @@ export default function ProfileScreen() {
 
     const HeaderProfile = () => {
         return(
-            <View style={{width: '100%', alignItems: 'center', justifyContent: 'center', marginTop: 20 }}  >
+            <View style={{width: '100%', alignItems: 'left', marginTop: 20}}  >
                 <HStack 
-                    className="bg-white " style={{ width: 400, justifyContent: 'space-between'}}  >
-                    <VStack className="bg-white " >
+                     style={{ width: '100%', justifyContent: 'space-between'}}  >
+                    <VStack>
 
                         <View>
                             <HStack>
@@ -87,9 +87,9 @@ export default function ProfileScreen() {
                     <TouchableOpacity 
                         onPress={() => router.push("/editmyprofile")}
                         style={{ 
-                        borderRadius: 300, backgroundColor: '#F9F9F9', alignContent: 'flex-end',
-                        width: 50, height: 50, alignItems: 'center', justifyContent: 'center',
-                         borderWidth: 1, borderColor: '#E5E7EB', elevation: 1
+                        borderRadius: 300, backgroundColor: '#f6f6f6', alignContent: 'flex-end',
+                        width: 48, height: 48, alignItems: 'center', justifyContent: 'center',
+                         borderWidth: 1, borderColor: '#f3f4f6'
                     }} >
                         <Feather name="edit" size={24} color="black" />
                     </TouchableOpacity>
@@ -98,11 +98,11 @@ export default function ProfileScreen() {
 
                 <VStack style={{ width: '100%', marginTop: 10 }}  >
                     <Text 
-                        className="text-md mt-10 font-normal   text-typography-900" fontSize={15}>
+                        className="text-md mt-10 font-normal   text-typography-900" fontSize={14}>
                         Mais Influente da América Latina pela Blomberg \n kkdk 
                     </Text>
                     <Text 
-                        className="text-md mt-2 font-normal   text-typography-900" fontSize={15}  >
+                        className="text-md mt-2 font-normal   text-typography-900" fontSize={14}  >
                         Investidora Shark Tank Brasil  Empreendedora Linkedin
                     </Text>
                 </VStack>
@@ -114,11 +114,11 @@ export default function ProfileScreen() {
 
     const TabCategoryProfile = (title) => {
         return(
-            <View style={{marginRight: 13}}  >    
-                <HStack style={{alignItems: 'center', marginTop: 12, }}>  
+   <View style={{marginRight: 8 }}  >    
+                <HStack style={{alignItems: 'center'}}>  
                     <VStack 
-                        style={{padding: 6, borderRadius: 30, borderWidth: 1, borderColor: '#D1D5DB' }} >
-                        <Text paddingLeft={10} paddingRight={10} bold fontSize={13} color="#999999" >{title.name}</Text>
+                        style={{padding: 6, borderRadius: 50, borderWidth: 1, borderColor: '#D1D5DB' }} >
+                        <Text paddingLeft={10} paddingRight={10} fontSize={12}  >{title.name}</Text>
                     </VStack>   
                </HStack>
            </View>
@@ -129,8 +129,6 @@ export default function ProfileScreen() {
     const TitleContainer = (title) => {
         return(
             <Text
-                marginTop={30}
-                marginBottom={5}
                 fontSize={17} >
                 {title.name}
             </Text>
@@ -150,28 +148,32 @@ export default function ProfileScreen() {
                 </Text>
 
                 <Text 
-                    size="15" style={{marginTop: 5, color: '#00A8FF'}} >
+                    size="15" style={{color: '#00A8FF'}} >
                     Ver mais
                 </Text>
 
-                <View style={{ marginTop: 25, width: '100%', height: 3, backgroundColor: '#f2f2f2', borderRadius: 10}}  />
+                <View style={{ marginTop: 16, width: '100%', height: 3, backgroundColor: '#f2f2f2', borderRadius: 10}}  />
 
-                <VStack>
-                    <TitleContainer name="Minhas Categorias" />
+                  <VStack marginBottom="16" mt="12">
+                    <TitleContainer name="Minhas Categorias"/>
+                    <VStack mt="16">
                     <HStack>
                         <TabCategoryProfile name="Financas e Negocios"  />
                         <TabCategoryProfile name="Empreendedorismo"  />
-                   </HStack>
+                   </HStack>  
                 </VStack>
-
-                <VStack>
+                  </VStack>
+ <View style={{ marginTop: 8, width: '100%', height: 3, backgroundColor: '#f2f2f2', borderRadius: 10}}  />
+                 <VStack marginBottom="16" mt="12">
                     <TitleContainer name="Meus Interesses" />
+                 <VStack mt="16">
                     <HStack>
                         <TabCategoryProfile name="Financas e Negocios"  />
                         <TabCategoryProfile name="Empreendedorismo"  />
                    </HStack>
                 </VStack>
-                <Row />
+                  </VStack>
+            <View style={{ marginTop: 8, width: '100%', height: 3, backgroundColor: '#f2f2f2', borderRadius: 10}}  />
             </VStack>
         )
     }
@@ -184,10 +186,16 @@ export default function ProfileScreen() {
 
     const SocialLinks = (title) => {
         return(
-        <VStack  className="ml-4 mr-4" >
-            <TitleContainer name="Social" />
-            <Text paddingBottom={20} size="15" color="#00A8FF" >{title.linkednanme}</Text>
-        </VStack>
+             <VStack marginBottom="16" mt="12">
+                        <TitleContainer name="Social"  />
+                             <VStack mt="16">
+                                <HStack>
+ <Text paddingBottom={20} size="15" color="#00A8FF" >{title.linkednanme}</Text>
+                               </HStack>
+                            </VStack>
+                              </VStack>
+                       
+                       
         );
     }
 
@@ -199,12 +207,10 @@ export default function ProfileScreen() {
 
         <BaseContainer
          gap="$2" 
-         style={{flex: 1, backgroundColor: '#FFF' }}  >
+         style={{flex: 1}}  >
 
 
          <HeaderContainer title="Meu Perfil"  />
-            
-
 
             <HeaderProfile />
 

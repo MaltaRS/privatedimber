@@ -12,8 +12,9 @@ import {
     Spinner,
 } from "@/gluestackComponents";
 
-import { MoveLeft } from "lucide-react-native";
 
+import { StatusBar } from "expo-status-bar";
+import HeaderContainer from '../components/HeaderContainer'
 import { useNotifications } from "@/hooks/NotificationHook";
 
 import { NotificationCard } from "@/components/notifications/NotificationCard";
@@ -37,27 +38,9 @@ const ChatsScreen = () => {
 
     return (
         <BaseContainer>
-            <HStack
-                gap="$6"
-                pt="$5"
-                justifyContent="center"
-                alignItems="center"
-                position="relative"
-            >
-                <Pressable
-                    onPress={() => router.back()}
-                    position="absolute"
-                    left="$0"
-                    rounded="$full"
-                    bgColor="$gray100"
-                    p="$2"
-                >
-                    <MoveLeft size={24} color="#555" />
-                </Pressable>
-                <Text fontFamily="$arialHeading" size="lg" color="#000">
-                    Notificações
-                </Text>
-            </HStack>
+        <VStack gap="$4">
+        <HeaderContainer title="Notificações" />
+           </VStack>
             <Box pt="$6">
                 {isLoadingNotifications ? (
                     <VStack

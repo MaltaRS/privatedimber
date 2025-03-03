@@ -571,6 +571,7 @@ export const gluestackUIConfig = createConfig({
             body: "PlusJakartaSans_400Regular",
             novaBody: "NovaRegular",
             arialBody: "Arial",
+
         },
         fontSizes: {
             "2xs": 10,

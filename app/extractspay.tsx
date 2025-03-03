@@ -67,6 +67,8 @@ export default function ExtractsPay() {
         </View>
     );
 
+
+
     return (
         <BaseContainer>
             <HeaderContainer title="Extrato" />
@@ -121,7 +123,7 @@ export default function ExtractsPay() {
 
             <ItemListPayWallet name="Pagamento de mensagem" description="Envio para Camila Farani" />
             <ItemListPayWallet name="Pagamento de mensagem" description="Envio para Camila Farani" />
-
+            <ItemListPayWallet name="Pagamento de mensagem" description="Envio para Camila Farani" />
             <StatusBar style="auto" />
         </BaseContainer>
     );

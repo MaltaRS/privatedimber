@@ -64,7 +64,7 @@ export default function ListInstituition() {
 
     return(
         <BaseContainer >
-          <HeaderContainer name="Doar" />
+          <HeaderContainer title="Doar" />
 
             <ItemListProfile />
             <ItemListProfile />

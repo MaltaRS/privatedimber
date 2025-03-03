@@ -4,7 +4,6 @@ import { useEffect, useState } from "react";
 import { Box, GluestackUIProvider, Spinner } from "@/gluestackComponents";
 
 import { useFonts as useFontsExpo } from "expo-font";
-
 import {
     PlusJakartaSans_400Regular,
     PlusJakartaSans_500Medium,

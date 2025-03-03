@@ -4,6 +4,8 @@ import { Keyboard } from "react-native";
 
 import { useRouter } from "expo-router";
 
+import { useFontsExpo } from "@/app/_layout";
+
 import {
     HStack,
     ScrollView,
@@ -257,8 +259,8 @@ const ExploreScreen = () => {
                 />
             )}
             {!isSearching && (
-                <Fragment>
-                    <VStack gap="$3">
+                <Fragment >
+                    <VStack gap="$2">
                         {userFavorites &&
                         userFavorites?.length !== 0 &&
                         !isLoadingFavorites ? (
@@ -277,7 +279,7 @@ const ExploreScreen = () => {
                                     horizontal
                                     showsHorizontalScrollIndicator={false}
                                 >
-                                    <HStack gap="$4">
+                                    <HStack gap="$3">
                                         {userFavorites.map((item, index) => {
                                             const isOnline =
                                                 onlineUsers.includes(
@@ -311,12 +313,12 @@ const ExploreScreen = () => {
                             </VStack>
                         )}
                     </VStack>
-                    <VStack gap="$3" flex={1} pt="$2" bgColor="#12212">
-                        <Text
+                    <VStack gap="$2" flex={1} pt="$2" >
+                        <Text 
                             py="$1"
                             fontFamily="$heading"
                             fontSize={20}
-                            color="#000"
+                            color="#0f1010"
                             fontWeight="$semibold"
                             lineHeight={28}
                         >
@@ -360,31 +362,28 @@ const ExploreScreen = () => {
                                         isChecked={item.isChecked ?? false}
                                         liked={item.isFavorited ?? false}
                                         onLike={(id) => HandleLike(id)}
-                                        onPress={() =>
-                                            CreateConversation(item.id)
-                                        }
+                                        onPress={() => CreateConversation(item.id)}
                                     />
                                 )}
                                 numColumns={2}
                                 columnWrapperStyle={{
                                     justifyContent: "space-between",
                                 }}
-                                mb="$2"
+                                mb="$1"
                                 onEndReached={GetPopularUsers}
                                 onEndReachedThreshold={0.5}
                                 showsVerticalScrollIndicator={false}
+                            
+                              
                                 ListFooterComponent={
                                     isLoadingPopularUsers ? (
-                                        <VStack
-                                            alignItems="center"
-                                            justifyContent="center"
-                                            py="$4"
-                                        >
+                                        <VStack alignItems="center" justifyContent="center" py="$4">
                                             <Spinner size="large" />
                                         </VStack>
                                     ) : null
                                 }
                             />
+
                         )}
                     </VStack>
                 </Fragment>

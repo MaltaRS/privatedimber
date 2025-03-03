@@ -36,7 +36,7 @@ const CardAvatar = ({
     liked: boolean;
     onLike: () => void;
 }) => (
-  <Avatar
+  <Avatar 
       w="$full"
       height={180}
       position="relative"
@@ -73,22 +73,23 @@ const CardTags = ({ tags }: { tags: string[] }) => (
 );
 
 const CardPrice = ({ price }: { price: string }) => (
-    <HStack gap="$2" mt="$2" alignItems="center">
+    <HStack gap="$4" mb="$2"  mt="$2" alignItems="center">
         <Text
             fontSize={20}
             fontFamily="$heading"
             color="#111827"
             fontWeight="bold"
+
         >
             {price}
         </Text>
         <HStack
-            p={2}
+            p={1}
             px="$1"
-            bgColor="$gray100"
-            rounded="$sm"
+            bgColor="$gray200"
+            rounded="$md"
             alignItems="center"
-            gap="$1"
+            gap="$0"
         >
             <ArrowUp size={16} color={Colors.gray700} />
             <Text fontSize={17} color="$gray700" fontWeight="bold">
@@ -137,38 +138,36 @@ export const ExploreCard = ({
     onPress,
 }: ExploreCardProps) => {
     return (
-        <Pressable onPress={onPress} w="47.5%" >
-            <Card variant="ghost" p="$0">
-                <VStack alignItems="center">
-                    <CardAvatar
-                        name={name}
-                        imageLink={icon}
-                        liked={liked}
-                        onLike={() => onLike(id)}
-                    />
-                    <VStack gap="$1" p="$2" w="$full">
-                        <HStack
-                            alignItems="center"
-                            gap="$1"
-                            justifyContent="flex-start"
-                          
-                        >
-                            <Text size="lg" color="#000" fontWeight="$bold">
-                                {name}
-                            </Text>
-                            {/* {isChecked && (
-                                <SealCheck
-                                    size={20}
-                                    color={Colors.primaryDefault}
-                                    weight="fill"
-                                />
-                            )} */}
-                        </HStack>
-                        <CardTags tags={["Atleta", "Investidor"]} />
-                        <CardPrice price={price} />
-                    </VStack>
-                </VStack>
-            </Card>
-        </Pressable>
+<Pressable onPress={onPress} w="48.5%" pb="14">
+    <Card 
+        variant="ghost" 
+        p="$0" 
+        
+        style={{
+            backgroundColor: "#f3f4f6", // Fundo branco
+            borderRadius: 16, // Borda arredondada
+        }}
+    >
+        <VStack alignItems="center">
+            <CardAvatar
+                name={name}
+                imageLink={icon}
+                liked={liked}
+                onLike={() => onLike(id)}
+            />
+            <VStack gap="$0" p="$2"  w="$full">
+                <HStack alignItems="center" gap="$1" justifyContent="flex-start">
+                    <Text size="lg" color="#000" fontWeight="$bold">
+                        {name}
+                    </Text>
+                </HStack>
+                <CardTags tags={["Atleta", "Investidor"]} />
+                <CardPrice price={price}/>
+            </VStack>
+        </VStack>
+    </Card>
+</Pressable>
+
+
     );
 };
