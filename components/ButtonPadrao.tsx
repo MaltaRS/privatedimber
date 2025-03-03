@@ -17,7 +17,9 @@ export default function ButtonPadrao(title) {
     <VStack 
     alignItems="center" 
     justifyContent="center" 
-    marginTop={10} >
+    marginTop={10} 
+    style={{ position: 'absolute', bottom: 20,
+        left: 0, right: 0, alignItems: 'center' }}>
 
         <TouchableOpacity 
           onPress={() => router.push(title.nav)}
@@ -28,6 +30,7 @@ export default function ButtonPadrao(title) {
               justifyContent: 'center',
               backgroundColor: '#00A8FF',
               borderRadius: 40,
+     
           }} 
         >
 

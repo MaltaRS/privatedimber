@@ -110,9 +110,9 @@ export default function SakeScreen() {
             <ContainerInputTransf />
             <ComponentTransf />
 
-            <View style={{ marginTop: 30 }}>
-                <ButtonPadrao nav="/saketype" name="Continuar" />
-            </View>
+    
+            <ButtonPadrao nav="/saketype" name="Continuar" />
+            
 
             <StatusBar style="auto" />
         </BaseContainer>

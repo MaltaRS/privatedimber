@@ -81,19 +81,19 @@ export default function ConfigDefinedValueMsgScreen() {
 
       <HeaderContainer title="Definir valores"/>
 
-      <VStack marginTop={20}  >
+      <VStack ml="6" mr="6" mt="8">
         <Text fontSize={17} color="#374151" >
             Defina o valor que você deseja cobrar por cada interação.
         </Text>
-      </VStack>
+     
 
-      <VStack marginTop={10} >
+      <VStack marginTop={1} >
         <SelectValueInput nameinput="Base de preço" descriptioninput="Preço mínimo por mensagem" placetitle="R$ 100,00" />
         <SelectValueInput nameinput="Anexo" descriptioninput="Porcentagem extra a ser cobrada por anexo" placetitle="Selecione" />
         <SelectValueInput nameinput="Video" descriptioninput="Porcentagem extra a ser cobrada por video" placetitle="Selecione"/>
         <SelectValueInput nameinput="Imagem" descriptioninput="Porcentagem extra a ser cobrada por imagem" placetitle="Selecione"/>
       </VStack>
-
+ </VStack>
       <ButtonPadrao 
        nav="/configdefinedvaluemsg"
        name="Salvar"  />
