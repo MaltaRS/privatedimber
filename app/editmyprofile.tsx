@@ -18,7 +18,8 @@ import { useRouter } from "expo-router";
 import { useAuth } from "@/Context/AuthProvider";
 
 import { BaseContainer } from '@/components/BaseContainer';
-import HeaderContainer from '../components/HeaderContainer';
+import HeaderContainer from '@/components/HeaderContainer';
+import TitleContainer from "@/components/TitleContainer";
 import { ConfigCard } from "@/components/tabs/config/configCard";
 
 export default function EditProfileScreen() {
@@ -40,9 +41,7 @@ export default function EditProfileScreen() {
         router.push("/myprofile");
     };
 
-    const TitleContainer = ({ name }) => (
-        <Heading style={styles.title}>{name}</Heading>
-    );
+
 
     const ContainerInput = ({ name, value, onChange }) => (
         <View> 
@@ -114,6 +113,7 @@ const styles = StyleSheet.create({
         marginTop: 13,
         marginBottom: 13,
         fontSize: 17,
+  
     },
     inputContainer: {
         alignItems: 'center',

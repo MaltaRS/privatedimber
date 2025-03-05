@@ -73,26 +73,25 @@ const CardTags = ({ tags }: { tags: string[] }) => (
 );
 
 const CardPrice = ({ price }: { price: string }) => (
-    <HStack gap="$4" mb="$2"  mt="$2" alignItems="center">
+    <HStack gap="$5" mb="$1"  mt="$3" alignItems="center">
         <Text
-            fontSize={20}
-            fontFamily="$heading"
+            size="lg"
+            fontFamily="$novaTitle"
             color="#111827"
-            fontWeight="bold"
-
+            lineHeight={24}
         >
             {price}
         </Text>
         <HStack
             p={1}
             px="$1"
-            bgColor="$gray200"
+            bgColor="$gray100"
             rounded="$md"
             alignItems="center"
             gap="$0"
         >
-            <ArrowUp size={16} color={Colors.gray700} />
-            <Text fontSize={17} color="$gray700" fontWeight="bold">
+            <ArrowUp size={17} color={Colors.gray700} />
+            <Text  size="sm" color="$gray700" fontFamily="$title"  alignTex="center">
                 25%
             </Text>
         </HStack>
@@ -144,9 +143,12 @@ export const ExploreCard = ({
         p="$0" 
         
         style={{
-            backgroundColor: "#f3f4f6", // Fundo branco
-            borderRadius: 16, // Borda arredondada
-        }}
+            backgroundColor: "#fff",
+            borderRadius: 12, 
+            borderWidth: 0.9, 
+            borderColor: "#E5E7EB", 
+            }}
+        
     >
         <VStack alignItems="center">
             <CardAvatar
@@ -157,7 +159,7 @@ export const ExploreCard = ({
             />
             <VStack gap="$0" p="$2"  w="$full">
                 <HStack alignItems="center" gap="$1" justifyContent="flex-start">
-                    <Text size="lg" color="#000" fontWeight="$bold">
+                    <Text size="lg" color="#15161E" fontFamily="$novaTitle" lineHeight={24}> 
                         {name}
                     </Text>
                 </HStack>

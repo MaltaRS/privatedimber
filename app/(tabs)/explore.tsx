@@ -237,7 +237,7 @@ const ExploreScreen = () => {
                 hide={isSearching}
             />
             <Animated.View style={animatedSearchStyle}>
-                <SearchInput
+                <SearchInput 
                     isSearching={isSearching}
                     onFocus={() => {
                         setIsSearching(true);
@@ -267,10 +267,9 @@ const ExploreScreen = () => {
                             <Fragment>
                                 <Text
                                     py="$1"
-                                    fontFamily="$heading"
+                                    fontFamily="$novaTitle" 
                                     fontSize={20}
                                     color="#000"
-                                    fontWeight="$semibold"
                                     lineHeight={28}
                                 >
                                     Favoritos
@@ -316,10 +315,9 @@ const ExploreScreen = () => {
                     <VStack gap="$2" flex={1} pt="$2" >
                         <Text 
                             py="$1"
-                            fontFamily="$heading"
+                            fontFamily="$novaTitle" 
                             fontSize={20}
                             color="#0f1010"
-                            fontWeight="$semibold"
                             lineHeight={28}
                         >
                             Mais populares

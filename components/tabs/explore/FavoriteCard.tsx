@@ -36,9 +36,10 @@ export const FavoriteCard = ({
             <Text
                 width="$full"
                 maxWidth={80}
-                textAlign="center"
-                fontWeight="$regular"
+                textAlign="left"
+                fontFamily="$body"
                 color="$gray900"
+                lineHeight={20}
                 numberOfLines={1}
                 fontSize={12}
                 pt="$1"                                     

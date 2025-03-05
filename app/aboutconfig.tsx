@@ -19,7 +19,7 @@ const Configsecurity = () => {
    
 
     return (
-        <BaseContainer>
+        <BaseContainer backgroundColor="$gray50">
             <VStack gap="$4">
         <HeaderContainer title="Sobre" />
                 <ScrollView

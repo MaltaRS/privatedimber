@@ -15,11 +15,10 @@ const Configsecurity = () => {
    
 
     return (
-        <BaseContainer>
+        <BaseContainer backgroundColor="$gray50">
             <VStack gap="$4">
-        <HeaderContainer title="Segurança" />
+               <HeaderContainer title="Segurança" />
                     <VStack p="$1" pt="$2" gap="$6">
-
                         <ConfigCard 
                             items={[
                                 { title: "Alterar senha", href: "/changepassword" },
@@ -27,10 +26,8 @@ const Configsecurity = () => {
                
                             ]}
                         />
-
                     </VStack>
-                    
-            </VStack>
+               </VStack>
             <StatusBar style="auto" />
         </BaseContainer>
     );

@@ -21,22 +21,45 @@ import { BaseContainer } from '@/components/BaseContainer';
 import ProfileStatistics from '../components/ProfileStatistics'
 import TitleContainerProfile from "@/components/TitleContainerProfile";
 import Row from '../components/Row'
-import HeaderContainer from "../components/HeaderContainer";
+import { GoBack } from "@/components/utils/GoBack"; 
+
 import { useRouter } from "expo-router";
 
 import { useAuth } from "@/Context/AuthProvider";
 
-
+const HeaderContainer = ({ title }) => {
+    const router = useRouter();
+    return (
+        <HStack
+            pt="$1"
+                 justifyContent="space-between"
+                 alignItems="center"
+                 width="100%"
+                 px="1"
+             >
+        >
+            <GoBack onPress={() => router.back()} />
+            <View style={{ flex: 1, alignItems: 'center', position: 'absolute', left: 0, right: 0 }}>
+                <Text fontFamily="$title" fontSize={17} color="#0F1010" textAlign="center">
+                    {title}
+                </Text>
+            </View>
+            <GoBack onPress={() => router.back()} />
+        </HStack>
+    );
+};
 export default function ProfileScreen() {
     const { user } = useAuth();
     const router = useRouter();
     
-  
-const [activeTab, setActiveTab] = useState("tab1");
+    
+
+    
+    const [activeTab, setActiveTab] = useState("tab1");
     
 
 
-const contentSobreProfile = "O meu grande objetivo de vida é ajudar você e sua empresa a expandir sua capacidade e visão empreendedora"
+    const contentSobreProfile = "O meu grande objetivo de vida é ajudar você e sua empresa a expandir sua capacidade e visão empreendedora"
 
     const HeaderProfile = () => {
         return(
@@ -86,11 +109,11 @@ const contentSobreProfile = "O meu grande objetivo de vida é ajudar você e sua
                     <TouchableOpacity 
                         onPress={() => router.push("/editmyprofile")}
                         style={{ 
-                        borderRadius: 300, alignContent: 'flex-end',
+                        borderRadius: 300, backgroundColor: '#f6f6f6', alignContent: 'flex-end',
                         width: 48, height: 48, alignItems: 'center', justifyContent: 'center',
                          borderWidth: 1, borderColor: '#f3f4f6'
                     }} >
-                        <Feather name="edit" size={20} color="black" />
+                        <Feather name="edit" size={24} color="black" />
                     </TouchableOpacity>
                 </HStack>
 
@@ -128,42 +151,42 @@ const contentSobreProfile = "O meu grande objetivo de vida é ajudar você e sua
 const AboutProfile = (title) => {
         return(
             
-            <VStack> 
-                 <VStack mt="24">
-                     <TitleContainerProfile name="Sobre Mim" />
-                 </VStack>
-                        <Text fontFamily= "NovalBody" 
-                            style={{fontSize: 15,  lineHeight: 20 ,marginTop: 10 }} >
-                            {title.content}
-                        </Text>
+            <VStack>
+             <VStack mt="24">
+                 <TitleContainerProfile name="Sobre Mim" />
+            </VStack>
+                <Text 
+                    style={{fontSize: 15}} >
+                    {title.content}
+                </Text>
 
-                        <Text 
-                             style={{color: '#00A8FF', fontSize: 15, marginTop: 10, lineHeight: 20  }} >
-                            Ver mais
-                       </Text>
+                <Text 
+                    size="15" style={{color: '#00A8FF'}} >
+                    Ver mais
+                </Text>
 
-                     <View style={{ marginTop: 18, width: '100%', height: 6, backgroundColor: '#F8F8F9', borderRadius: 10}}  />
+                <View style={{ marginTop: 18, width: '100%', height: 6, backgroundColor: '#F8F8F9', borderRadius: 10}}  />
 
-                     <VStack mt="24" mb="16" >
-                       <TitleContainerProfile name="Minhas Categorias"/>
-                       <VStack mt="24">
-                            <HStack>
-                              <TabCategoryProfile name="Financas e Negocios"  />
-                              <TabCategoryProfile name="Empreendedorismo"  />
-                            </HStack>  
-                       </VStack>
-                       </VStack>
-                        <View style={{ marginTop: 18, width: '100%', height: 6, backgroundColor: '#F8F8F9', borderRadius: 10}}  />
-                         <VStack mt="24" mb="16" >
-                         <TitleContainerProfile name="Meus Interesses" />
-                       <VStack mt="24">
-                       <HStack>
+                  <VStack mt="24" mb="16" >
+                    <TitleContainerProfile name="Minhas Categorias"/>
+                    <VStack mt="24">
+                    <HStack>
                         <TabCategoryProfile name="Financas e Negocios"  />
                         <TabCategoryProfile name="Empreendedorismo"  />
-                      </HStack>
-                      </VStack>
-                 </VStack>
-                <View style={{ marginTop: 18, width: '100%', height: 6, backgroundColor: '#F8F8F9', borderRadius: 10}}  />
+                   </HStack>  
+                </VStack>
+                  </VStack>
+ <View style={{ marginTop: 18, width: '100%', height: 6, backgroundColor: '#F8F8F9', borderRadius: 10}}  />
+                 <VStack mt="24" mb="16" >
+                    <TitleContainerProfile name="Meus Interesses" />
+                  <VStack mt="24">
+                    <HStack>
+                        <TabCategoryProfile name="Financas e Negocios"  />
+                        <TabCategoryProfile name="Empreendedorismo"  />
+                   </HStack>
+                </VStack>
+                  </VStack>
+            <View style={{ marginTop: 18, width: '100%', height: 6, backgroundColor: '#F8F8F9', borderRadius: 10}}  />
             </VStack>
         )
     }
@@ -198,7 +221,7 @@ const AboutProfile = (title) => {
         <BaseContainer>
 
        <VStack gap="$4">
-         <HeaderContainer title="Meu Perfil" />
+         <HeaderContainer  />
   <VStack p="1">
             <HeaderProfile />
          
@@ -214,7 +237,7 @@ const AboutProfile = (title) => {
                 <TouchableOpacity 
                     style={[styles.tabButton, activeTab === "tab2" ? styles.activeTab : styles.inactiveTab]} 
                     onPress={() => setActiveTab("tab2")}  >
-                   <Text       fontFamily= "title" style={[activeTab === "tab2" ? styles.titleTabActive : styles.titleTabInactive]}  >Estatísticas</Text>
+                   <Text       fontFamily= 'title' style={[activeTab === "tab2" ? styles.titleTabActive : styles.titleTabInactive]}  >Estatísticas</Text>
 
                 </TouchableOpacity>
 

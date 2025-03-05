@@ -14,6 +14,7 @@ import {
 import { useRouter } from "expo-router";
 
 import FontAwesome from '@expo/vector-icons/FontAwesome';
+import TitleContainerProfile from "@/components/TitleContainerProfile";
 
 
 
@@ -35,14 +36,14 @@ export default function ProfileStatistics(title) {
         return(
         <View 
            style={{
-              width: '45%', height: 100, alignItems: 'center', justifyContent: 'center',
-               margin: 5, borderRadius: 10, borderWidth: 1, borderColor: '#999' 
+              width: '49%', height: 76, alignItems: 'center', justifyContent: 'center',
+               margin: 5, borderRadius: 10, borderWidth: 0.8 , borderColor: '#D1D5DB'  
             }} >
                 <HStack style={{alignItems: 'center', justifyContent: 'center'}}  >
                    <FontAwesome name={title.nameicon} size={18} color="black" style={{paddingRight: 8}} />
-                   <Text bold style={{fontSize: 20}} >{title.number}</Text>
+                   <Text style={{fontSize: 16}} >{title.number}</Text>
                 </HStack>
-            <Text bold size="sm" >{title.name}</Text>
+            <Text semiBold size="sm" >{title.name}</Text>
          </View>   
         )
     }
@@ -52,10 +53,12 @@ export default function ProfileStatistics(title) {
         const ContainerStatistics = () => {
             return(
                 <VStack>
-                    <TitleContainer name="Atividade de Mensagem" />
+                      <VStack mt="24">
+                                    <TitleContainerProfile name="Atividades de Mensagem" />
+                               </VStack>
     
                     <HStack 
-                        style={{width: '100%', alignItems: 'center', justifyContent: 'center'}} >
+                        style={{width: '100%', alignItems: 'center', justifyContent: 'center', marginTop: 10 }} >
                         <ComponentProfileStatistics name="Curtidas" number="398" nameicon="comment" />
                         <ComponentProfileStatistics name="Estimativa de resposta" number="15" nameicon="comment-o" />
                     </HStack>

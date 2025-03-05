@@ -16,7 +16,7 @@ export const GoBack = ({
     onPress,
     transparent = false,
     style,
-    iconSize = 24,
+    iconSize = 20,
     icon = "arrow",
 }: GoBackProps) => {
     const Icon = icon === "arrow" ? MoveLeft : X;
@@ -34,7 +34,7 @@ export const GoBack = ({
                       bgColor: "transparent",
                   }
                 : {
-                      bgColor: "$gray50",
+                      bgColor: "$gray100",
                   })}
             {...style}
         >

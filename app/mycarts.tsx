@@ -34,7 +34,7 @@ export default function MyCartsScreen() {
                 </HStack>
                 <Feather name="more-vertical" size={24} color="black" />
             </HStack>
-            <Row />
+
         </View>
     );
 
@@ -50,20 +50,22 @@ export default function MyCartsScreen() {
                 </HStack>
                 <Feather name="more-vertical" size={24} color="black" />
             </HStack>
-            <Row />
+    
         </TouchableOpacity>
     );
 
     return (
-        <BaseContainer backgroundColor="#fff">
-            <HeaderContainer title="Meus Cartões" backgroundColor="#fff" />
-            <VStack className="mt-5" backgroundColor="#fff">
-                <CartContainer name="Cartão " description="C6 Bank Crédito ******1540" logo={logoCard3} />
-                <CartContainer name="Cartão " description="Master Card Crédito ******7076" logo={logoCard} />
-                <CartContainer name="Cartão " description="Nubank Crédito ******8010" logo={logoCard2} />
-                <ContainerNewCart logo={logoCard4} />
-            </VStack>
-            <StatusBar style="auto" />
+        <BaseContainer>
+           <VStack gap="$4">
+                <HeaderContainer title="Meus Cartões"/>
+                <VStack>
+                    <CartContainer name="Cartão " description="C6 Bank Crédito ******1540" logo={logoCard3} />
+                    <CartContainer name="Cartão " description="Master Card Crédito ******7076" logo={logoCard} />
+                    <CartContainer name="Cartão " description="Nubank Crédito ******8010" logo={logoCard2} />
+                    <ContainerNewCart logo={logoCard4} />
+                </VStack>
+           </VStack>
+               <StatusBar style="auto" />
         </BaseContainer>
     );
 }

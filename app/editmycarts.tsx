@@ -38,7 +38,7 @@ const PayInput = ({ placeholder }) => (
 
 export default function EditMyCartScreen() {
     return (
-        <BaseContainer>
+         <BaseContainer backgroundColor="$gray50"> 
             <HeaderContainer title="Adicionar cartão" />
 
             <Heading style={{ fontSize: 15, marginTop: 20, marginBottom: 20 }}>

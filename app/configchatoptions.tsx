@@ -6,7 +6,6 @@ import {
     Box,
     HStack,
     Pressable,
-    ScrollView,
     Text,
     VStack,
 } from "@/gluestackComponents";
@@ -22,31 +21,22 @@ import { BaseContainer } from "@/components/BaseContainer";
 const PrivacyScreen = () => {
 
     return (
-        <BaseContainer>
+        <BaseContainer backgroundColor="$gray50">
             <VStack gap="$4">
-        <HeaderContainer title="Conversas" />
-                <ScrollView
-                    showsVerticalScrollIndicator={false}
-                    contentContainerStyle={{
-                        paddingBottom: 46,
-                    }}
-                >
-                    <VStack p="$1" pt="$2" gap="$6">
+               <HeaderContainer title="Conversas" />
+                <VStack>
 
-                        <ConfigCardNoIcon 
-                            items={[
-                                { title: "Exportar"}, 
-                                { title: "Arquivar todas as conversas"}, 
-                                { title: "Apagar todas as conversas"}
-               
-                            ]}
-                        />
-              
-
-                    </VStack>
-                </ScrollView>
+                    <ConfigCardNoIcon 
+                        items={[
+                            { title: "Exportar"}, 
+                            { title: "Arquivar todas as conversas"}, 
+                            { title: "Apagar todas as conversas"}
+           
+                        ]}
+                    />
+                </VStack>
             </VStack>
-            <StatusBar style="auto" />
+          <StatusBar style="auto" />
         </BaseContainer>
     );
 };

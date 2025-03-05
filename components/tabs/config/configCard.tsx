@@ -19,7 +19,7 @@ export const ConfigCard = ({ items }: ConfigCardProps) => {
 
     return (
         <VStack bgColor="#fff" pl="$4" borderRadius="$xl"  
-         elevation={2}
+         elevation={1}
       >
             {items.map((item, index) => (
                 <Pressable
@@ -40,8 +40,8 @@ export const ConfigCard = ({ items }: ConfigCardProps) => {
                         justifyContent="space-between"
                     >
                         <Text
-                            size="xl"
-                            fontFamily="$novaBody"
+                            size="lg"
+                            fontFamily="$Body"
                             color="$gray800"
                             lineHeight={24}
                             {...item}
@@ -51,7 +51,7 @@ export const ConfigCard = ({ items }: ConfigCardProps) => {
                         {item.icon ? (
                             item.icon
                         ) : (
-                            <ChevronRight size={22} color={Colors.gray700} />
+                            <ChevronRight size={18} color={Colors.gray400} />
                         )}
                     </HStack>
                     {index < items.length - 1 && <Divider bgColor="$gray200" />}

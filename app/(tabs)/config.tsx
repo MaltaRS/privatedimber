@@ -1,16 +1,15 @@
 import React, { useState } from "react";
-import {
+import { ScrollView, Pressable, View } from "react-native";
+import { 
     Avatar,
     AvatarFallbackText,
     AvatarImage,
     HStack,
-    Pressable,
-    ScrollView,
-    Text,
-    View,
     VStack,
+    Text
 } from "@/gluestackComponents";
 
+import TitleContainer from "@/components/TitleContainer";
 import { StatusBar } from "expo-status-bar";
 import { useRouter } from "expo-router";
 import { ChevronRight } from "lucide-react-native";
@@ -27,7 +26,6 @@ const ConfigScreen = () => {
     const router = useRouter();
     const { user } = useAuth();
     const { signOut } = useGoogleAuth();
-    
     const [modalVisible, setModalVisible] = useState(false);
 
     const handleSignOut = async () => {
@@ -36,31 +34,29 @@ const ConfigScreen = () => {
     };
 
     const HeaderContainer = ({ title }) => (
-        <HStack pt="$1" justifyContent="space-between"
-                width="100%" position="relative" >
-        <GoBack onPress={() => router.push("/explore")} />
-
-            <Text fontFamily="$heading" size="lg" color="#000"  pt="$2" textAlign="center" flex={1}>
+        <HStack pt="$1" justifyContent="space-between" width="100%" position="relative">
+            <GoBack onPress={() => router.push("/explore")} />
+            <Text fontFamily="$medium" fontSize={16} color="#000" textAlign="center" pt="$2" lineHeight={20} flex={1}>
                 {title}
-                 <View style={{ width: 50, }} /> 
-                          
+                <View style={{ width: 50 }} />
             </Text>
         </HStack>
     );
 
     return (
-        <BaseContainer>
+        <BaseContainer backgroundColor="$gray50">
             <VStack gap="$4">
                 <HeaderContainer title="Configurações" />
-
-                <ScrollView  showsVerticalScrollIndicator={false} contentContainerStyle={{ paddingBottom: 46 }}>
+    
+                <ScrollView showsVerticalScrollIndicator={false} contentContainerStyle={{ paddingBottom: 86 }}>
                     <VStack p="$1" pt="$2" gap="$2">
-                        {/* Perfil do Usuário */}
+
+
                         <Pressable
                             onPress={() => router.push("/myprofile")}
                             style={{
                                 borderRadius: 16,
-                                elevation: 2,
+                                elevation: 1,
                                 backgroundColor: "#fff",
                                 padding: 16,
                             }}
@@ -72,22 +68,19 @@ const ConfigScreen = () => {
                                         {user?.icon && <AvatarImage source={{ uri: user.icon }} alt={user.name} />}
                                     </Avatar>
                                     <VStack gap="$1">
-                                        <Text size="lg" fontFamily="$heading" color="#000" lineHeight={24}>
+                                        <Text size="lg" fontFamily="$jakartHeading" color="#000" lineHeight={24}>
                                             {user?.name || "Usuário"}
                                         </Text>
-                                        <Text fontSize={17} color="#6B7280" fontFamily="$body" lineHeight={20}>
+                                        <Text fontSize={16} color="#6B7280" fontFamily="$NovaBody" lineHeight={20}>
                                             Ver perfil
                                         </Text>
                                     </VStack>
                                 </HStack>
-                                <ChevronRight size={24} color={Colors.gray500} strokeWidth={3} />
+                                <ChevronRight size={20} color={Colors.gray400} strokeWidth={2} />
                             </HStack>
                         </Pressable>
 
-                        {/* Configurações de Mensagens */}
-                        <Text my="$4" fontSize={21} fontFamily="$heading" color="#000" lineHeight={24}>
-                            Mensagens
-                        </Text>
+                        <TitleContainer name="Mensagens" />
                         <ConfigCard
                             items={[
                                 { title: "Notificações", href: "/confignotific" },
@@ -97,10 +90,7 @@ const ConfigScreen = () => {
                             ]}
                         />
 
-                        {/* Configurações de Conta */}
-                        <Text my="$4" fontSize={21} fontFamily="$heading" color="#000" lineHeight={24}>
-                            Conta
-                        </Text>
+                        <TitleContainer name="Conta" />
                         <ConfigCard
                             items={[
                                 { title: "Tipo de conta", href: "/config/accountType" },
@@ -109,10 +99,7 @@ const ConfigScreen = () => {
                             ]}
                         />
 
-                        {/* Configurações do Aplicativo */}
-                        <Text my="$4" fontSize={21} fontFamily="$heading" color="#000" lineHeight={24}>
-                            Aplicativo
-                        </Text>
+                        <TitleContainer name="Aplicativo" />
                         <ConfigCard
                             items={[
                                 { title: "Ajuda", href: "/help" },
@@ -133,7 +120,6 @@ const ConfigScreen = () => {
 
             <StatusBar style="auto" />
 
-            {/* Modal de confirmação para sair */}
             <ConfirmationModal
                 isOpen={modalVisible}
                 onClose={() => setModalVisible(false)}

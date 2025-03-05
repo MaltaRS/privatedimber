@@ -33,7 +33,7 @@ export const ConfigCardSwitch = ({ items }: ConfigCardProps) => {
             {items.map((item, index) => (
                 <Pressable key={item.title}>
                     <HStack pr="$4" py="$4" alignItems="center" justifyContent="space-between">
-                        <Text size="xl" fontFamily="$novaBody" color="$gray800" lineHeight={24}>
+                        <Text  size="lg" fontFamily="$novaBody" color="$gray800" lineHeight={24}>
                             {item.title}
                         </Text>
                         <Switch

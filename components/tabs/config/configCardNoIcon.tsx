@@ -40,7 +40,7 @@ export const ConfigCardNoIcon = ({ items }: ConfigCardProps) => {
                         justifyContent="space-between"
                     >
                         <Text
-                            size="xl"
+                            size="lg"
                             fontFamily="$novaBody"
                             color="$gray800"
                             lineHeight={24}

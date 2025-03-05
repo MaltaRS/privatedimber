@@ -6,11 +6,11 @@ import {
     HStack
  } from "@/gluestackComponents";
 
- import { StatusBar } from 'expo-status-bar';
- import HeaderContainer from '../components/HeaderContainer'
-
- import Entypo from '@expo/vector-icons/Entypo';
- import FontAwesome from '@expo/vector-icons/FontAwesome';
+import { StatusBar } from 'expo-status-bar';
+import HeaderContainer from '../components/HeaderContainer'
+import TitleContainer from "@/components/TitleContainer";
+import Entypo from '@expo/vector-icons/Entypo';
+import FontAwesome from '@expo/vector-icons/FontAwesome';
 
 
 import { BaseContainer } from "@/components/BaseContainer";
@@ -79,7 +79,7 @@ export default function EdityMyInterestsProfileScreen() {
 
 
   return (
-      <BaseContainer backgroundColor="white"  >
+      <BaseContainer >
 
         <HeaderContainer name="Interesses" />
 

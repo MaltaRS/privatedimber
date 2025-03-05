@@ -20,7 +20,7 @@ import {
  } from "@/gluestackComponents";
 import { MainTitle } from '@/components/MainTitle';
 import  HeaderContainer  from "@/components/HeaderContainer";
-
+import TitleContainer from "@/components/TitleContainer";
 
 
 export default function ConfigDefinedValueMsgScreen() {
@@ -46,8 +46,8 @@ export default function ConfigDefinedValueMsgScreen() {
                     alignItems: 'center',
                     borderWidth: 1, 
                     borderColor: '#999',  
-                    paddingTop: 10, 
-                    paddingBottom: 10, 
+                    paddingTop: 6, 
+                    paddingBottom: 6, 
                     borderRadius: 10,
                    marginTop: 12
                    }} >
@@ -77,11 +77,11 @@ export default function ConfigDefinedValueMsgScreen() {
 
 
   return (
-    <BaseContainer backgroundColor="#fff"  >
-
+       <BaseContainer backgroundColor="$gray50">
+  <VStack gap="$4">
       <HeaderContainer title="Definir valores"/>
 
-      <VStack ml="6" mr="6" mt="8">
+      <VStack ml="6" mr="6" >
         <Text fontSize={17} color="#374151" >
             Defina o valor que você deseja cobrar por cada interação.
         </Text>
@@ -94,12 +94,14 @@ export default function ConfigDefinedValueMsgScreen() {
         <SelectValueInput nameinput="Imagem" descriptioninput="Porcentagem extra a ser cobrada por imagem" placetitle="Selecione"/>
       </VStack>
  </VStack>
-      <ButtonPadrao 
-       nav="/configdefinedvaluemsg"
-       name="Salvar"  />
 
-     
+
+          </VStack>
       <StatusBar style="auto" />
+         <ButtonPadrao 
+               nav="/configdefinedvaluemsg"
+               name="Salvar"  />
     </BaseContainer>
+    
   );
 }
