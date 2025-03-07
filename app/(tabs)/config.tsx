@@ -68,7 +68,8 @@ const ConfigScreen = () => {
                                         {user?.icon && <AvatarImage source={{ uri: user.icon }} alt={user.name} />}
                                     </Avatar>
                                     <VStack gap="$1">
-                                        <Text size="lg" fontFamily="$jakartHeading" color="#000" lineHeight={24}>
+
+                                        <Text fontFamily="$novaTitle" fontSize="$lg" textAlign="center" lineHeight="24">
                                             {user?.name || "Usuário"}
                                         </Text>
                                         <Text fontSize={16} color="#6B7280" fontFamily="$NovaBody" lineHeight={20}>

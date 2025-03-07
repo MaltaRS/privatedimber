@@ -260,7 +260,7 @@ const ExploreScreen = () => {
             )}
             {!isSearching && (
                 <Fragment >
-                    <VStack gap="$2">
+                    <VStack gap="$1">
                         {userFavorites &&
                         userFavorites?.length !== 0 &&
                         !isLoadingFavorites ? (
@@ -278,7 +278,7 @@ const ExploreScreen = () => {
                                     horizontal
                                     showsHorizontalScrollIndicator={false}
                                 >
-                                    <HStack gap="$3">
+                                    <HStack>
                                         {userFavorites.map((item, index) => {
                                             const isOnline =
                                                 onlineUsers.includes(
@@ -312,7 +312,7 @@ const ExploreScreen = () => {
                             </VStack>
                         )}
                     </VStack>
-                    <VStack gap="$2" flex={1} pt="$2" >
+                    <VStack gap="$1" flex={1} pt="$2" >
                         <Text 
                             py="$1"
                             fontFamily="$novaTitle" 

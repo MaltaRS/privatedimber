@@ -391,7 +391,7 @@ const ChatsScreen = () => {
                                         >
                                             {Math.abs(
                                                 (contactConversation?.totalAnswers ??
-                                                    4) - 3,
+                                                    3) - 3,
                                             )}
                                             /3
                                         </Text>

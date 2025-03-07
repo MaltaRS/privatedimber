@@ -40,14 +40,14 @@ const contentSobreProfile = "O meu grande objetivo de vida é ajudar você e sua
 
     const HeaderProfile = () => {
         return(
-            <View style={{width: '100%', alignItems: 'left', marginTop: 20}}  >
+            <VStack alignItems="left" alignContent="top">
                 <HStack 
-                     style={{ width: '100%', justifyContent: 'space-between'}}  >
+                   justifyContent= "space-between"  >
                     <VStack>
 
-                        <View>
+                        
                             <HStack>
-                               <Avatar width={56} height={56}>
+                               <Avatar width={72} height={72} marginRight="10">
                                     <AvatarFallbackText>
                                         {user?.name}
                                         </AvatarFallbackText>
@@ -59,27 +59,25 @@ const contentSobreProfile = "O meu grande objetivo de vida é ajudar você e sua
                                             />
                                 </Avatar>
                                 
-                                <View style={{marginLeft: 7}}  >    
-                                    <HStack style={{alignItems: 'center'}} >                
-                                        <Text 
-                                            bold style={{fontSize: 18}} >
-                                             {user?.name}
-                                            </Text>
-                                        <MaterialIcons name="verified" size={22} color="#00A8FF" style={{paddingLeft: 4}} />
+                                <VStack >    
+                                  <HStack style={{ alignItems: "center" }}>
+                                      <Text fontFamily="$novaTitle" fontSize="$lg" textAlign="center" lineHeight="24">
+                                          {user?.name}
+                                      </Text>
+                                      <MaterialIcons name="verified" size={14} color="#00A8FF" style={{ paddingLeft: 4 }} />
+                                  </HStack>
 
-                                    </HStack>
-                                    <Text 
-                                        style={{fontSize: 14}} >
-                                        @Camila Farani
-                                    </Text>
-                                    <Text 
-                                        style={{fontSize: 12}} >
+                                    <Text fontFamily="$novaBody" fontSize="$sm" textAlign="left"  lineHeight="20">
+                                        @{user?.username}
+                                         </Text>
+                                    <Text fontFamily="$novaBody" fontSize="$xs" textAlign="left"  lineHeight="20">
+
                                         Ultima conexão ontem as 21:30
                                     </Text>
-                                </View>
+                                </VStack>
                             </HStack>
                             
-                        </View>
+                      
                     </VStack>
 
         
@@ -90,23 +88,21 @@ const contentSobreProfile = "O meu grande objetivo de vida é ajudar você e sua
                         width: 48, height: 48, alignItems: 'center', justifyContent: 'center',
                          borderWidth: 1, borderColor: '#f3f4f6'
                     }} >
+                      
                         <Feather name="edit" size={20} color="black" />
+                      
                     </TouchableOpacity>
                 </HStack>
 
 
-                <VStack style={{ width: '100%', marginTop: 10 }}  >
-                    <Text 
-                        className="text-md mt-10 font-normal   text-typography-900" fontSize={14}>
-                        Mais Influente da América Latina pela Blomberg \n kkdk 
+                <VStack mt="$2">
+                   <Text fontFamily="$novaBody" fontSize="$sm"  lineHeight="20" >
+                        Mais Influente da América Latina pela Blomberg \n kkdk nvestidora Shark Tank Brasil  Empreendedora Linkedin
                     </Text>
-                    <Text 
-                        className="text-md mt-2 font-normal   text-typography-900" fontSize={14}  >
-                        Investidora Shark Tank Brasil  Empreendedora Linkedin
-                    </Text>
+
                 </VStack>
                     
-            </View>
+            </VStack>
         );
     }
 
@@ -129,17 +125,17 @@ const AboutProfile = (title) => {
         return(
             
             <VStack> 
-                 <VStack mt="24">
+                 <VStack mt="24" >
                      <TitleContainerProfile name="Sobre Mim" />
                  </VStack>
-                        <Text fontFamily= "NovalBody" 
-                            style={{fontSize: 15,  lineHeight: 20 ,marginTop: 10 }} >
+                 <VStack width="100%" >
+                       <Text fontFamily="$novaBody" fontSize={15} textAlign="justify" lineHeight="18" marginTop="10"  >
                             {title.content}
                         </Text>
-
-                        <Text 
-                             style={{color: '#00A8FF', fontSize: 15, marginTop: 10, lineHeight: 20  }} >
-                            Ver mais
+                  </VStack>
+                       <Text color="#00A8FF" fontFamily="$novaBody" fontSize="$md"  lineHeight="20" marginTop="10" >
+                         
+                       Ver mais
                        </Text>
 
                      <View style={{ marginTop: 18, width: '100%', height: 6, backgroundColor: '#F8F8F9', borderRadius: 10}}  />
@@ -155,90 +151,112 @@ const AboutProfile = (title) => {
                        </VStack>
                         <View style={{ marginTop: 18, width: '100%', height: 6, backgroundColor: '#F8F8F9', borderRadius: 10}}  />
                          <VStack mt="24" mb="16" >
-                         <TitleContainerProfile name="Meus Interesses" />
-                       <VStack mt="24">
-                       <HStack>
-                        <TabCategoryProfile name="Financas e Negocios"  />
-                        <TabCategoryProfile name="Empreendedorismo"  />
-                      </HStack>
-                      </VStack>
-                 </VStack>
+                                    <TitleContainerProfile name="Meus Interesses" />
+                               <VStack mt="24">
+                                 <HStack>
+                                   <TabCategoryProfile name="Financas e Negocios"  />
+                                   <TabCategoryProfile name="Empreendedorismo"  />
+                                 </HStack>
+                               </VStack>
+                         </VStack>
+
+                        
                 <View style={{ marginTop: 18, width: '100%', height: 6, backgroundColor: '#F8F8F9', borderRadius: 10}}  />
             </VStack>
         )
     }
 
 
- 
+ const SocialLinks = (title) => {
+      return (
+          <VStack>
+              <VStack mt="24" mb="16">
+                  <TitleContainerProfile name="Social" />
+                  <VStack mt="24">
+                      <VStack>
+                          <Text fontFamily="medium" paddingBottom={10} fontSize="$sm" color="#gray800"  lineHeight="20">
+                              {title.linkednName}
+                              </Text>
+                          <Text fontFamily="medium" fontSize="$sm" color="$gray800"  lineHeight="20">
+                                {title.instaName}
+                                </Text>
+                      </VStack>
+                  </VStack>
+              </VStack>
+             <View style={{ marginTop: 18, width: '100%', height: 6, backgroundColor: '#F8F8F9', borderRadius: 10}}  />
 
-
-
-
-    const SocialLinks = (title) => {
-        return(
-             <VStack mt="24" mb="16" >
-                        <TitleContainerProfile name="Social"  />
-                             <VStack mt="16">
-                                <HStack>
- <Text paddingBottom={20} size="15" color="#00A8FF" >{title.linkednanme}</Text>
-                               </HStack>
-                            </VStack>
-                              </VStack>
-                       
-                       
-        );
-    }
+              <VStack mt="24" mb="16">
+                  <TitleContainerProfile name="Links" />
+                  <VStack mt="16">
+                      <HStack>
+                      <Text fontFamily="regular" paddingBottom={20} fontSize="$sm" color="$blue600" lineHeight="20">
+                              {title.sitelink}
+                          </Text>
+                      </HStack>
+                  </VStack>
+              </VStack>
+          </VStack>
+      );
+  };
 
 
 
 
   return (
-    <ScrollView>
+   
 
-        <BaseContainer>
+     <BaseContainer>
+     <VStack gap="$4">   
+        <HeaderContainer title="Meu Perfil" />
+      
+        
+       
+           
+             <ScrollView showsVerticalScrollIndicator={false} contentContainerStyle={{ paddingBottom: 86 }}> 
+       
+                <VStack p="1">
+                <HeaderProfile />
+             
+    
+                    <HStack backgroundColor="$gray100" padding={2} marginTop={12} borderRadius={30} >
+    
+                        <TouchableOpacity 
+                            style={[styles.tabButton, activeTab === "tab1" ? styles.activeTab : styles.inactiveTab]} 
+                            onPress={() => setActiveTab("tab1")} >
+                            <Text style={[activeTab === "tab1" ? styles.titleTabActive : styles.titleTabInactive]}  >Sobre</Text>
+                        </TouchableOpacity>
+    
+                        <TouchableOpacity 
+                            style={[styles.tabButton, activeTab === "tab2" ? styles.activeTab : styles.inactiveTab]} 
+                            onPress={() => setActiveTab("tab2")}  >
+                           <Text       fontFamily= "title" style={[activeTab === "tab2" ? styles.titleTabActive : styles.titleTabInactive]}  >Estatísticas</Text>
+        
+                        </TouchableOpacity>
+                    </HStack>
 
-       <VStack gap="$4">
-         <HeaderContainer title="Meu Perfil" />
-  <VStack p="1">
-            <HeaderProfile />
-         
+                    
+                           {activeTab === "tab1" ? (
+                                <View />
+                           ) : (
+                                <ProfileStatistics />
 
-<HStack backgroundColor="$gray100" padding={2} marginTop={12} borderRadius={30} >
-
-                <TouchableOpacity 
-                    style={[styles.tabButton, activeTab === "tab1" ? styles.activeTab : styles.inactiveTab]} 
-                    onPress={() => setActiveTab("tab1")} >
-                    <Text style={[activeTab === "tab1" ? styles.titleTabActive : styles.titleTabInactive]}  >Sobre</Text>
-                </TouchableOpacity>
-
-                <TouchableOpacity 
-                    style={[styles.tabButton, activeTab === "tab2" ? styles.activeTab : styles.inactiveTab]} 
-                    onPress={() => setActiveTab("tab2")}  >
-                   <Text       fontFamily= "title" style={[activeTab === "tab2" ? styles.titleTabActive : styles.titleTabInactive]}  >Estatísticas</Text>
-
-                </TouchableOpacity>
-
-            </HStack>
-
-                
-                    {activeTab === "tab1" ? (
-                        <View />
-                   ) : (
-                        <ProfileStatistics />
-
-                    )}
+                           )}
                           
-            <AboutProfile content={contentSobreProfile} />
+                         <AboutProfile content={contentSobreProfile} />
                         
-            <SocialLinks 
-             linkednanme="@linkedin/@camilafarani" 
-             username="@camilafarani"
-            />
-             </VStack>
-    </VStack>
-        <StatusBar style="auto" />
-        </BaseContainer>
-    </ScrollView>
+                        <SocialLinks 
+                         linkednName="@linkedin" 
+                         username="@camilafarani"
+                         sitelink="www.teste.com" 
+                         instaName="@camilafarani"
+                         />
+                </VStack>
+             </ScrollView>       
+           </VStack>
+
+          <StatusBar style="auto" />
+     </BaseContainer>
+  
 
   );
 }
@@ -251,9 +269,11 @@ const styles = StyleSheet.create({
       backgroundColor: "#F8F9FA",
     },
     text: {
-      fontSize: 17,
+      fontSize: 16,
       marginBottom: 10,
       color: "#333",
+      lineHeight: 20
+
 
     },
     tabContainer: {
@@ -269,11 +289,11 @@ const styles = StyleSheet.create({
     },
 
     titleTabActive: {
-        color: '#000', fontFamily: 'body'
+        color: '#000', fontFamily: '$novaTitle'
     },
 
     titleTabInactive: {
-        color: '#374151', fontFamily: 'body'
+        color: '$gray700', fontFamily: '$novaTitle'
     },
     activeTab: {
         width: '48%', alignItems: 'center', justifyContent: 'center',

@@ -36,31 +36,17 @@ const CardAvatar = ({
     liked: boolean;
     onLike: () => void;
 }) => (
-  <Avatar 
-      w="$full"
-      height={180}
-      position="relative"
-      style={{
-          borderTopLeftRadius:16,  // Arredondado apenas no topo esquerdo
-          borderTopRightRadius:16, // Arredondado apenas no topo direito
-          borderBottomLeftRadius: 0, // Mantém a parte inferior reta
-          borderBottomRightRadius: 0, // Mantém a parte inferior reta
-      }}
-  >
-      <AvatarFallbackText fontSize={60}>{name}</AvatarFallbackText>
-      <AvatarImage 
-                style={{
-                     borderTopLeftRadius:16,  // Arredondado apenas no topo esquerdo
-                     borderTopRightRadius:16, // Arredondado apenas no topo direito
-                     borderBottomLeftRadius: 0, // Mantém a parte inferior reta
-                     borderBottomRightRadius: 0, // Mantém a parte inferior reta
-                 }}
-            source={{
-                uri: imageLink,
-            }}
+    <Avatar 
+    margin="16" width={128} rounded="$full" height={128} position="relative">
+        <AvatarFallbackText fontSize={60}>{name}</AvatarFallbackText>
+        <AvatarImage
+            width={128}
+            rounded="$full"
+            height={128}
+            position="relative"
+            source={{ uri: imageLink }}
             alt={`Foto de perfil de ${name}`}
         />
-        <ImageLikeButton liked={liked} onLike={onLike} />
     </Avatar>
 );
 
@@ -73,28 +59,10 @@ const CardTags = ({ tags }: { tags: string[] }) => (
 );
 
 const CardPrice = ({ price }: { price: string }) => (
-    <HStack gap="$5" mb="$1"  mt="$3" alignItems="center">
-        <Text
-            size="lg"
-            fontFamily="$novaTitle"
-            color="#111827"
-            lineHeight={24}
-        >
+    <HStack  w="100%" mt="$2" alignItems="center" justifyContent="center" bgColor="#00A8FF" borderBottomLeftRadius={20} borderBottomRightRadius={20} p="$2">
+        <Text size="lg" fontFamily="$novaTitle" color="#fff" lineHeight={24}>
             {price}
         </Text>
-        <HStack
-            p={1}
-            px="$1"
-            bgColor="$gray100"
-            rounded="$md"
-            alignItems="center"
-            gap="$0"
-        >
-            <ArrowUp size={17} color={Colors.gray700} />
-            <Text  size="sm" color="$gray700" fontFamily="$title"  alignTex="center">
-                25%
-            </Text>
-        </HStack>
     </HStack>
 );
 
@@ -117,11 +85,7 @@ const ImageLikeButton = ({
         bottom={8}
         right={8}
     >
-        <Heart
-            size={25}
-            color={liked ? "#FF6378" : "#fff"}
-            fill={liked ? "#FF6378" : "none"}
-        />
+        <Heart size={25} color={liked ? "#FF6378" : "#fff"} fill={liked ? "#FF6378" : "none"} />
     </Pressable>
 );
 
@@ -137,39 +101,35 @@ export const ExploreCard = ({
     onPress,
 }: ExploreCardProps) => {
     return (
-<Pressable onPress={onPress} w="48.5%" pb="14">
-    <Card 
-        variant="ghost" 
-        p="$0" 
-        
-        style={{
-            backgroundColor: "#fff",
-            borderRadius: 12, 
-            borderWidth: 0.9, 
-            borderColor: "#E5E7EB", 
-            }}
-        
-    >
-        <VStack alignItems="center">
-            <CardAvatar
-                name={name}
-                imageLink={icon}
-                liked={liked}
-                onLike={() => onLike(id)}
-            />
-            <VStack gap="$0" p="$2"  w="$full">
-                <HStack alignItems="center" gap="$1" justifyContent="flex-start">
-                    <Text size="lg" color="#15161E" fontFamily="$novaTitle" lineHeight={24}> 
-                        {name}
-                    </Text>
-                </HStack>
-                <CardTags tags={["Atleta", "Investidor"]} />
-                <CardPrice price={price}/>
-            </VStack>
-        </VStack>
-    </Card>
-</Pressable>
-
-
+        <Pressable onPress={onPress} w="49%" pb="$3" p="$1">
+            <Card
+                variant="ghost"
+                style={{
+                    backgroundColor: "#fff",
+                    borderRadius: 20,
+                    borderWidth: 0.9,
+                    borderColor: "#E5E7EB",
+                }}
+            >
+                <VStack alignItems="center">
+                    <CardAvatar name={name} imageLink={icon} />
+                    <VStack w="$full">
+                        <VStack w="$full">
+                            <HStack alignItems="center" justifyContent="center">
+                                <Text size="lg" color="#15161E" fontFamily="$novaTitle" lineHeight={24}>
+                                    {name}
+                                </Text>
+                            </HStack>
+                            <HStack alignItems="center" gap="$1" justifyContent="center">
+                                <CardTags tags={["Atleta", "Investidor"]} />
+                            </HStack>
+                        </VStack>
+                        <HStack  alignItems="center" justifyContent="center">
+                            <CardPrice price={price} />
+                        </HStack>
+                    </VStack>
+                </VStack>
+            </Card>
+        </Pressable>
     );
 };
