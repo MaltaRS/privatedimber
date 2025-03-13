@@ -67,8 +67,7 @@ export const Message = ({ isFirst, message, user, contact }: MessageProps) => {
         }
     };
 
-    const widthOfTimeContainer =
-        isLoggedUser && (read || !!deliveredAt) ? 56 : 36;
+    const widthOfTimeContainer = isLoggedUser ? 56 : 36;
 
     return (
         <VStack mb="$3" mt={isFirst ? "$2" : "$0"}>
