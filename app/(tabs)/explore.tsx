@@ -4,8 +4,6 @@ import { Keyboard } from "react-native";
 
 import { useRouter } from "expo-router";
 
-import { useFontsExpo } from "@/app/_layout";
-
 import {
     HStack,
     ScrollView,
@@ -229,7 +227,7 @@ const ExploreScreen = () => {
     const onlineUsers = useOnlineUsersStore((state) => state.onlineUsers);
 
     return (
-        <BaseContainer gap="$2" >
+        <BaseContainer gap="$2">
             <MainTitle
                 title="Explorar"
                 onPress={() => router.push("/notifications")}
@@ -237,7 +235,7 @@ const ExploreScreen = () => {
                 hide={isSearching}
             />
             <Animated.View style={animatedSearchStyle}>
-                <SearchInput 
+                <SearchInput
                     isSearching={isSearching}
                     onFocus={() => {
                         setIsSearching(true);
@@ -259,7 +257,7 @@ const ExploreScreen = () => {
                 />
             )}
             {!isSearching && (
-                <Fragment >
+                <Fragment>
                     <VStack gap="$1">
                         {userFavorites &&
                         userFavorites?.length !== 0 &&
@@ -267,7 +265,7 @@ const ExploreScreen = () => {
                             <Fragment>
                                 <Text
                                     py="$1"
-                                    fontFamily="$novaTitle" 
+                                    fontFamily="$novaTitle"
                                     fontSize={20}
                                     color="#000"
                                     lineHeight={28}
@@ -312,10 +310,10 @@ const ExploreScreen = () => {
                             </VStack>
                         )}
                     </VStack>
-                    <VStack gap="$1" flex={1} pt="$2" >
-                        <Text 
+                    <VStack gap="$1" flex={1} pt="$2">
+                        <Text
                             py="$1"
-                            fontFamily="$novaTitle" 
+                            fontFamily="$novaTitle"
                             fontSize={20}
                             color="#0f1010"
                             lineHeight={28}
@@ -360,7 +358,9 @@ const ExploreScreen = () => {
                                         isChecked={item.isChecked ?? false}
                                         liked={item.isFavorited ?? false}
                                         onLike={(id) => HandleLike(id)}
-                                        onPress={() => CreateConversation(item.id)}
+                                        onPress={() =>
+                                            CreateConversation(item.id)
+                                        }
                                     />
                                 )}
                                 numColumns={2}
@@ -371,17 +371,18 @@ const ExploreScreen = () => {
                                 onEndReached={GetPopularUsers}
                                 onEndReachedThreshold={0.5}
                                 showsVerticalScrollIndicator={false}
-                            
-                              
                                 ListFooterComponent={
                                     isLoadingPopularUsers ? (
-                                        <VStack alignItems="center" justifyContent="center" py="$4">
+                                        <VStack
+                                            alignItems="center"
+                                            justifyContent="center"
+                                            py="$4"
+                                        >
                                             <Spinner size="large" />
                                         </VStack>
                                     ) : null
                                 }
                             />
-
                         )}
                     </VStack>
                 </Fragment>

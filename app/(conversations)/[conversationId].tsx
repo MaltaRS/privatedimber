@@ -10,7 +10,6 @@ import {
     AvatarFallbackText,
     AvatarImage,
     Box,
-    Divider,
     HStack,
     ImageBackground,
     Input,
