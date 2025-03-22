@@ -1,9 +1,8 @@
-import { useState } from "react";
+import { FC, ReactNode, useState } from "react";
 
-import { View, TouchableOpacity, Image } from "react-native";
+import { View, TouchableOpacity } from "react-native";
 
 import { useRouter } from "expo-router";
-import { StatusBar } from "expo-status-bar";
 
 import { useNotifications } from "@/hooks/NotificationHook";
 
@@ -17,7 +16,7 @@ import {
     FlatList,
 } from "@/gluestackComponents";
 
-import { useInfiniteQuery, useQuery } from "@tanstack/react-query";
+import { useInfiniteQuery } from "@tanstack/react-query";
 
 import { BaseContainer } from "@/components/BaseContainer";
 import { MainTitle } from "@/components/MainTitle";
@@ -28,24 +27,25 @@ import {
 
 import AntDesign from "@expo/vector-icons/AntDesign";
 
-import iconsake from "@/assets/images/iconsake.png";
-import iconhand from "@/assets/images/iconhand.png";
-import iconcartwallet from "@/assets/images/iconcartwallet.png";
-import iconlistpay from "@/assets/images/iconlistpay.png";
+import IconWithdraw from "@/assets/icons/appIcons/payment.svg";
+import IconDonation from "@/assets/icons/appIcons/donation.svg";
+import IconCard from "@/assets/icons/appIcons/card.svg";
 
 import { formatCurrency } from "@/utils/formatters";
-import { getBalance } from "@/connection/wallet/WalletConnection";
+import { SkeletonBox } from "@/components/utils/SkeletonBox";
+import { SvgProps } from "react-native-svg";
+import { useBalance } from "@/providers/BalanceProvider";
 
 const WalletScreen = () => {
     const router = useRouter();
-    const [isBalanceHidden, setIsBalanceHidden] = useState(false);
     const { notificationsCount } = useNotifications();
 
-    const { data: balanceData, isLoading: isBalanceLoading } = useQuery({
-        queryKey: ["balance"],
-        queryFn: getBalance,
-        staleTime: 1000 * 60,
-    });
+    const {
+        balance,
+        isLoading: isBalanceLoading,
+        isBalanceHidden,
+        toggleBalanceVisibility,
+    } = useBalance();
 
     const {
         data: queryTransactions,
@@ -76,16 +76,11 @@ const WalletScreen = () => {
     };
 
     const HeaderInfosWallet = () => {
-        const formattedBalance = balanceData
-            ? formatCurrency(balanceData.balance / 100)
-            : "0,00";
+        const formattedBalance =
+            balance !== null ? formatCurrency(balance / 100) : "R$ 0,00";
 
         return (
-            <VStack
-                alignItems="center"
-                justifyContent="center"
-                style={{ marginTop: 30 }}
-            >
+            <VStack alignItems="center" justifyContent="center" mt={30}>
                 <TouchableOpacity
                     onPress={() => router.push("/totalbalance")}
                     style={{
@@ -111,18 +106,14 @@ const WalletScreen = () => {
                     }}
                 >
                     {isBalanceLoading ? (
-                        <Spinner size="large" />
+                        <SkeletonBox width={160} height={54} />
                     ) : (
                         <Heading size="4xl">
-                            {isBalanceHidden
-                                ? "****"
-                                : `R$ ${formattedBalance}`}
+                            {isBalanceHidden ? "****" : `${formattedBalance}`}
                         </Heading>
                     )}
 
-                    <TouchableOpacity
-                        onPress={() => setIsBalanceHidden(!isBalanceHidden)}
-                    >
+                    <TouchableOpacity onPress={toggleBalanceVisibility}>
                         <AntDesign
                             name="eye"
                             size={24}
@@ -132,11 +123,19 @@ const WalletScreen = () => {
                     </TouchableOpacity>
                 </HStack>
 
-                <HStack>
-                    <Text size="md">Disponível para uso</Text>
+                <HStack alignItems="center" justifyContent="center">
+                    <Text size="md" mb={2}>
+                        Disponível para uso
+                    </Text>
 
-                    <Text bold size="md" style={{ marginLeft: 5 }}>
-                        {isBalanceHidden ? "****" : `R$ ${formattedBalance}`}
+                    <Text bold size="md" ml="$1">
+                        {isBalanceLoading ? (
+                            <SkeletonBox width={50} height={18} />
+                        ) : isBalanceHidden ? (
+                            "****"
+                        ) : (
+                            `${formattedBalance.replaceAll(" ", "")}`
+                        )}
                     </Text>
                 </HStack>
             </VStack>
@@ -145,13 +144,16 @@ const WalletScreen = () => {
 
     const MiniButtonsWallet = ({
         name,
-        icon,
+        icon: Icon,
         nav,
     }: {
         name: string;
-        icon: any;
+        icon: FC<SvgProps>;
         nav: string;
     }) => {
+        const iconWidth = name === "Sacar" ? 80 : 56;
+        const iconHeight = name === "Sacar" ? 80 : 56;
+
         return (
             <VStack alignItems="center" justifyContent="center">
                 <TouchableOpacity
@@ -171,7 +173,7 @@ const WalletScreen = () => {
                         justifyContent: "center",
                     }}
                 >
-                    <Image source={icon} style={{ width: 56, height: 56 }} />
+                    <Icon style={{ width: iconWidth, height: iconHeight }} />
                 </TouchableOpacity>
 
                 <Text style={{ fontSize: 15 }}>{name}</Text>
@@ -187,17 +189,21 @@ const WalletScreen = () => {
                 pt="$6"
                 gap="25"
             >
-                <MiniButtonsWallet name="Sacar" icon={iconsake} nav="/sake" />
+                <MiniButtonsWallet
+                    name="Sacar"
+                    icon={IconWithdraw}
+                    nav="/withdrawal"
+                />
 
                 <MiniButtonsWallet
                     name="Cartões"
-                    icon={iconcartwallet}
-                    nav="/mycarts"
+                    icon={IconCard}
+                    nav="/mycards"
                 />
 
                 <MiniButtonsWallet
                     name="Doar"
-                    icon={iconhand}
+                    icon={IconDonation}
                     nav="/listinstituition"
                 />
             </HStack>
@@ -229,10 +235,7 @@ const WalletScreen = () => {
                             justifyContent: "space-between",
                         }}
                     >
-                        <Image
-                            source={iconlistpay}
-                            style={{ width: 25, height: 25, marginRight: 2 }}
-                        />
+                        <IconWithdraw width={25} height={25} />
                         <VStack style={{ marginLeft: 12 }}>
                             <Text fontSize={15.5} bold color="#1F2937">
                                 {transaction.description || "Transação"}
@@ -246,10 +249,59 @@ const WalletScreen = () => {
                     <Text
                         bold
                         fontSize={16}
-                        color={isNegative ? "#374151" : "#10B981"}
+                        color={isNegative ? "#000000" : "$positive"}
                     >
-                        {isNegative ? `-${formattedAmount}` : formattedAmount}
+                        {isNegative
+                            ? `- ${formattedAmount}`
+                            : `+ ${formattedAmount}`}
                     </Text>
+                </HStack>
+                <View
+                    style={{
+                        marginTop: 20,
+                        width: "100%",
+                        height: 2,
+                        backgroundColor: "#f1f1f1",
+                        borderRadius: 10,
+                    }}
+                />
+            </View>
+        );
+    };
+
+    const TransactionCardSkeleton = () => {
+        return (
+            <View>
+                <HStack
+                    style={{
+                        alignItems: "center",
+                        width: "100%",
+                        justifyContent: "space-between",
+                        marginTop: 20,
+                    }}
+                    className="bg-white mr-4"
+                >
+                    <HStack
+                        style={{
+                            alignItems: "center",
+                            justifyContent: "space-between",
+                        }}
+                    >
+                        <SkeletonBox
+                            width={25}
+                            height={25}
+                            style={{ marginRight: 2 }}
+                        />
+                        <VStack style={{ marginLeft: 12 }} gap="$2">
+                            <SkeletonBox width={120} height={20} />
+                            <SkeletonBox
+                                width={150}
+                                height={16}
+                                style={{ marginTop: 4 }}
+                            />
+                        </VStack>
+                    </HStack>
+                    <SkeletonBox width={80} height={20} />
                 </HStack>
                 <View
                     style={{
@@ -279,19 +331,16 @@ const WalletScreen = () => {
                     <TouchableOpacity
                         onPress={() => router.push("/extractspay")}
                     >
-                        <Text color="#00A8FF">Ver extrato</Text>
+                        <Text color="$primaryDefault">Ver extrato</Text>
                     </TouchableOpacity>
                 </HStack>
 
                 <VStack flex={1}>
                     {isLoading && transactions.length === 0 ? (
-                        <VStack
-                            alignItems="center"
-                            justifyContent="center"
-                            flex={1}
-                            mt="$4"
-                        >
-                            <Spinner size="large" />
+                        <VStack flex={1} mt="$4">
+                            {[1, 2, 3, 4].map((index) => (
+                                <TransactionCardSkeleton key={index} />
+                            ))}
                         </VStack>
                     ) : transactions.length === 0 ? (
                         <VStack
@@ -340,7 +389,6 @@ const WalletScreen = () => {
 
     return (
         <BaseContainer>
-            <StatusBar style="auto" />
             <MainTitle
                 title="Carteira"
                 onPress={() => router.push("/notifications")}

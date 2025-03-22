@@ -8,9 +8,7 @@ export const formatCurrency = (value: number): string => {
         style: "currency",
         currency: "BRL",
         minimumFractionDigits: 2,
-    })
-        .format(value)
-        .replace("R$", "R$ ");
+    }).format(value);
 };
 
 /**

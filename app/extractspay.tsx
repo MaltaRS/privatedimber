@@ -1,8 +1,4 @@
-import { StatusBar } from "expo-status-bar";
-
 import React, { useState } from "react";
-
-import { useRouter } from "expo-router";
 
 import { View, TouchableOpacity, StyleSheet } from "react-native";
 
@@ -14,41 +10,96 @@ import {
     ScrollView,
     InputSlot,
     InputIcon,
-    Pressable,
     InputField,
     Modal,
     Image,
+    Spinner,
+    FlatList,
 } from "@/gluestackComponents";
 
-import { Search } from "lucide-react-native";
+import { Calendar, Search } from "lucide-react-native";
 
 import { BaseContainer } from "@/components/BaseContainer";
 
 import HeaderContainer from "../components/HeaderContainer";
 
-import { MainTitle } from "@/components/MainTitle";
+import Payment from "@/assets/icons/appIcons/payment.svg";
+import Refund from "@/assets/icons/appIcons/refundPayment.svg";
 
-import FontAwesome from "@expo/vector-icons/FontAwesome";
+import { useInfiniteQuery } from "@tanstack/react-query";
+import {
+    findTransactions,
+    Transaction,
+} from "@/connection/transactions/TransactionConnection";
+import { formatCurrency } from "@/utils/formatters";
+import { SkeletonBox } from "@/components/utils/SkeletonBox";
 
 const iconlistpay = require("../assets/images/iconlistpay.png");
 
 export default function ExtractsPay() {
     const [modalVisible, setModalVisible] = useState(false);
+    const [searchQuery, setSearchQuery] = useState("");
+    const [selectedPeriod, setSelectedPeriod] = useState<number | null>(null);
 
-    const router = useRouter();
+    const {
+        data: queryTransactions,
+        fetchNextPage: fetchNextTransactions,
+        isLoading,
+    } = useInfiniteQuery({
+        queryKey: ["transactions", searchQuery, selectedPeriod],
+        queryFn: ({ pageParam }) => findTransactions(pageParam, searchQuery),
+        initialPageParam: 0,
+        getNextPageParam: (lastPage) => {
+            return lastPage?.nextPage !== null ? lastPage.nextPage : undefined;
+        },
+        staleTime: 1000 * 60 * 5,
+    });
 
-    const MiniButtonsWallet = ({ name, icon }) => (
-        <TouchableOpacity
-            onPress={() => setModalVisible(true)}
-            style={styles.miniButton}
-        >
-            <HStack alignItems="center">
-                <FontAwesome name={icon} size={15} color="black" />
+    const transactions =
+        queryTransactions?.pages
+            ?.filter((page) => page && page.transactions)
+            .flatMap((page) => page.transactions) ?? [];
 
-                <Text style={styles.miniButtonText}>{name}</Text>
-            </HStack>
-        </TouchableOpacity>
-    );
+    const hasMore =
+        queryTransactions?.pages?.[queryTransactions.pages.length - 1]
+            ?.nextPage !== null;
+
+    const fetchMoreTransactions = async () => {
+        if (!hasMore || isLoading) return;
+        await fetchNextTransactions();
+    };
+
+    const MiniButtonsWallet = ({
+        name,
+        icon,
+        onPress,
+    }: {
+        name: string;
+        icon: "calendar" | "credit-card" | "undo";
+        onPress: () => void;
+    }) => {
+        const Icon = icon === "calendar" ? Calendar : null;
+
+        return (
+            <TouchableOpacity onPress={onPress} style={styles.miniButton}>
+                <HStack alignItems="center" gap="$2">
+                    {Icon ? (
+                        <Icon size={16} color="black" />
+                    ) : icon === "credit-card" ? (
+                        //@ts-expect-error
+                        <Payment size={16} color="black" />
+                    ) : icon === "undo" ? (
+                        //@ts-expect-error
+                        <Refund size={16} color="black" />
+                    ) : null}
+
+                    <Text fontSize={15} color="$gray600">
+                        {name}
+                    </Text>
+                </HStack>
+            </TouchableOpacity>
+        );
+    };
 
     const ContainerCategoryPay = () => (
         <HStack>
@@ -58,50 +109,107 @@ export default function ExtractsPay() {
                 style={styles.scrollContainer}
             >
                 <HStack space="md">
-                    <MiniButtonsWallet name="Período" icon="calendar" />
-
-                    <MiniButtonsWallet name="Pagamento" icon="credit-card" />
-
-                    <MiniButtonsWallet name="Pagamento" icon="credit-card" />
-
-                    <MiniButtonsWallet name="Estorno" icon="undo" />
+                    <MiniButtonsWallet
+                        name="Período"
+                        icon="calendar"
+                        onPress={() => setModalVisible(true)}
+                    />
+                    <MiniButtonsWallet
+                        name="Pagamento"
+                        icon="credit-card"
+                        onPress={() => setSearchQuery("payment")}
+                    />
+                    <MiniButtonsWallet
+                        name="Estorno"
+                        icon="undo"
+                        onPress={() => setSearchQuery("refund")}
+                    />
                 </HStack>
             </ScrollView>
         </HStack>
     );
 
-    const ItemListPayWallet = ({ name, description }) => (
-        <View>
-            <HStack style={styles.itemContainer}>
-                <HStack alignItems="center">
-                    <Image source={iconlistpay} style={styles.itemIcon} />
+    const TransactionCard = ({ transaction }: { transaction: Transaction }) => {
+        if (!transaction) return null;
 
-                    <VStack style={styles.itemTextContainer}>
-                        <Text bold size="15">
-                            {name}
-                        </Text>
+        const isNegative = transaction.amount < 0;
+        const formattedAmount = formatCurrency(
+            Math.abs(transaction.amount / 100 || 0),
+        );
 
-                        <Text size="14" color="#999">
-                            {description}
-                        </Text>
-                    </VStack>
+        return (
+            <View>
+                <HStack style={styles.itemContainer}>
+                    <HStack alignItems="center">
+                        <Image source={iconlistpay} style={styles.itemIcon} />
+                        <VStack style={styles.itemTextContainer}>
+                            <Text fontSize={15.5} bold color="#1F2937">
+                                {transaction.description || "Transação"}
+                            </Text>
+                            <Text fontSize={14.5} style={{ color: "#7D8697" }}>
+                                Envio para {transaction.destinationName || ""}
+                            </Text>
+                        </VStack>
+                    </HStack>
+                    <Text bold fontSize={16}>
+                        {isNegative ? `-${formattedAmount}` : formattedAmount}
+                    </Text>
                 </HStack>
+                <View style={styles.divider} />
+            </View>
+        );
+    };
 
-                <Text bold size="15">
-                    -R$1.500,00
-                </Text>
-            </HStack>
+    const TransactionCardSkeleton = () => {
+        return (
+            <View>
+                <HStack
+                    style={{
+                        alignItems: "center",
+                        width: "100%",
+                        justifyContent: "space-between",
+                        marginTop: 20,
+                    }}
+                    className="bg-white mr-4"
+                >
+                    <HStack
+                        style={{
+                            alignItems: "center",
+                            justifyContent: "space-between",
+                        }}
+                    >
+                        <SkeletonBox
+                            width={25}
+                            height={25}
+                            style={{ marginRight: 2 }}
+                        />
+                        <VStack style={{ marginLeft: 12 }} gap="$2">
+                            <SkeletonBox width={120} height={20} />
+                            <SkeletonBox
+                                width={150}
+                                height={16}
+                                style={{ marginTop: 4 }}
+                            />
+                        </VStack>
+                    </HStack>
+                    <SkeletonBox width={80} height={20} />
+                </HStack>
+                <View style={styles.divider} />
+            </View>
+        );
+    };
 
-            <View style={styles.divider} />
-        </View>
-    );
+    const handlePeriodSelect = (days: number) => {
+        setSelectedPeriod(days);
+        setModalVisible(false);
+    };
 
     return (
         <BaseContainer>
             <HeaderContainer title="Extrato" />
 
             <Input
-                mt="$2"
+                mt="$3"
                 variant="rounded"
                 bgColor="#E5E7EB"
                 size="xl"
@@ -119,7 +227,8 @@ export default function ExtractsPay() {
                     placeholder="Pesquisar"
                     placeholderTextColor="#6B7280"
                     size="lg"
-                    onChangeText={(text) => console.log("Pesquisar: ", text)} // Substituído `handleSearch`
+                    value={searchQuery}
+                    onChangeText={setSearchQuery}
                 />
             </Input>
 
@@ -134,15 +243,37 @@ export default function ExtractsPay() {
                     </Modal.Header>
 
                     <HStack justifyContent="space-between" padding={10}>
-                        <Text style={styles.modalBody}>Últimos 15 dias</Text>
-
-                        <Text style={styles.modalBody}>Últimos 30 dias</Text>
+                        <TouchableOpacity
+                            onPress={() => handlePeriodSelect(15)}
+                        >
+                            <Text style={styles.modalBody}>
+                                Últimos 15 dias
+                            </Text>
+                        </TouchableOpacity>
+                        <TouchableOpacity
+                            onPress={() => handlePeriodSelect(30)}
+                        >
+                            <Text style={styles.modalBody}>
+                                Últimos 30 dias
+                            </Text>
+                        </TouchableOpacity>
                     </HStack>
 
                     <HStack justifyContent="space-between" padding={10}>
-                        <Text style={styles.modalBody}>Últimos 60 dias</Text>
-
-                        <Text style={styles.modalBody}>Últimos 90 dias</Text>
+                        <TouchableOpacity
+                            onPress={() => handlePeriodSelect(60)}
+                        >
+                            <Text style={styles.modalBody}>
+                                Últimos 60 dias
+                            </Text>
+                        </TouchableOpacity>
+                        <TouchableOpacity
+                            onPress={() => handlePeriodSelect(90)}
+                        >
+                            <Text style={styles.modalBody}>
+                                Últimos 90 dias
+                            </Text>
+                        </TouchableOpacity>
                     </HStack>
 
                     <Modal.Footer>
@@ -162,22 +293,50 @@ export default function ExtractsPay() {
                 </Modal.Content>
             </Modal>
 
-            <ItemListPayWallet
-                name="Pagamento de mensagem"
-                description="Envio para Camila Farani"
-            />
-
-            <ItemListPayWallet
-                name="Pagamento de mensagem"
-                description="Envio para Camila Farani"
-            />
-
-            <ItemListPayWallet
-                name="Pagamento de mensagem"
-                description="Envio para Camila Farani"
-            />
-
-            <StatusBar style="auto" />
+            <VStack flex={1} mt="$1">
+                {isLoading && transactions.length === 0 ? (
+                    <VStack flex={1} mt="$4">
+                        {[1, 2, 3].map((index) => (
+                            <TransactionCardSkeleton key={index} />
+                        ))}
+                    </VStack>
+                ) : transactions.length === 0 ? (
+                    <VStack
+                        alignItems="center"
+                        justifyContent="center"
+                        flex={1}
+                        mt="$4"
+                    >
+                        <Text fontSize={16} textAlign="center" color="#6B7280">
+                            Nenhuma transação encontrada
+                        </Text>
+                    </VStack>
+                ) : (
+                    <FlatList
+                        data={transactions}
+                        keyExtractor={(item: any) =>
+                            item.id?.toString() || Math.random().toString()
+                        }
+                        renderItem={({ item }: { item: any }) => (
+                            <TransactionCard transaction={item} />
+                        )}
+                        onEndReached={fetchMoreTransactions}
+                        onEndReachedThreshold={0.5}
+                        showsVerticalScrollIndicator={false}
+                        ListFooterComponent={
+                            isLoading ? (
+                                <VStack
+                                    alignItems="center"
+                                    justifyContent="center"
+                                    py="$4"
+                                >
+                                    <Spinner size="small" />
+                                </VStack>
+                            ) : null
+                        }
+                    />
+                )}
+            </VStack>
         </BaseContainer>
     );
 }
@@ -185,47 +344,28 @@ export default function ExtractsPay() {
 const styles = StyleSheet.create({
     scrollContainer: {
         marginTop: 20,
-
-        paddingHorizontal: 10,
     },
 
     miniButton: {
         borderRadius: 20,
-
         borderColor: "#D1D5DB",
-
         borderWidth: 1,
-
         backgroundColor: "#fff",
-
         paddingHorizontal: 15,
-
         paddingVertical: 8,
-
         alignItems: "center",
-
         justifyContent: "center",
-    },
-
-    miniButtonText: {
-        marginLeft: 5,
-
-        fontSize: 14,
     },
 
     itemContainer: {
         alignItems: "center",
-
         width: "100%",
-
         justifyContent: "space-between",
-
         marginTop: 20,
     },
 
     itemIcon: {
         width: 25,
-
         height: 25,
     },
 
@@ -235,65 +375,45 @@ const styles = StyleSheet.create({
 
     divider: {
         marginTop: 15,
-
         width: "100%",
-
         height: 2,
-
         backgroundColor: "#f1f1f1",
-
         borderRadius: 10,
     },
 
     modalBottom: {
         position: "absolute",
-
         bottom: 0,
-
         paddingTop: 12,
-
         width: "100%",
-
         backgroundColor: "white",
-
         borderTopLeftRadius: 10,
-
         borderTopRightRadius: 10,
     },
 
     modalTitle: {
         fontSize: 20,
-
         fontWeight: "bold",
-
         textAlign: "center",
     },
 
     modalBody: {
         fontSize: 16,
-
         margin: 2,
     },
 
     confirmButton: {
         width: 358,
-
         height: 48,
-
         alignItems: "center",
-
         justifyContent: "center",
-
         backgroundColor: "#00A8FF",
-
         borderRadius: 40,
     },
 
     cancelButton: {
         color: "#00A8FF",
-
         marginTop: 10,
-
         textAlign: "center",
     },
 });

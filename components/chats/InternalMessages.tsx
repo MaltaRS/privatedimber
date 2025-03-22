@@ -427,7 +427,7 @@ export const InternalMessages = ({
     ]);
 
     return (
-        <>
+        <Fragment>
             {internalMessages
                 .filter((msg) => msg.active && msg.type === "floating")
                 .map((msg, index) => (
@@ -709,6 +709,6 @@ export const InternalMessages = ({
                         </ActionsheetContent>
                     </Actionsheet>
                 ))}
-        </>
+        </Fragment>
     );
 };

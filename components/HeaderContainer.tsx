@@ -1,40 +1,70 @@
-import React from 'react';
-import { TouchableOpacity, View } from 'react-native';
-import { HStack, Text } from "@/gluestackComponents";
-import { useRouter } from "expo-router";
-import { GoBack } from "@/components/utils/GoBack"; 
+import React from "react";
 
-const HeaderContainer = ({ title, namebuttontab, onSave }) => {
+import { TouchableOpacity } from "react-native";
+
+import { Box, HStack, Text } from "@/gluestackComponents";
+
+import { useRouter } from "expo-router";
+
+import { GoBack } from "@/components/utils/GoBack";
+
+type HeaderContainerProps = {
+    title: string;
+
+    namebuttontab?: string;
+
+    onSave?: () => void;
+};
+
+const HeaderContainer = ({
+    title,
+    namebuttontab,
+    onSave,
+}: HeaderContainerProps) => {
     const router = useRouter();
 
     return (
         <HStack
-            pt="$1"
             justifyContent="space-between"
             alignItems="center"
             width="100%"
-            px="1"
+            px="$1"
         >
-            <GoBack onPress={() => router.back()} />
+            <GoBack onPress={() => router.back()} iconSize={23} />
 
-
-            <View style={{ flex: 1, alignItems: 'center', position: 'absolute', left: 0, right: 0 }}>
-                <Text fontFamily="$medium" fontSize={16} color="#000" textAlign="absolute"  lineHeight={20}>
-                     
+            <Box
+                flex={1}
+                alignItems="center"
+                justifyContent="center"
+                position="absolute"
+                left="50%"
+                top="60%"
+                transform="translate(-50%, -50%)"
+            >
+                <Text
+                    fontFamily="$medium"
+                    fontSize={20}
+                    color="#000"
+                    textAlign="center"
+                    bold
+                    lineHeight={20}
+                >
                     {title}
                 </Text>
-            </View>
+            </Box>
 
-
-            {namebuttontab ? (
+            {namebuttontab && (
                 <TouchableOpacity
                     style={{ paddingHorizontal: 10, paddingVertical: 5 }}
-                    onPress={onSave || (() => console.log(`${namebuttontab} pressionado`))}
+                    onPress={() => {
+                        onSave && onSave();
+                        console.log(`${namebuttontab} pressionado`);
+                    }}
                 >
-                    <Text color="#00A8FF" fontSize={17}>{namebuttontab}</Text>
+                    <Text color="#00A8FF" fontSize={17}>
+                        {namebuttontab}
+                    </Text>
                 </TouchableOpacity>
-            ) : (
-                <View style={{ width: 50, }} /> // Mantém alinhamento sem o botão "Salvar"
             )}
         </HStack>
     );

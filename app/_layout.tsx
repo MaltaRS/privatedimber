@@ -1,6 +1,5 @@
 import { useEffect, useState } from "react";
 
-
 import { Box, GluestackUIProvider, Spinner } from "@/gluestackComponents";
 
 import { useFonts as useFontsExpo } from "expo-font";
@@ -27,6 +26,7 @@ import { StripeProvider } from "@stripe/stripe-react-native";
 import { GoogleSignin } from "@react-native-google-signin/google-signin";
 import { GoogleAuthProvider } from "@/Context/GoogleAuthProvider";
 import { ChatProvider } from "@/Context/ChatProvider";
+import { BalanceProvider } from "@/providers/BalanceProvider";
 
 GoogleSignin.configure({
     webClientId: process.env.EXPO_PUBLIC_GOOGLE_CLIENT_ID,
@@ -101,25 +101,24 @@ const RootLayout = () => {
                 <Stack.Screen name="(auth)/signup" />
                 <Stack.Screen name="notifications" />
                 <Stack.Screen name="myprofile" />
-                
+
                 <Stack.Screen name="profileusermsg" />
                 <Stack.Screen name="editmyprofile" />
                 <Stack.Screen name="editcategorysmyprofile" />
                 <Stack.Screen name="editsocialinfosmyprofile" />
                 <Stack.Screen name="editmyinterestsprofile" />
                 <Stack.Screen name="profileinstituition" />
-                
+
                 <Stack.Screen name="donationinstituition" />
                 <Stack.Screen name="listinstituition" />
-                <Stack.Screen name="mycarts" />
+                <Stack.Screen name="mycards" />
                 <Stack.Screen name="comprovantpix" />
-                <Stack.Screen name="sake" />
+                <Stack.Screen name="withdrawal" />
                 <Stack.Screen name="sharedimber" />
-                <Stack.Screen name="editmycarts" />
+                <Stack.Screen name="newcard" />
                 <Stack.Screen name="confirmpaymsg" />
                 <Stack.Screen name="selectpaytype" />
                 <Stack.Screen name="saketype" />
-                
 
                 <Stack.Screen name="privacit" />
                 <Stack.Screen name="permisions" />
@@ -136,9 +135,6 @@ const RootLayout = () => {
                 <Stack.Screen name="configsecurity" />
                 <Stack.Screen name="configsecurity2fa" />
                 <Stack.Screen name="changepassword" />
-                
-
-
             </Stack>
         </GluestackUIProvider>
     );
@@ -158,7 +154,9 @@ export default function App() {
                             }
                         >
                             <ChatProvider>
-                                <RootLayout />
+                                <BalanceProvider>
+                                    <RootLayout />
+                                </BalanceProvider>
                             </ChatProvider>
                         </StripeProvider>
                     </GoogleAuthProvider>

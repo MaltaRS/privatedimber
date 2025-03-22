@@ -18,14 +18,7 @@ export const BaseContainer = ({
     ...props
 }: BaseContainerProps) => {
     return (
-        <VStack
-            pt="$10"
-            px="$3"
-            flex={1}
-            bgColor="#fff"
-            zIndex={1}
-            {...props}
-        >
+        <VStack pt="$10" px="$3" flex={1} bgColor="#fff" zIndex={1} {...props}>
             <StatusBar
                 style={statusBarStyle}
                 backgroundColor={statusBarColor}
