@@ -9,9 +9,9 @@ import { formatCurrency } from "@/utils/formatters";
 import { MoneyInput } from "@/components/ui/MoneyInput";
 
 export function AmountStep() {
-    const { setValue, watch } = useFormContext();
+    const { setValue } = useFormContext();
     const { balance, isLoading: isBalanceLoading } = useBalance();
-    const amount = watch("amount");
+
     const formattedBalance =
         balance !== null ? formatCurrency(balance / 100) : "R$ 0,00";
 

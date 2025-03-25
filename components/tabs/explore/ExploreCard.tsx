@@ -1,5 +1,3 @@
-import { Colors } from "@/constants/Colors";
-
 import {
     Avatar,
     AvatarFallbackText,
@@ -11,7 +9,7 @@ import {
     Pressable,
 } from "@/gluestackComponents";
 
-import { ArrowUp, Heart } from "lucide-react-native";
+import { Heart } from "lucide-react-native";
 
 export type ExploreCardProps = {
     id: string;
@@ -33,8 +31,8 @@ const CardAvatar = ({
 }: {
     name: string;
     imageLink: string;
-    liked: boolean;
-    onLike: () => void;
+    liked?: boolean;
+    onLike?: () => void;
 }) => (
     <Avatar
         w="$full"

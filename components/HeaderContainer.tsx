@@ -10,6 +10,7 @@ import { GoBack } from "@/components/utils/GoBack";
 
 type HeaderContainerProps = {
     title: string;
+    showTitle?: boolean;
     onBackPress?: () => void;
     namebuttontab?: string;
     onSave?: () => void;
@@ -17,6 +18,7 @@ type HeaderContainerProps = {
 
 const HeaderContainer = ({
     title,
+    showTitle = true,
     namebuttontab,
     onSave,
     onBackPress,
@@ -35,26 +37,28 @@ const HeaderContainer = ({
                 iconSize={23}
             />
 
-            <Box
-                flex={1}
-                alignItems="center"
-                justifyContent="center"
-                position="absolute"
-                left="50%"
-                top="60%"
-                transform="translate(-50%, -50%)"
-            >
-                <Text
-                    fontFamily="$medium"
-                    fontSize={20}
-                    color="#000"
-                    textAlign="center"
-                    bold
-                    lineHeight={20}
+            {showTitle && (
+                <Box
+                    flex={1}
+                    alignItems="center"
+                    justifyContent="center"
+                    position="absolute"
+                    left="50%"
+                    top="60%"
+                    transform="translate(-50%, -50%)"
                 >
-                    {title}
-                </Text>
-            </Box>
+                    <Text
+                        fontFamily="$medium"
+                        fontSize={20}
+                        color="#000"
+                        textAlign="center"
+                        bold
+                        lineHeight={20}
+                    >
+                        {title}
+                    </Text>
+                </Box>
+            )}
 
             {namebuttontab && (
                 <TouchableOpacity

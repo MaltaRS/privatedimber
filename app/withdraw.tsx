@@ -21,7 +21,6 @@ import { BaseContainer } from "@/components/BaseContainer";
 import { Button } from "@/components/ui/Button";
 
 import { useKeyboardVisibility } from "@/hooks/KeyboardVisibilityHook";
-import { TouchableOpacity } from "react-native";
 import { createWithdraw } from "@/connection/wallet/WithdrawConnection";
 
 import Pix from "@/assets/icons/appIcons/pix.svg";

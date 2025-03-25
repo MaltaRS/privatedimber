@@ -4,25 +4,19 @@ import { Controller, useFormContext } from "react-hook-form";
 
 import { Input, InputField, InputSlot, Text } from "@/gluestackComponents";
 
-import { formatCurrency } from "@/utils/formatters";
-
 interface MoneyInputProps {
     name: string;
     onMaxPress?: () => void;
 }
 
 export function MoneyInput({ name, onMaxPress }: MoneyInputProps) {
-    const { control, setValue, watch } = useFormContext();
-    const value = watch(name) || "0,00";
+    const { control, setValue } = useFormContext();
 
     const handleChange = (text: string) => {
-        // Remove todos os caracteres não numéricos
         const numbers = text.replace(/\D/g, "");
 
-        // Converte para número e divide por 100 para obter os centavos
         const amount = Number(numbers) / 100;
 
-        // Formata o valor com 2 casas decimais
         const formattedValue = amount.toFixed(2).replace(".", ",");
 
         setValue(name, formattedValue);
