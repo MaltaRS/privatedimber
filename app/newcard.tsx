@@ -229,6 +229,7 @@ export default function NewCard() {
                                 onChangeText={onChange}
                                 mask={documentMask}
                                 placeholder={documentPlaceholder}
+                                keyboardType="numeric"
                                 style={{
                                     fontSize: 19,
                                     flex: 1,

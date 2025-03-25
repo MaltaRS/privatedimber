@@ -113,12 +113,12 @@ const RootLayout = () => {
                 <Stack.Screen name="listinstituition" />
                 <Stack.Screen name="mycards" />
                 <Stack.Screen name="comprovantpix" />
-                <Stack.Screen name="withdrawal" />
+                <Stack.Screen name="withdraw" />
                 <Stack.Screen name="sharedimber" />
                 <Stack.Screen name="newcard" />
                 <Stack.Screen name="confirmpaymsg" />
                 <Stack.Screen name="selectpaytype" />
-                <Stack.Screen name="saketype" />
+                <Stack.Screen name="withdrawtype" />
 
                 <Stack.Screen name="privacit" />
                 <Stack.Screen name="permisions" />
@@ -127,7 +127,7 @@ const RootLayout = () => {
                 <Stack.Screen name="configdefinedvaluemsg" />
                 <Stack.Screen name="createnewcart" />
                 <Stack.Screen name="sakeconfirmsucess" />
-                <Stack.Screen name="confirmsake" />
+                <Stack.Screen name="confirmwithdraw" />
                 <Stack.Screen name="totalbalance" />
                 <Stack.Screen name="historicbalance" />
                 <Stack.Screen name="detailinfomsg" />

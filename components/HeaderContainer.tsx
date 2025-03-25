@@ -10,9 +10,8 @@ import { GoBack } from "@/components/utils/GoBack";
 
 type HeaderContainerProps = {
     title: string;
-
+    onBackPress?: () => void;
     namebuttontab?: string;
-
     onSave?: () => void;
 };
 
@@ -20,6 +19,7 @@ const HeaderContainer = ({
     title,
     namebuttontab,
     onSave,
+    onBackPress,
 }: HeaderContainerProps) => {
     const router = useRouter();
 
@@ -30,7 +30,10 @@ const HeaderContainer = ({
             width="100%"
             px="$1"
         >
-            <GoBack onPress={() => router.back()} iconSize={23} />
+            <GoBack
+                onPress={onBackPress ? onBackPress : () => router.back()}
+                iconSize={23}
+            />
 
             <Box
                 flex={1}

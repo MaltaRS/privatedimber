@@ -192,7 +192,7 @@ const WalletScreen = () => {
                 <MiniButtonsWallet
                     name="Sacar"
                     icon={IconWithdraw}
-                    nav="/withdrawal"
+                    nav="/withdraw"
                 />
 
                 <MiniButtonsWallet

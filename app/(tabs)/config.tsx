@@ -10,7 +10,6 @@ import {
 } from "@/gluestackComponents";
 
 import TitleContainer from "@/components/TitleContainer";
-import { StatusBar } from "expo-status-bar";
 import { useRouter } from "expo-router";
 import { Box, ChevronRight } from "lucide-react-native";
 
@@ -214,8 +213,6 @@ const ConfigScreen = () => {
                     </VStack>
                 </ScrollView>
             </VStack>
-
-            <StatusBar style="auto" />
 
             <ConfirmationModal
                 isOpen={modalVisible}
