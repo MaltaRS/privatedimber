@@ -350,6 +350,7 @@ const ExploreScreen = () => {
                                 }}
                                 renderItem={({ item }: any) => (
                                     <ExploreCard
+                                        key={item.id}
                                         id={item.id}
                                         icon={item.icon}
                                         name={item.name}

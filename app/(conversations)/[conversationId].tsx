@@ -30,12 +30,12 @@ import { useOnlineUsersStore } from "@/stores/onlineUsersStore";
 
 import { findConversationById } from "@/connection/conversations/ConversationConnection";
 import { InternalMessages } from "@/components/chats/InternalMessages";
+import { AttachmentsMenu } from "@/components/chats/attachmentsMenu";
 import { SendMessageForm } from "@/components/chats/SendMessageForm";
 import { Message } from "@/components/tabs/conversations/Message";
 import { Confirmation } from "@/components/payment/confirmation";
 import { BaseContainer } from "@/components/BaseContainer";
 import { GoBack } from "@/components/utils/GoBack";
-import { AttachmentsMenu } from "@/components/chats/attachmentsMenu";
 
 export type PaymentItems = {
     name: string;

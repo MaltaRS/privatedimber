@@ -213,7 +213,7 @@ const WalletScreen = () => {
     const TransactionCard = ({ transaction }: { transaction: Transaction }) => {
         if (!transaction) return null;
 
-        const isNegative = transaction.amount < 0;
+        const isNegative = transaction.type !== "DEPOSIT";
         const formattedAmount = formatCurrency(
             Math.abs(transaction.amount / 100 || 0),
         );
@@ -237,11 +237,25 @@ const WalletScreen = () => {
                     >
                         <IconWithdraw width={25} height={25} />
                         <VStack style={{ marginLeft: 12 }}>
-                            <Text fontSize={15.5} bold color="#1F2937">
+                            <Text
+                                maxWidth={200}
+                                fontSize={15.5}
+                                color="#1F2937"
+                                bold
+                            >
                                 {transaction.description || "Transação"}
                             </Text>
                             <Text fontSize={14.5} style={{ color: "#7D8697" }}>
-                                Envio para {transaction.destinationName || ""}
+                                {transaction.intention === "CHAT_APRESENTATION"
+                                    ? transaction.type === "PAYMENT"
+                                        ? "Envio para " +
+                                          (transaction.destinationName || "")
+                                        : transaction.description.toLowerCase() ===
+                                            "depósito automático para pagamento"
+                                          ? "Valor pago"
+                                          : "Pagamento de " +
+                                            (transaction.destinationName || "")
+                                    : transaction.description}
                             </Text>
                         </VStack>
                     </HStack>

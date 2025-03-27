@@ -1,5 +1,7 @@
 import { Fragment } from "react";
+
 import { TouchableOpacity } from "react-native";
+
 import {
     HStack,
     VStack,
@@ -8,16 +10,34 @@ import {
     Menu,
     Pressable,
 } from "@/gluestackComponents";
+
 import Feather from "@expo/vector-icons/Feather";
-import { Trash2 } from "lucide-react-native";
+
+import { Trash2, Check } from "lucide-react-native";
+
 import { Colors } from "@/constants/Colors";
+
 import { useMutation, useQueryClient } from "@tanstack/react-query";
+
 import { removePaymentMethod } from "@/connection/wallet/WalletConnection";
+
 import { toast } from "burnt";
 
 import AddCard from "@/assets/icons/appIcons/newCard.svg";
 import Mastercard from "@/assets/icons/cardBrands/mastercard.svg";
 import Visa from "@/assets/icons/cardBrands/visa.svg";
+
+type CardProps = {
+    name?: string;
+    description?: string;
+    cardBrand?: string;
+    newCard?: boolean;
+    onPress?: () => void;
+    isDefault?: boolean;
+    id?: number;
+    isSelected?: boolean;
+    showMenu?: boolean;
+};
 
 export const Card = ({
     name,
@@ -27,15 +47,9 @@ export const Card = ({
     onPress,
     isDefault,
     id,
-}: {
-    name?: string;
-    description?: string;
-    cardBrand?: string;
-    newCard?: boolean;
-    onPress?: () => void;
-    isDefault?: boolean;
-    id?: number;
-}) => {
+    isSelected,
+    showMenu = true,
+}: CardProps) => {
     const queryClient = useQueryClient();
 
     const { mutate: removeCard } = useMutation({
@@ -73,13 +87,13 @@ export const Card = ({
         visa: <Visa width={34} height={34} />,
     };
 
-    const Container = newCard ? TouchableOpacity : Box;
+    const Container = newCard ? TouchableOpacity : Pressable;
 
     return (
         <Container onPress={onPress}>
             <HStack
                 borderWidth={1}
-                borderColor="#999"
+                borderColor={isSelected ? "$primaryDefault" : "$gray300"}
                 padding={15}
                 borderRadius={10}
                 alignItems="center"
@@ -87,7 +101,8 @@ export const Card = ({
                 height={85}
                 justifyContent="space-between"
                 marginTop={20}
-                backgroundColor="#fff"
+                backgroundColor="$white"
+                flexDirection="row"
             >
                 <HStack justifyContent="center" alignItems="center" gap="$4">
                     <Box px="$1" justifyContent="center" alignItems="center">
@@ -116,7 +131,7 @@ export const Card = ({
                                     <Text bold fontSize={20}>
                                         {name}
                                     </Text>
-                                    {isDefault && (
+                                    {isDefault && !isSelected && (
                                         <Text fontSize={14} color="$green500">
                                             Padrão
                                         </Text>
@@ -131,48 +146,55 @@ export const Card = ({
                     </VStack>
                 </HStack>
 
-                {!newCard && (
-                    <Menu
-                        placement="bottom right"
-                        bgColor="$white"
-                        rounded={12}
-                        py="$0"
-                        trigger={({ ...triggerProps }) => {
-                            return (
-                                <Pressable {...triggerProps}>
-                                    <Box
-                                        p="$2"
-                                        bgColor="$white"
-                                        rounded="$full"
-                                        alignItems="center"
-                                        justifyContent="center"
-                                    >
-                                        <Feather
-                                            name="more-vertical"
-                                            size={24}
-                                            color="black"
-                                        />
-                                    </Box>
-                                </Pressable>
-                            );
-                        }}
-                    >
-                        <Menu.Item
-                            onPress={handleRemoveCard}
-                            justifyContent="flex-start"
-                            alignItems="center"
-                            py="$3"
-                            textValue="Remover Cartão"
+                {!newCard &&
+                    (isSelected ? (
+                        <Check size={24} color={Colors.primaryDefault} />
+                    ) : showMenu ? (
+                        <Menu
+                            placement="bottom right"
+                            bgColor="$white"
+                            rounded={12}
+                            py="$0"
+                            trigger={({ ...triggerProps }) => {
+                                return (
+                                    <Pressable {...triggerProps}>
+                                        <Box
+                                            p="$2"
+                                            bgColor="$white"
+                                            rounded="$full"
+                                            alignItems="center"
+                                            justifyContent="center"
+                                        >
+                                            <Feather
+                                                name="more-vertical"
+                                                size={24}
+                                                color="black"
+                                            />
+                                        </Box>
+                                    </Pressable>
+                                );
+                            }}
                         >
-                            <Box rounded="$full" bgColor="$gray200" p="$3">
-                                <Trash2 size={20} color={Colors.gray700} />
-                            </Box>
-                            <Text ml="$3" color="$gray700" fontWeight="$medium">
-                                Remover Cartão
-                            </Text>
-                        </Menu.Item>
-                    </Menu>
-                )}
+                            <Menu.Item
+                                onPress={handleRemoveCard}
+                                justifyContent="flex-start"
+                                alignItems="center"
+                                py="$3"
+                                textValue="Remover Cartão"
+                            >
+                                <Box rounded="$full" bgColor="$gray200" p="$3">
+                                    <Trash2 size={20} color={Colors.gray700} />
+                                </Box>
+                                <Text
+                                    ml="$3"
+                                    color="$gray700"
+                                    fontWeight="$medium"
+                                >
+                                    Remover Cartão
+                                </Text>
+                            </Menu.Item>
+                        </Menu>
+                    ) : null)}
             </HStack>
         </Container>
     );

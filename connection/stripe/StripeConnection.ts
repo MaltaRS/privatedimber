@@ -1,6 +1,13 @@
 import { User } from "@/Context/AuthProvider";
 import api from "@/utils/api";
 
+type PaymentMethods = {
+    balance: boolean;
+    useCard: boolean;
+    cardId: number | null;
+    pix: boolean;
+};
+
 type CreatePaymentIntentResponse = {
     clientSecret: string;
     transactionId: string;
@@ -18,12 +25,21 @@ type CreatePaymentIntentParams = {
         quantity: number;
     }[];
     metadata?: Record<string, unknown>;
+    paymentMethods: PaymentMethods;
+    installments?: number;
 };
 
 export const findTransactionById = async (transactionId: string) => {
-    const { data } = await api.get(`/payments/${transactionId}`);
+    try {
+        const { data } = await api.get(
+            `/payments/transactions/${transactionId}`,
+        );
 
-    return data;
+        return data;
+    } catch (error) {
+        console.error(error);
+        return null;
+    }
 };
 
 export const createPaymentIntent = async ({
@@ -32,6 +48,8 @@ export const createPaymentIntent = async ({
     items,
     metadata,
     intention,
+    paymentMethods,
+    installments,
 }: CreatePaymentIntentParams): Promise<CreatePaymentIntentResponse> => {
     const { data } = await api.post<CreatePaymentIntentResponse>(
         "/payments/create-payment-intent",
@@ -44,6 +62,8 @@ export const createPaymentIntent = async ({
             providerName: "stripe",
             items,
             metadata,
+            paymentMethods,
+            installments,
         },
     );
 

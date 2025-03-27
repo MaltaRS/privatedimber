@@ -5,11 +5,10 @@ export type Transaction = {
     uuid: string;
     amount: number;
     description: string;
+    type: "PAYMENT" | "DEPOSIT" | "WITHDRAWAL" | "REFUND";
     destinationName: string;
     status: string;
-    createdAt: string;
-    updatedAt: string;
-    metadata?: Record<string, any>;
+    intention: "CHAT_APRESENTATION";
     destination?: {
         name: string;
         username: string;
