@@ -1,8 +1,9 @@
-import { useEffect, useState } from "react";
+import { useEffect } from "react";
 
 import { Box, GluestackUIProvider, Spinner } from "@/gluestackComponents";
 
 import { useFonts as useFontsExpo } from "expo-font";
+
 import {
     PlusJakartaSans_400Regular,
     PlusJakartaSans_500Medium,
@@ -10,6 +11,14 @@ import {
     PlusJakartaSans_700Bold,
     useFonts,
 } from "@expo-google-fonts/plus-jakarta-sans";
+
+import {
+    Inter_400Regular,
+    Inter_500Medium,
+    Inter_600SemiBold,
+    Inter_700Bold,
+    useFonts as useFontsInter,
+} from "@expo-google-fonts/inter";
 
 import { Stack } from "expo-router";
 import * as SplashScreen from "expo-splash-screen";
@@ -49,6 +58,13 @@ const RootLayout = () => {
         PlusJakartaSans_700Bold,
     });
 
+    const [loadedInter] = useFontsInter({
+        Inter_400Regular,
+        Inter_500Medium,
+        Inter_600SemiBold,
+        Inter_700Bold,
+    });
+
     const [loadedExpo] = useFontsExpo({
         NovaBold: require("../assets/fonts/static/ProxNova/proxBold.otf"),
         NovaRegular: require("../assets/fonts/static/ProxNova/proxRegular.otf"),
@@ -61,12 +77,12 @@ const RootLayout = () => {
     const { isAuthenticated, loading } = useAuth();
 
     useEffect(() => {
-        if (loaded && !loading && loadedExpo) {
+        if (loaded && !loading && loadedExpo && loadedInter) {
             SplashScreen.hideAsync();
         }
-    }, [loaded, loading, loadedExpo]);
+    }, [loaded, loading, loadedExpo, loadedInter]);
 
-    if (!loaded || loading || !loadedExpo) {
+    if (!loaded || loading || !loadedExpo || !loadedInter) {
         return (
             <GluestackUIProvider>
                 <Box
@@ -104,9 +120,9 @@ const RootLayout = () => {
 
                 <Stack.Screen name="profileusermsg" />
                 <Stack.Screen name="editmyprofile" />
-                <Stack.Screen name="editcategorysmyprofile" />
+                {/* <Stack.Screen name="editcategorysmyprofile" />
                 <Stack.Screen name="editsocialinfosmyprofile" />
-                <Stack.Screen name="editmyinterestsprofile" />
+                <Stack.Screen name="editmyinterestsprofile" /> */}
                 <Stack.Screen name="profileinstituition" />
 
                 <Stack.Screen name="donationinstituition" />
@@ -125,7 +141,7 @@ const RootLayout = () => {
                 <Stack.Screen name="confignotific" />
                 <Stack.Screen name="configchatoptions" />
                 <Stack.Screen name="configdefinedvaluemsg" />
-                <Stack.Screen name="createnewcart" />
+                {/* <Stack.Screen name="createnewcart" /> */}
                 <Stack.Screen name="sakeconfirmsucess" />
                 <Stack.Screen name="confirmwithdraw" />
                 <Stack.Screen name="totalbalance" />

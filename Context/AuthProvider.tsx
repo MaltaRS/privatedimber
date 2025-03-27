@@ -46,7 +46,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({
 
     const queryClient = useQueryClient();
 
-    const { socket, recreate, disconnect } = useSocket();
+    const { socket, recreate } = useSocket();
 
     const { data: user, isLoading } = useQuery<User | null>({
         queryKey: ["authenticatedUser"],
@@ -75,6 +75,10 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({
         },
         onSuccess: async (user: User) => {
             queryClient.setQueryData(["authenticatedUser"], user);
+            queryClient.invalidateQueries({
+                queryKey: ["balance"],
+                exact: true,
+            });
         },
     });
 
@@ -106,6 +110,10 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({
 
             SecureStoreEncrypted.deleteItem("accessToken");
             SecureStoreEncrypted.deleteItem("refreshToken");
+            queryClient.removeQueries({
+                queryKey: ["balance"],
+                exact: true,
+            });
             queryClient.clear();
             removeAuthorizationHeader();
 

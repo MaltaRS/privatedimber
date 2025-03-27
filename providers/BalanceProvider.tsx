@@ -17,8 +17,9 @@ export function BalanceProvider({ children }: { children: ReactNode }) {
     const { data: balanceData, isLoading } = useQuery({
         queryKey: ["balance"],
         queryFn: getBalance,
-        staleTime: 1000 * 60 * 2, // 2 minutes
     });
+
+    console.log("balanceData", balanceData);
 
     const toggleBalanceVisibility = () => {
         setIsBalanceHidden(!isBalanceHidden);

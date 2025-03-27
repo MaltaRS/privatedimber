@@ -46,3 +46,14 @@ export const blockUser = async (blockedId: string) => {
 export const unblockUser = async (blockedId: string) => {
     await api.delete(`/user/unblock/${blockedId}`);
 };
+
+export const updateProfileImage = async (icon: string): Promise<boolean> => {
+    try {
+        await setAuthorizationHeader();
+        await api.put("/user", { icon });
+        return true;
+    } catch (error) {
+        console.error("Error updating profile image:", error);
+        return false;
+    }
+};

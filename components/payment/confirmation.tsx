@@ -175,8 +175,6 @@ export const Confirmation = ({
         setIsPolling(true);
         setShowSummary(false);
         const intervalId = setInterval(async () => {
-            console.log("id", id);
-
             try {
                 const transaction = await findTransactionById(id);
                 if (transaction && transaction.status === "SUCCESS") {
@@ -198,6 +196,14 @@ export const Confirmation = ({
                         installments: transaction.installments,
                         successfullAt: successEvent?.at,
                     });
+                    queryClient.invalidateQueries({
+                        queryKey: ["balance"],
+                    });
+
+                    queryClient.invalidateQueries({
+                        queryKey: ["transactions"],
+                    });
+
                     setShowReceipt(true);
                 }
             } catch (error) {

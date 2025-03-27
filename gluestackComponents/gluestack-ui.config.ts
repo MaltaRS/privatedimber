@@ -562,16 +562,15 @@ export const gluestackUIConfig = createConfig({
         },
         fonts: {
             jakartHeading: "PlusJakartaSans_700Bold",
-            heading: "NovaBold",
+            heading: "Inter_700Bold",
             arialHeading: "ArialBold",
-            title: "PlusJakartaSans_600SemiBold",
+            title: "Inter_600SemiBold",
             novaTitle: "NovaSemiBold",
             medium: "NovaMedium",
-            jakartMedium: "PlusJakartaSans_500Medium",
-            body: "PlusJakartaSans_400Regular",
+            jakartMedium: "Inter_500Medium",
+            body: "Inter_400Regular",
             novaBody: "NovaRegular",
             arialBody: "Arial",
-
         },
         fontSizes: {
             "2xs": 10,

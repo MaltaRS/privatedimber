@@ -1,5 +1,3 @@
-import { FC, ReactNode, useState } from "react";
-
 import { View, TouchableOpacity } from "react-native";
 
 import { useRouter } from "expo-router";
@@ -14,12 +12,15 @@ import {
     Heading,
     Spinner,
     FlatList,
+    Image,
+    Box,
+    Pressable,
 } from "@/gluestackComponents";
 
 import { useInfiniteQuery } from "@tanstack/react-query";
 
 import { BaseContainer } from "@/components/BaseContainer";
-import { MainTitle } from "@/components/MainTitle";
+
 import {
     findTransactions,
     Transaction,
@@ -27,14 +28,21 @@ import {
 
 import AntDesign from "@expo/vector-icons/AntDesign";
 
-import IconWithdraw from "@/assets/icons/appIcons/payment.svg";
 import IconDonation from "@/assets/icons/appIcons/donation.svg";
 import IconCard from "@/assets/icons/appIcons/card.svg";
 
+//@ts-expect-error
+import IconAddMoney from "@/assets/icons/appIcons/add_money.png";
+
 import { formatCurrency } from "@/utils/formatters";
+
 import { SkeletonBox } from "@/components/utils/SkeletonBox";
-import { SvgProps } from "react-native-svg";
+
 import { useBalance } from "@/providers/BalanceProvider";
+
+import { Bell } from "lucide-react-native";
+
+import Ionicons from "@expo/vector-icons/Ionicons";
 
 const WalletScreen = () => {
     const router = useRouter();
@@ -58,7 +66,6 @@ const WalletScreen = () => {
         getNextPageParam: (lastPage) => {
             return lastPage?.nextPage !== null ? lastPage.nextPage : undefined;
         },
-        staleTime: 1000 * 60 * 5,
     });
 
     const transactions =
@@ -99,36 +106,58 @@ const WalletScreen = () => {
                 </TouchableOpacity>
 
                 <HStack
+                    gap="$2"
                     style={{
                         alignItems: "center",
                         justifyContent: "center",
-                        marginTop: 30,
+                        marginTop: 16,
                     }}
                 >
-                    {isBalanceLoading ? (
-                        <SkeletonBox width={160} height={54} />
-                    ) : (
-                        <Heading size="4xl">
-                            {isBalanceHidden ? "****" : `${formattedBalance}`}
-                        </Heading>
-                    )}
-
-                    <TouchableOpacity onPress={toggleBalanceVisibility}>
-                        <AntDesign
-                            name="eye"
-                            size={24}
-                            color="#999"
-                            marginLeft={10}
-                        />
+                    <Text
+                        fontSize="$4xl"
+                        color="$gray900"
+                        fontFamily="$heading"
+                        lineHeight={44}
+                    >
+                        {isBalanceLoading ? (
+                            <SkeletonBox width={160} height={54} />
+                        ) : isBalanceHidden ? (
+                            "****"
+                        ) : (
+                            `${formattedBalance}`
+                        )}
+                    </Text>
+                    <TouchableOpacity
+                        onPress={() => router.push("/totalbalance")}
+                        style={{
+                            borderRadius: 12,
+                            backgroundColor: "#F0F0F0",
+                            width: 24,
+                            height: 24,
+                            alignItems: "center",
+                            justifyContent: "center",
+                        }}
+                    >
+                        <AntDesign name="down" size={12} color="#7D8697" />
                     </TouchableOpacity>
                 </HStack>
 
-                <HStack alignItems="center" justifyContent="center">
-                    <Text size="md" mb={2}>
+                <HStack>
+                    <Text
+                        fontSize="$md"
+                        color="$gray600"
+                        fontFamily="$novaBody"
+                        lineHeight={20}
+                    >
                         Disponível para uso
                     </Text>
-
-                    <Text bold size="md" ml="$1">
+                    <Text
+                        fontFamily="$body"
+                        color="$gray700"
+                        fontSize="$md"
+                        lineHeight={20}
+                        marginLeft={5}
+                    >
                         {isBalanceLoading ? (
                             <SkeletonBox width={50} height={18} />
                         ) : isBalanceHidden ? (
@@ -145,14 +174,16 @@ const WalletScreen = () => {
     const MiniButtonsWallet = ({
         name,
         icon: Icon,
+        image,
         nav,
     }: {
         name: string;
-        icon: FC<SvgProps>;
+        icon: any;
+        image?: boolean;
         nav: string;
     }) => {
-        const iconWidth = name === "Sacar" ? 80 : 56;
-        const iconHeight = name === "Sacar" ? 80 : 56;
+        const iconWidth = name === "Sacar" ? 36 : 56;
+        const iconHeight = name === "Sacar" ? 36 : 56;
 
         return (
             <VStack alignItems="center" justifyContent="center">
@@ -173,7 +204,16 @@ const WalletScreen = () => {
                         justifyContent: "center",
                     }}
                 >
-                    <Icon style={{ width: iconWidth, height: iconHeight }} />
+                    {image ? (
+                        <Image
+                            source={Icon}
+                            style={{ width: iconWidth, height: iconHeight }}
+                        />
+                    ) : (
+                        <Icon
+                            style={{ width: iconWidth, height: iconHeight }}
+                        />
+                    )}
                 </TouchableOpacity>
 
                 <Text style={{ fontSize: 15 }}>{name}</Text>
@@ -191,7 +231,8 @@ const WalletScreen = () => {
             >
                 <MiniButtonsWallet
                     name="Sacar"
-                    icon={IconWithdraw}
+                    icon={IconAddMoney}
+                    image={true}
                     nav="/withdraw"
                 />
 
@@ -235,7 +276,10 @@ const WalletScreen = () => {
                             justifyContent: "space-between",
                         }}
                     >
-                        <IconWithdraw width={25} height={25} />
+                        <Image
+                            source={IconAddMoney}
+                            style={{ width: 36, height: 36 }}
+                        />
                         <VStack style={{ marginLeft: 12 }}>
                             <Text
                                 maxWidth={200}
@@ -403,11 +447,60 @@ const WalletScreen = () => {
 
     return (
         <BaseContainer>
-            <MainTitle
-                title="Carteira"
-                onPress={() => router.push("/notifications")}
-                notificationsCount={notificationsCount}
-            />
+            <HStack
+                justifyContent="space-between"
+                alignItems="center"
+                zIndex={3}
+            >
+                <HStack>
+                    <Text
+                        fontSize={28}
+                        fontFamily="$heading"
+                        fontWeight="$bold"
+                        color={"#000"}
+                    >
+                        Carteira
+                    </Text>
+                </HStack>
+                <HStack>
+                    <TouchableOpacity onPress={() => toggleBalanceVisibility()}>
+                        <Ionicons
+                            name={
+                                isBalanceHidden
+                                    ? "eye-outline"
+                                    : "eye-off-outline"
+                            }
+                            size={24}
+                            color="black"
+                            marginRight="24"
+                        />
+                    </TouchableOpacity>
+
+                    <Pressable
+                        marginRight={12}
+                        onPress={() => router.push("/notifications")}
+                    >
+                        <Box position="relative">
+                            <Bell size={24} color="black" />
+                            {notificationsCount > 0 && (
+                                <Box
+                                    position="absolute"
+                                    top={-1}
+                                    right={-2}
+                                    bgColor="$primaryDefault"
+                                    borderRadius="$full"
+                                    h={6}
+                                    w={6}
+                                    justifyContent="center"
+                                    alignItems="center"
+                                    zIndex={999}
+                                />
+                            )}
+                        </Box>
+                    </Pressable>
+                </HStack>
+            </HStack>
+
             <HeaderInfosWallet />
             <ContainerMiniButtonsWallet />
             <Divider bgColor="$gray300" marginTop="$6" />

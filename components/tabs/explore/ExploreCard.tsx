@@ -9,7 +9,8 @@ import {
     Pressable,
 } from "@/gluestackComponents";
 
-import { Heart } from "lucide-react-native";
+import { Star } from "lucide-react-native";
+import MaterialIcons from "@expo/vector-icons/MaterialIcons";
 
 export type ExploreCardProps = {
     id: string;
@@ -26,20 +27,16 @@ export type ExploreCardProps = {
 const CardAvatar = ({
     name,
     imageLink,
-    liked,
-    onLike,
 }: {
     name: string;
     imageLink: string;
-    liked?: boolean;
-    onLike?: () => void;
 }) => (
     <Avatar
-        w="$full"
-        height={180}
-        rounded={24}
+        margin="$3"
+        width={128}
+        rounded="$full"
+        height={128}
         position="relative"
-        bgColor="$primaryDark"
     >
         <AvatarFallbackText fontSize={60}>{name}</AvatarFallbackText>
         <AvatarImage
@@ -48,13 +45,13 @@ const CardAvatar = ({
             height={128}
             position="relative"
             source={{ uri: imageLink }}
-            alt={`Foto de perfil de ${name}`}
+            alt={"Foto de perfil de ${name}"}
         />
     </Avatar>
 );
 
 const CardTags = ({ tags }: { tags: string[] }) => (
-    <Text size="sm" flexWrap="wrap" color="$gray800">
+    <Text size="xs" lineHeight={16} flexWrap="wrap" color="$gray600">
         {tags
             .filter((_, i) => i <= 1)
             .map((tag, index) => tag + (index === 1 ? "" : ", "))}
@@ -68,8 +65,10 @@ const CardPrice = ({ price }: { price: string }) => (
         alignItems="center"
         justifyContent="center"
         bgColor="#00A8FF"
-        borderBottomLeftRadius={20}
-        borderBottomRightRadius={20}
+        borderWidth={0.9}
+        borderColor="#00A8FF"
+        borderBottomLeftRadius={12}
+        borderBottomRightRadius={12}
         p="$2"
     >
         <Text size="lg" fontFamily="$novaTitle" color="#fff" lineHeight={24}>
@@ -87,20 +86,21 @@ const ImageLikeButton = ({
 }) => (
     <Pressable
         rounded="$full"
-        bgColor="#F8F8F950"
-        py="$2"
-        px="$2"
+        py={8}
+        px={19}
+        width={20}
+        height={20}
         justifyContent="center"
         alignItems="center"
         onPress={onLike}
         position="absolute"
-        bottom={8}
-        right={8}
+        top={0}
+        right={0}
     >
-        <Heart
-            size={25}
-            color={liked ? "#FF6378" : "#fff"}
-            fill={liked ? "#FF6378" : "none"}
+        <Star
+            size={18}
+            color={liked ? "#FDD015" : "#D1D5DB"}
+            fill={liked ? "#FDD015" : "none"}
         />
     </Pressable>
 );
@@ -117,29 +117,44 @@ export const ExploreCard = ({
     onPress,
 }: ExploreCardProps) => {
     return (
-        <Pressable onPress={onPress} w="49%" pb="$3" p="$1">
+        <Pressable onPress={onPress} w="48.5%" mb="$3">
             <Card
                 variant="ghost"
+                p="$0"
                 style={{
                     backgroundColor: "#fff",
-                    borderRadius: 20,
+                    borderRadius: 12,
                     borderWidth: 0.9,
                     borderColor: "#E5E7EB",
                 }}
             >
                 <VStack alignItems="center">
                     <CardAvatar name={name} imageLink={icon} />
+                    <ImageLikeButton liked={liked} onLike={() => onLike(id)} />
                     <VStack w="$full">
                         <VStack w="$full">
-                            <HStack alignItems="center" justifyContent="center">
+                            <HStack
+                                w="$full"
+                                marginLeft={4}
+                                alignItems="center"
+                                justifyContent="center"
+                            >
                                 <Text
-                                    size="lg"
-                                    color="#15161E"
+                                    fontSize="$md"
+                                    color="$gray900"
                                     fontFamily="$novaTitle"
-                                    lineHeight={24}
+                                    lineHeight={20}
+                                    maxWidth={140}
+                                    numberOfLines={1}
                                 >
                                     {name}
                                 </Text>
+                                <MaterialIcons
+                                    name="verified"
+                                    size={13}
+                                    color="#00A8FF"
+                                    style={{ marginLeft: 4 }}
+                                />
                             </HStack>
                             <HStack
                                 alignItems="center"

@@ -1,6 +1,4 @@
-import React, { useState } from "react";
-
-import { StatusBar } from "expo-status-bar";
+import { useState } from "react";
 
 import { View, ScrollView, TouchableOpacity, StyleSheet } from "react-native";
 
@@ -11,8 +9,6 @@ import {
     Avatar,
     AvatarImage,
     AvatarFallbackText,
-    Box,
-    Spinner,
 } from "@/gluestackComponents";
 
 import MaterialIcons from "@expo/vector-icons/MaterialIcons";
@@ -24,8 +20,6 @@ import { BaseContainer } from "@/components/BaseContainer";
 import ProfileStatistics from "../components/ProfileStatistics";
 
 import HeaderContainer from "../components/HeaderContainer";
-
-import Row from "../components/Row";
 
 import { useLocalSearchParams, useRouter } from "expo-router";
 
@@ -51,7 +45,7 @@ export default function ProfileScreen() {
         shouldGetUserData = true;
     }
 
-    const { data: userData, isLoading } = useQuery({
+    const { data: userData } = useQuery({
         queryKey: ["user", userUuid],
         queryFn: () => fetchUserById(userUuid),
         enabled: shouldGetUserData,
@@ -68,7 +62,7 @@ export default function ProfileScreen() {
                 <HStack justifyContent="space-between">
                     <VStack>
                         <HStack>
-                            <Avatar width={72} height={72} marginRight="10">
+                            <Avatar width={72} height={72} marginRight={10}>
                                 <AvatarFallbackText>
                                     {data?.name}
                                 </AvatarFallbackText>
@@ -86,7 +80,7 @@ export default function ProfileScreen() {
                                         fontFamily="$novaTitle"
                                         fontSize="$lg"
                                         textAlign="center"
-                                        lineHeight="24"
+                                        lineHeight={24}
                                     >
                                         {data?.name}
                                     </Text>
@@ -102,7 +96,7 @@ export default function ProfileScreen() {
                                     fontFamily="$novaBody"
                                     fontSize="$sm"
                                     textAlign="left"
-                                    lineHeight="20"
+                                    lineHeight={20}
                                 >
                                     @{data?.username}
                                 </Text>
@@ -110,7 +104,7 @@ export default function ProfileScreen() {
                                     fontFamily="$novaBody"
                                     fontSize="$xs"
                                     textAlign="left"
-                                    lineHeight="20"
+                                    lineHeight={20}
                                 >
                                     Ultima conexão ontem as 21:30
                                 </Text>
@@ -138,7 +132,7 @@ export default function ProfileScreen() {
                 </HStack>
 
                 <VStack mt="$2">
-                    <Text fontFamily="$novaBody" fontSize="$sm" lineHeight="20">
+                    <Text fontFamily="$novaBody" fontSize="$sm" lineHeight={20}>
                         {data?.bio ? data.bio : "Sem bio"}
                     </Text>
                 </VStack>
@@ -146,7 +140,7 @@ export default function ProfileScreen() {
         );
     };
 
-    const TabCategoryProfile = (title) => {
+    const TabCategoryProfile = (title: { name: string }) => {
         return (
             <View style={{ marginRight: 8 }}>
                 <HStack style={{ alignItems: "center" }}>
@@ -159,12 +153,11 @@ export default function ProfileScreen() {
                         }}
                     >
                         <Text
-                            textAlign="center"
                             paddingLeft={10}
                             paddingRight={10}
                             color="$gray500"
                             fontSize={12}
-                            textAlign="absolute"
+                            textAlign="center"
                             lineHeight={14}
                         >
                             {title.name}
@@ -175,10 +168,10 @@ export default function ProfileScreen() {
         );
     };
 
-    const AboutProfile = (title) => {
+    const AboutProfile = (title: { content: string }) => {
         return (
             <VStack>
-                <VStack mt="24">
+                <VStack mt={24}>
                     <TitleContainerProfile name="Sobre Mim" />
                 </VStack>
                 <VStack width="100%">
@@ -186,8 +179,8 @@ export default function ProfileScreen() {
                         fontFamily="$novaBody"
                         fontSize={15}
                         textAlign="justify"
-                        lineHeight="18"
-                        marginTop="10"
+                        lineHeight={18}
+                        marginTop="$2"
                     >
                         {title.content}
                     </Text>
@@ -196,8 +189,8 @@ export default function ProfileScreen() {
                     color="#00A8FF"
                     fontFamily="$novaBody"
                     fontSize="$md"
-                    lineHeight="20"
-                    marginTop="10"
+                    lineHeight={20}
+                    marginTop="$2"
                 >
                     Ver mais
                 </Text>
@@ -212,9 +205,9 @@ export default function ProfileScreen() {
                     }}
                 />
 
-                <VStack mt="24" mb="16">
+                <VStack mt={24} mb={16}>
                     <TitleContainerProfile name="Minhas Categorias" />
-                    <VStack mt="24">
+                    <VStack mt={24}>
                         <HStack>
                             <TabCategoryProfile name="Financas e Negocios" />
                             <TabCategoryProfile name="Empreendedorismo" />
@@ -230,9 +223,9 @@ export default function ProfileScreen() {
                         borderRadius: 10,
                     }}
                 />
-                <VStack mt="24" mb="16">
+                <VStack mt={24} mb={16}>
                     <TitleContainerProfile name="Meus Interesses" />
-                    <VStack mt="24">
+                    <VStack mt={24}>
                         <HStack>
                             <TabCategoryProfile name="Financas e Negocios" />
                             <TabCategoryProfile name="Empreendedorismo" />
@@ -253,19 +246,24 @@ export default function ProfileScreen() {
         );
     };
 
-    const SocialLinks = (title) => {
+    const SocialLinks = (title: {
+        linkednName: string;
+        instaName: string;
+        sitelink: string;
+        username: string;
+    }) => {
         return (
             <VStack>
-                <VStack mt="24" mb="16">
+                <VStack mt={24} mb={16}>
                     <TitleContainerProfile name="Social" />
-                    <VStack mt="24">
+                    <VStack mt={24}>
                         <VStack>
                             <Text
                                 fontFamily="medium"
                                 paddingBottom={10}
                                 fontSize="$sm"
                                 color="#gray800"
-                                lineHeight="20"
+                                lineHeight={20}
                             >
                                 {title.linkednName}
                             </Text>
@@ -273,7 +271,7 @@ export default function ProfileScreen() {
                                 fontFamily="medium"
                                 fontSize="$sm"
                                 color="$gray800"
-                                lineHeight="20"
+                                lineHeight={20}
                             >
                                 {title.instaName}
                             </Text>
@@ -290,16 +288,16 @@ export default function ProfileScreen() {
                     }}
                 />
 
-                <VStack mt="24" mb="16">
+                <VStack mt={24} mb={16}>
                     <TitleContainerProfile name="Links" />
-                    <VStack mt="16">
+                    <VStack mt={16}>
                         <HStack>
                             <Text
                                 fontFamily="regular"
                                 paddingBottom={20}
                                 fontSize="$sm"
                                 color="$blue600"
-                                lineHeight="20"
+                                lineHeight={20}
                             >
                                 {title.sitelink}
                             </Text>
@@ -319,7 +317,7 @@ export default function ProfileScreen() {
                     showsVerticalScrollIndicator={false}
                     contentContainerStyle={{ paddingBottom: 86 }}
                 >
-                    <VStack p="1">
+                    <VStack p="$1">
                         <HeaderProfile />
 
                         <HStack
@@ -387,8 +385,6 @@ export default function ProfileScreen() {
                     </VStack>
                 </ScrollView>
             </VStack>
-
-            <StatusBar style="auto" />
         </BaseContainer>
     );
 }
