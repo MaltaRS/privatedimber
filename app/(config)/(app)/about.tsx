@@ -1,27 +1,14 @@
-import { useState } from "react";
-import {
-    HStack,
-    ScrollView,
-    Text,
-    VStack,
-} from "@/gluestackComponents";
+import { ScrollView, VStack } from "@/gluestackComponents";
 
-import { StatusBar } from "expo-status-bar";
-import HeaderContainer from '../components/HeaderContainer'
-import { Colors } from "@/constants/Colors";
-import { MainTitle } from "@/components/MainTitle";
-import { ConfigCardSwitch } from "@/components/tabs/config/configCardSwitch";
+import HeaderContainer from "@/components/HeaderContainer";
 import { ConfigCard } from "@/components/tabs/config/configCard";
 import { BaseContainer } from "@/components/BaseContainer";
 
-
 const Configsecurity = () => {
-   
-
     return (
         <BaseContainer backgroundColor="$gray50">
             <VStack gap="$4">
-        <HeaderContainer title="Sobre" />
+                <HeaderContainer title="Sobre" />
                 <ScrollView
                     showsVerticalScrollIndicator={false}
                     contentContainerStyle={{
@@ -29,23 +16,23 @@ const Configsecurity = () => {
                     }}
                 >
                     <VStack p="$1" pt="$2" gap="$6">
-
-                        <ConfigCard 
+                        <ConfigCard
                             items={[
-                                { title: "Termos de uso", href: "/terms" },
-                                { title: "Poilitica de privacidade", href: "/policy"  },
-               
+                                {
+                                    title: "Termos de uso",
+                                    href: "/(config)/(app)/terms",
+                                },
+                                {
+                                    title: "Poilitica de privacidade",
+                                    href: "/(config)/(app)/privacy",
+                                },
                             ]}
                         />
-
                     </VStack>
-                    
                 </ScrollView>
             </VStack>
-            <StatusBar style="auto" />
         </BaseContainer>
     );
 };
 
 export default Configsecurity;
-

@@ -1,6 +1,6 @@
 import { VStack } from "@/gluestackComponents";
 
-import HeaderContainer from "../components/HeaderContainer";
+import HeaderContainer from "@/components/HeaderContainer";
 import { ConfigCardNoIcon } from "@/components/tabs/config/configCardNoIcon";
 import { BaseContainer } from "@/components/BaseContainer";
 

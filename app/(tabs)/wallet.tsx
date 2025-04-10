@@ -19,7 +19,7 @@ import {
 
 import { useInfiniteQuery } from "@tanstack/react-query";
 
-import { BaseContainer } from "@/components/BaseContainer";
+import { Bell } from "lucide-react-native";
 
 import {
     findTransactions,
@@ -28,19 +28,17 @@ import {
 
 import AntDesign from "@expo/vector-icons/AntDesign";
 
-import IconDonation from "@/assets/icons/appIcons/donation.svg";
-import IconCard from "@/assets/icons/appIcons/card.svg";
-
 //@ts-expect-error
 import IconAddMoney from "@/assets/icons/appIcons/add_money.png";
+import IconDonation from "@/assets/icons/appIcons/donation.svg";
+import IconCard from "@/assets/icons/appIcons/card.svg";
 
 import { formatCurrency } from "@/utils/formatters";
 
 import { SkeletonBox } from "@/components/utils/SkeletonBox";
+import { BaseContainer } from "@/components/BaseContainer";
 
 import { useBalance } from "@/providers/BalanceProvider";
-
-import { Bell } from "lucide-react-native";
 
 import Ionicons from "@expo/vector-icons/Ionicons";
 
@@ -89,7 +87,7 @@ const WalletScreen = () => {
         return (
             <VStack alignItems="center" justifyContent="center" mt={30}>
                 <TouchableOpacity
-                    onPress={() => router.push("/totalbalance")}
+                    onPress={() => router.push("/(wallet)/totalbalance")}
                     style={{
                         width: 102,
                         height: 28,
@@ -128,7 +126,7 @@ const WalletScreen = () => {
                         )}
                     </Text>
                     <TouchableOpacity
-                        onPress={() => router.push("/totalbalance")}
+                        onPress={() => router.push("/(wallet)/totalbalance")}
                         style={{
                             borderRadius: 12,
                             backgroundColor: "#F0F0F0",
@@ -233,19 +231,19 @@ const WalletScreen = () => {
                     name="Sacar"
                     icon={IconAddMoney}
                     image={true}
-                    nav="/withdraw"
+                    nav="/(wallet)/(withdraw)"
                 />
 
                 <MiniButtonsWallet
                     name="Cartões"
                     icon={IconCard}
-                    nav="/mycards"
+                    nav="/(wallet)/(card)/cards"
                 />
 
                 <MiniButtonsWallet
                     name="Doar"
                     icon={IconDonation}
-                    nav="/listinstituition"
+                    nav="/(wallet)/(donation)/list"
                 />
             </HStack>
         );
@@ -387,7 +385,7 @@ const WalletScreen = () => {
                     <Heading size="xl">Extrato</Heading>
 
                     <TouchableOpacity
-                        onPress={() => router.push("/extractspay")}
+                        onPress={() => router.push("/(wallet)/extract")}
                     >
                         <Text color="$primaryDefault">Ver extrato</Text>
                     </TouchableOpacity>

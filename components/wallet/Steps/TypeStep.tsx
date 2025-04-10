@@ -1,7 +1,11 @@
 import { Fragment } from "react";
+
 import { TouchableOpacity } from "react-native";
+
 import { Controller, useFormContext } from "react-hook-form";
+
 import { toast } from "burnt";
+
 import {
     Text,
     VStack,
@@ -11,8 +15,11 @@ import {
     RadioGroup,
     InputField,
 } from "@/gluestackComponents";
+
 import { CircleIcon } from "lucide-react-native";
+
 import { Colors } from "@/constants/Colors";
+
 import { MaskedInput } from "@/components/ui/MaskedInput";
 import { Input } from "@/components/ui/Input";
 

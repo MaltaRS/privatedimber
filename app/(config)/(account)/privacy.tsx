@@ -84,7 +84,7 @@ const PrivacyScreen = () => {
                         items={[
                             {
                                 title: "Bloqueados",
-                                href: "/(config)/listblockusers",
+                                href: "/(config)/(account)/listblockusers",
                             },
                         ]}
                     />

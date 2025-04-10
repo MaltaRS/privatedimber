@@ -131,19 +131,19 @@ const ConfigScreen = () => {
                             items={[
                                 {
                                     title: "Notificações",
-                                    href: "/confignotific",
+                                    href: "/(config)/(message)/notifications",
                                 },
                                 {
                                     title: "Definir valores",
-                                    href: "/configdefinedvaluemsg",
+                                    href: "/(config)/(message)/values",
                                 },
                                 {
                                     title: "Permissões",
-                                    href: "/permissions",
+                                    href: "/(config)/(message)/permissions",
                                 },
                                 {
                                     title: "Conversas",
-                                    href: "/configchatoptions",
+                                    href: "/(config)/(message)/chatoptions",
                                 },
                             ]}
                         />
@@ -161,13 +161,16 @@ const ConfigScreen = () => {
                             items={[
                                 {
                                     title: "Tipo de conta",
-                                    href: "/(config)/accountType",
+                                    href: "/(config)/(account)/accountType",
                                 },
                                 {
                                     title: "Privacidade",
-                                    href: "/(config)/privacy",
+                                    href: "/(config)/(account)/privacy",
                                 },
-                                { title: "Segurança", href: "/configsecurity" },
+                                {
+                                    title: "Segurança",
+                                    href: "/(config)/(account)/security",
+                                },
                             ]}
                         />
 
@@ -182,17 +185,26 @@ const ConfigScreen = () => {
                         </Text>
                         <ConfigCard
                             items={[
-                                { title: "Ajuda", href: "/help" },
+                                {
+                                    title: "Ajuda",
+                                    href: "/(config)/(app)/help",
+                                },
                                 {
                                     title: "Permissões do dispositivo",
-                                    href: "/permisions",
+                                    href: "/(config)/(message)/permissions",
                                 },
-                                { title: "Idioma", href: "/languages" },
+                                {
+                                    title: "Idioma",
+                                    href: "/(config)/(app)/languages",
+                                },
                                 {
                                     title: "Convidar amigos",
-                                    href: "/sharedimber",
+                                    href: "/(config)/(app)/invitefriends",
                                 },
-                                { title: "Sobre", href: "/aboutconfig" },
+                                {
+                                    title: "Sobre",
+                                    href: "/(config)/(app)/about",
+                                },
                                 {
                                     title: "Sair",
                                     color: "$negative",

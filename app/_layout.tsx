@@ -119,8 +119,17 @@ const RootLayout = () => {
                 <Stack.Screen name="(auth)/signup" />
 
                 {/* Config */}
-                <Stack.Screen name="(config)/accountType" />
-                <Stack.Screen name="(config)/privacy" />
+                {/* Account */}
+                <Stack.Screen name="(config)/(account)/accountType" />
+                <Stack.Screen name="(config)/(account)/privacy" />
+                <Stack.Screen name="(config)/(account)/security" />
+                <Stack.Screen name="(config)/(account)/listblockusers" />
+
+                {/* Message */}
+                <Stack.Screen name="(config)/(message)/notifications" />
+                <Stack.Screen name="(config)/(message)/values" />
+                <Stack.Screen name="(config)/(message)/permissions" />
+                <Stack.Screen name="(config)/(message)/chatoptions" />
 
                 <Stack.Screen name="notifications" />
                 <Stack.Screen name="myprofile" />
@@ -154,7 +163,6 @@ const RootLayout = () => {
                 <Stack.Screen name="historicbalance" />
                 <Stack.Screen name="detailinfomsg" />
                 <Stack.Screen name="listblockusers" />
-                <Stack.Screen name="configsecurity" />
                 <Stack.Screen name="configsecurity2fa" />
                 <Stack.Screen name="changepassword" />
             </Stack>

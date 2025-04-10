@@ -19,22 +19,23 @@ import {
 
 import { Calendar, Search } from "lucide-react-native";
 
-import { BaseContainer } from "@/components/BaseContainer";
-
-import HeaderContainer from "../components/HeaderContainer";
-
 import Payment from "@/assets/icons/appIcons/payment.svg";
 import Refund from "@/assets/icons/appIcons/refundPayment.svg";
 
 import { useInfiniteQuery } from "@tanstack/react-query";
+
 import {
     findTransactions,
     Transaction,
 } from "@/connection/transactions/TransactionConnection";
-import { formatCurrency } from "@/utils/formatters";
-import { SkeletonBox } from "@/components/utils/SkeletonBox";
 
-const iconlistpay = require("../assets/images/iconlistpay.png");
+import { formatCurrency } from "@/utils/formatters";
+
+import HeaderContainer from "@/components/HeaderContainer";
+import { SkeletonBox } from "@/components/utils/SkeletonBox";
+import { BaseContainer } from "@/components/BaseContainer";
+
+const iconlistpay = require("@/assets/images/iconlistpay.png");
 
 export default function ExtractsPay() {
     const [modalVisible, setModalVisible] = useState(false);

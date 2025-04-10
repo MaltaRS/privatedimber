@@ -17,7 +17,7 @@ import {
 } from "@/gluestackComponents";
 
 import { BaseContainer } from "@/components/BaseContainer";
-import HeaderContainer from "../components/HeaderContainer";
+import HeaderContainer from "@/components/HeaderContainer";
 
 import MaterialIcons from "@expo/vector-icons/MaterialIcons";
 import { Search, SlidersHorizontal, X } from "lucide-react-native";
@@ -52,7 +52,9 @@ export default function ListInstituition() {
                     />
 
                     <TouchableOpacity
-                        onPress={() => router.push("/profileinstituition")}
+                        onPress={() =>
+                            router.push("/(wallet)/(donation)/profile")
+                        }
                         style={{ flex: 1 }}
                     >
                         <VStack

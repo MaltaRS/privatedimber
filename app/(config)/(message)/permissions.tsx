@@ -1,12 +1,16 @@
 import { useState, useEffect, Fragment } from "react";
+
 import { ScrollView } from "react-native";
+
 import { VStack } from "@/gluestackComponents";
+
 import { useSettings } from "@/hooks/SettingsHook";
-import HeaderContainer from "../components/HeaderContainer";
+
 import { ConfigCardSwitch } from "@/components/tabs/config/configCardSwitch";
+import HeaderContainer from "@/components/HeaderContainer";
 import { BaseContainer } from "@/components/BaseContainer";
-import TitleContainer from "@/components/TitleContainer";
 import { SkeletonBox } from "@/components/utils/SkeletonBox";
+import TitleContainer from "@/components/TitleContainer";
 
 const Permissions = () => {
     const { settings, updateSettings } = useSettings();

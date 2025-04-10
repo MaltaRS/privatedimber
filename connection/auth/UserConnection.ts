@@ -71,10 +71,12 @@ export const updateUserAccountType = async (
     }
 };
 
-export const getBlockedUsers = async (): Promise<string[]> => {
+export const getBlockedUsers = async (): Promise<User[]> => {
     try {
         const response = await api.get("/user/blocked");
-        return response.data.blockedUsers;
+
+        console.log(response.data);
+        return response.data;
     } catch (error) {
         console.error("Erro ao buscar usuários bloqueados:", error);
         return [];

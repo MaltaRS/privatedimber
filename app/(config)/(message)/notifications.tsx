@@ -1,7 +1,8 @@
 import { useState, useEffect, Fragment } from "react";
+
 import { VStack, HStack, Text } from "@/gluestackComponents";
 
-import HeaderContainer from "../components/HeaderContainer";
+import HeaderContainer from "@/components/HeaderContainer";
 import { ConfigCardSwitch } from "@/components/tabs/config/configCardSwitch";
 import { BaseContainer } from "@/components/BaseContainer";
 import { useSettings } from "@/hooks/SettingsHook";

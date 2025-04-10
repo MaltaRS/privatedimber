@@ -85,7 +85,9 @@ export default function MyCartsScreen() {
 
                             <Card
                                 newCard
-                                onPress={() => router.push("/newcard")}
+                                onPress={() =>
+                                    router.push("/(wallet)/(card)/newcard")
+                                }
                             />
                         </Fragment>
                     )}

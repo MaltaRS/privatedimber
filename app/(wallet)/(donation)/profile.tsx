@@ -208,7 +208,7 @@ export default function ProfileInstituition() {
 
             <Button
                 onPress={() => {
-                    router.push("/donationinstituition");
+                    router.push("/(wallet)/(donation)/institution");
                 }}
                 mb="$4"
                 mt="$1"
