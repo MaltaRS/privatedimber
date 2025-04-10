@@ -1,5 +1,7 @@
 import { Dispatch, SetStateAction, useState } from "react";
 
+import { Paperclip } from "lucide-react-native";
+
 import {
     Actionsheet,
     ActionsheetBackdrop,
@@ -38,7 +40,7 @@ import { SendMessageParams } from "@/Context/ChatProvider";
 import { PaymentItems } from "@/app/(conversations)/[conversationId]";
 
 import { uploadImageToFirebase } from "@/utils/firebaseFunctions";
-import { Paperclip } from "lucide-react-native";
+
 import {
     OpenCameraAttachment,
     OpenDocumentPickerAttachment,

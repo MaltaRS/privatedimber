@@ -1,42 +1,193 @@
-import {
-    VStack,
-} from "@/gluestackComponents";
+import { useState, useEffect, Fragment } from "react";
+import { VStack, HStack, Text } from "@/gluestackComponents";
 
-import { StatusBar } from "expo-status-bar";
 import HeaderContainer from "../components/HeaderContainer";
-import TitleContainer from "../components/TitleContainer";
 import { ConfigCardSwitch } from "@/components/tabs/config/configCardSwitch";
 import { BaseContainer } from "@/components/BaseContainer";
+import { useSettings } from "@/hooks/SettingsHook";
+import { SkeletonBox } from "@/components/utils/SkeletonBox";
 
 const ConfigNotifications = () => {
+    const { settings, updateSettings } = useSettings();
+    const [isInitialLoading, setIsInitialLoading] = useState(true);
+    const [localSettings, setLocalSettings] = useState({
+        emailNotifications: true,
+        pushNotifications: true,
+        messageNotifications: true,
+        paymentNotifications: true,
+        supportNotifications: true,
+    });
+
+    useEffect(() => {
+        if (settings) {
+            setLocalSettings({
+                emailNotifications: settings.emailNotifications,
+                pushNotifications: settings.pushNotifications,
+                messageNotifications:
+                    settings.customSettings?.notifications?.messages ?? true,
+                paymentNotifications:
+                    settings.customSettings?.notifications?.payments ?? true,
+                supportNotifications:
+                    settings.customSettings?.notifications?.support ?? true,
+            });
+            setIsInitialLoading(false);
+        }
+    }, [settings]);
+
+    const handleToggle = async (key: string, value: boolean) => {
+        const newSettings = { ...localSettings, [key]: value };
+        setLocalSettings(newSettings);
+
+        const updatePayload = {
+            emailNotifications: newSettings.emailNotifications,
+            pushNotifications: newSettings.pushNotifications,
+            customSettings: {
+                ...settings?.customSettings,
+                notifications: {
+                    ...settings?.customSettings?.notifications,
+                    messages: newSettings.messageNotifications,
+                    payments: newSettings.paymentNotifications,
+                    support: newSettings.supportNotifications,
+                },
+            },
+        };
+
+        await updateSettings(updatePayload);
+    };
+
+    const LoadingSkeleton = () => (
+        <VStack gap="$6">
+            <VStack gap="$2">
+                <SkeletonBox width={220} height={28} />
+                <VStack
+                    bgColor="$white"
+                    pl="$4"
+                    borderRadius="$xl"
+                    elevation={2}
+                >
+                    <HStack
+                        py="$4"
+                        pr="$4"
+                        alignItems="center"
+                        justifyContent="space-between"
+                    >
+                        <SkeletonBox width={160} height={24} />
+                        <SkeletonBox
+                            width={40}
+                            height={24}
+                            borderRadius="$full"
+                        />
+                    </HStack>
+                </VStack>
+            </VStack>
+
+            <VStack gap="$2">
+                <SkeletonBox width={200} height={28} />
+                <VStack
+                    bgColor="$white"
+                    pl="$4"
+                    borderRadius="$xl"
+                    elevation={2}
+                >
+                    {[1, 2, 3].map((item) => (
+                        <Fragment key={item}>
+                            <HStack
+                                py="$4"
+                                pr="$4"
+                                alignItems="center"
+                                justifyContent="space-between"
+                            >
+                                <SkeletonBox width={180} height={24} />
+                                <SkeletonBox
+                                    width={40}
+                                    height={24}
+                                    borderRadius="$full"
+                                />
+                            </HStack>
+                        </Fragment>
+                    ))}
+                </VStack>
+            </VStack>
+        </VStack>
+    );
+
     return (
-        <BaseContainer backgroundColor="$gray50">
+        <BaseContainer backgroundColor="$white">
             <VStack>
                 <HeaderContainer title="Notificações" />
 
-             
-                    <VStack p="$1">
-                        
+                <VStack px="$1" gap="$6" mt="$4">
+                    {isInitialLoading ? (
+                        <LoadingSkeleton />
+                    ) : (
+                        <Fragment>
+                            <VStack gap="$2">
+                                <Text
+                                    color="$gray800"
+                                    fontSize={20}
+                                    fontFamily="$heading"
+                                >
+                                    Notificações de mensagens
+                                </Text>
+                                <ConfigCardSwitch
+                                    items={[
+                                        {
+                                            title: "Mostrar notificações",
+                                            value: localSettings.messageNotifications,
+                                            onToggle: (value) =>
+                                                handleToggle(
+                                                    "messageNotifications",
+                                                    value,
+                                                ),
+                                        },
+                                    ]}
+                                />
+                            </VStack>
 
-                        <TitleContainer name="Notificações de mensagens" />
-                        <ConfigCardSwitch 
-                            items={[
-                                { title: "Mostrar Notificações" }
-                            ]}
-                        />
-
-                        <TitleContainer name="Notificações de email" />
-                        <ConfigCardSwitch 
-                            items={[
-                                { title: "Solicitação de mensagem" },
-                                { title: "Pagamentos" },
-                                { title: "Suporte" }
-                            ]}
-                        />
-                    </VStack>
+                            <VStack gap="$2">
+                                <Text
+                                    color="$gray800"
+                                    fontSize={20}
+                                    fontFamily="$heading"
+                                >
+                                    Notificações de email
+                                </Text>
+                                <ConfigCardSwitch
+                                    items={[
+                                        {
+                                            title: "Solicitação de mensagem",
+                                            value: localSettings.emailNotifications,
+                                            onToggle: (value) =>
+                                                handleToggle(
+                                                    "emailNotifications",
+                                                    value,
+                                                ),
+                                        },
+                                        {
+                                            title: "Pagamentos",
+                                            value: localSettings.paymentNotifications,
+                                            onToggle: (value) =>
+                                                handleToggle(
+                                                    "paymentNotifications",
+                                                    value,
+                                                ),
+                                        },
+                                        {
+                                            title: "Suporte",
+                                            value: localSettings.supportNotifications,
+                                            onToggle: (value) =>
+                                                handleToggle(
+                                                    "supportNotifications",
+                                                    value,
+                                                ),
+                                        },
+                                    ]}
+                                />
+                            </VStack>
+                        </Fragment>
+                    )}
+                </VStack>
             </VStack>
-
-            <StatusBar style="auto" />
         </BaseContainer>
     );
 };

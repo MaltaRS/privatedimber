@@ -65,6 +65,8 @@ export const BlockUser = ({
                 },
             });
         }
+
+        queryClient.invalidateQueries({ queryKey: ["blockedUsers"] });
     };
 
     return (

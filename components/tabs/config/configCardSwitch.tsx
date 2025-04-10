@@ -1,10 +1,18 @@
-import { useState } from "react";
-import { Divider, HStack, Pressable, Text, VStack, Switch } from "@/gluestackComponents";
+import { useState, useEffect } from "react";
+import {
+    Divider,
+    HStack,
+    Pressable,
+    Text,
+    VStack,
+    Switch,
+} from "@/gluestackComponents";
 
 type ConfigCardItem = {
     title: string;
     icon?: React.ReactNode;
-    action?: (value: boolean) => void; // Função opcional para capturar mudanças no switch
+    value?: boolean;
+    onToggle?: (value: boolean) => void;
 };
 
 type ConfigCardProps = {
@@ -12,18 +20,27 @@ type ConfigCardProps = {
 };
 
 export const ConfigCardSwitch = ({ items }: ConfigCardProps) => {
-    // Estado para armazenar o estado de cada switch
-    const [switchStates, setSwitchStates] = useState<{ [key: string]: boolean }>(
-        items.reduce((acc, item) => ({ ...acc, [item.title]: false }), {}) // Inicializa todos os switches como `false`
-    );
+    const [switchStates, setSwitchStates] = useState<{
+        [key: string]: boolean;
+    }>({});
+
+    useEffect(() => {
+        const initialStates = items.reduce((acc, item) => {
+            return { ...acc, [item.title]: item.value ?? false };
+        }, {});
+        setSwitchStates(initialStates);
+    }, [items]);
 
     const toggleSwitch = (title: string) => {
         setSwitchStates((prev) => {
-            const newState = { ...prev, [title]: !prev[title] };
+            const newValue = !prev[title];
+            const newState = { ...prev, [title]: newValue };
+
             const item = items.find((i) => i.title === title);
-            if (item?.action) {
-                item.action(newState[title]); // Executa a ação se existir
+            if (item?.onToggle) {
+                item.onToggle(newValue);
             }
+
             return newState;
         });
     };
@@ -32,15 +49,27 @@ export const ConfigCardSwitch = ({ items }: ConfigCardProps) => {
         <VStack bgColor="#fff" pl="$4" borderRadius="$xl" elevation={2}>
             {items.map((item, index) => (
                 <Pressable key={item.title}>
-                    <HStack pr="$4" py="$4" alignItems="center" justifyContent="space-between">
-                        <Text  size="lg" fontFamily="$novaBody" color="$gray800" lineHeight={24}>
+                    <HStack
+                        pr="$4"
+                        py="$4"
+                        alignItems="center"
+                        justifyContent="space-between"
+                    >
+                        <Text
+                            fontSize={20}
+                            fontFamily="$novaBody"
+                            color="$gray800"
+                            lineHeight={24}
+                        >
                             {item.title}
                         </Text>
                         <Switch
-                            value={switchStates[item.title]}
+                            value={switchStates[item.title] ?? false}
                             onValueChange={() => toggleSwitch(item.title)}
                             trackColor={{ false: "#ccc", true: "#00A8FF" }}
-                            thumbColor={switchStates[item.title] ? "#fff" : "#f4f4f4"}
+                            thumbColor={
+                                switchStates[item.title] ? "#fff" : "#f4f4f4"
+                            }
                         />
                     </HStack>
                     {index < items.length - 1 && <Divider bgColor="$gray200" />}

@@ -1,27 +1,14 @@
 import { useEffect } from "react";
 
-import { useRouter } from "expo-router";
+import { VStack, Box, ScrollView, Spinner } from "@/gluestackComponents";
 
-import {
-    Text,
-    HStack,
-    Pressable,
-    VStack,
-    Box,
-    ScrollView,
-    Spinner,
-} from "@/gluestackComponents";
-
-
-import { StatusBar } from "expo-status-bar";
-import HeaderContainer from '../components/HeaderContainer'
+import HeaderContainer from "../components/HeaderContainer";
 import { useNotifications } from "@/hooks/NotificationHook";
 
 import { NotificationCard } from "@/components/notifications/NotificationCard";
 import { BaseContainer } from "@/components/BaseContainer";
 
 const ChatsScreen = () => {
-    const router = useRouter();
     const { paginatedNotifications, isLoadingNotifications, markAsRead } =
         useNotifications();
 
@@ -38,9 +25,9 @@ const ChatsScreen = () => {
 
     return (
         <BaseContainer>
-        <VStack gap="$4">
-        <HeaderContainer title="Notificações" />
-           </VStack>
+            <VStack gap="$4">
+                <HeaderContainer title="Notificações" />
+            </VStack>
             <Box pt="$6">
                 {isLoadingNotifications ? (
                     <VStack

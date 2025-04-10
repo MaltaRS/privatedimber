@@ -57,3 +57,26 @@ export const updateProfileImage = async (icon: string): Promise<boolean> => {
         return false;
     }
 };
+
+export const updateUserAccountType = async (
+    type: "REGULAR" | "PROFESSIONAL",
+): Promise<boolean> => {
+    try {
+        await setAuthorizationHeader();
+        await api.put("/user/account-type", { type });
+        return true;
+    } catch (error) {
+        console.error("Error updating account type:", error);
+        return false;
+    }
+};
+
+export const getBlockedUsers = async (): Promise<string[]> => {
+    try {
+        const response = await api.get("/user/blocked");
+        return response.data.blockedUsers;
+    } catch (error) {
+        console.error("Erro ao buscar usuários bloqueados:", error);
+        return [];
+    }
+};

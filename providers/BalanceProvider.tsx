@@ -19,8 +19,6 @@ export function BalanceProvider({ children }: { children: ReactNode }) {
         queryFn: getBalance,
     });
 
-    console.log("balanceData", balanceData);
-
     const toggleBalanceVisibility = () => {
         setIsBalanceHidden(!isBalanceHidden);
     };

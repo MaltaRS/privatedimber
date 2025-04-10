@@ -1,5 +1,7 @@
-import React, { useState } from "react";
-import { ScrollView, Pressable, View } from "react-native";
+import { useState } from "react";
+
+import { ScrollView, View } from "react-native";
+
 import {
     Avatar,
     AvatarFallbackText,
@@ -7,6 +9,7 @@ import {
     HStack,
     VStack,
     Text,
+    Pressable,
 } from "@/gluestackComponents";
 
 import TitleContainer from "@/components/TitleContainer";
@@ -32,7 +35,7 @@ const ConfigScreen = () => {
         await signOut();
     };
 
-    const HeaderContainer = ({ title }) => (
+    const HeaderContainer = ({ title }: { title: string }) => (
         <HStack
             pt="$1"
             justifyContent="space-between"
@@ -42,7 +45,7 @@ const ConfigScreen = () => {
             <GoBack onPress={() => router.push("/explore")} />
             <Text
                 fontFamily="$medium"
-                fontSize={16}
+                fontSize={20}
                 color="#000"
                 textAlign="center"
                 pt="$2"
@@ -134,7 +137,10 @@ const ConfigScreen = () => {
                                     title: "Definir valores",
                                     href: "/configdefinedvaluemsg",
                                 },
-                                { title: "Permissões", href: "/permisions" },
+                                {
+                                    title: "Permissões",
+                                    href: "/permissions",
+                                },
                                 {
                                     title: "Conversas",
                                     href: "/configchatoptions",
@@ -142,19 +148,38 @@ const ConfigScreen = () => {
                             ]}
                         />
 
-                        <TitleContainer name="Conta" />
+                        <Text
+                            my="$4"
+                            fontSize={21}
+                            fontFamily="$heading"
+                            color="#000"
+                            lineHeight={24}
+                        >
+                            Conta
+                        </Text>
                         <ConfigCard
                             items={[
                                 {
                                     title: "Tipo de conta",
-                                    href: "/config/accountType",
+                                    href: "/(config)/accountType",
                                 },
-                                { title: "Privacidade", href: "/privacit" },
+                                {
+                                    title: "Privacidade",
+                                    href: "/(config)/privacy",
+                                },
                                 { title: "Segurança", href: "/configsecurity" },
                             ]}
                         />
 
-                        <TitleContainer name="Aplicativo" />
+                        <Text
+                            my="$4"
+                            fontSize={21}
+                            fontFamily="$heading"
+                            color="#000"
+                            lineHeight={24}
+                        >
+                            Aplicativo
+                        </Text>
                         <ConfigCard
                             items={[
                                 { title: "Ajuda", href: "/help" },
@@ -172,41 +197,6 @@ const ConfigScreen = () => {
                                     title: "Sair",
                                     color: "$negative",
                                     action: () => setModalVisible(true),
-                                },
-                            ]}
-                        />
-
-                        <Text
-                            my="$4"
-                            fontSize={21}
-                            fontFamily="$heading"
-                            color="#000"
-                            lineHeight={24}
-                        >
-                            Aplicativo
-                        </Text>
-                        <ConfigCard
-                            items={[
-                                {
-                                    title: "Ajuda",
-                                    href: "/help",
-                                },
-                                {
-                                    title: "Permissoes do dispositivo",
-                                    href: "/permisions",
-                                },
-                                {
-                                    title: "Idioma",
-                                    href: "/languages",
-                                },
-                                {
-                                    title: "Convidar amigos",
-                                    href: "/sharedimber",
-                                },
-
-                                {
-                                    title: "Sobre",
-                                    href: "/aboutconfig",
                                 },
                             ]}
                         />

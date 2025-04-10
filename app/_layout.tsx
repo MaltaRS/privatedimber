@@ -111,10 +111,17 @@ const RootLayout = () => {
                 initialRouteName={isAuthenticated ? "(tabs)" : "(auth)/index"}
             >
                 <Stack.Screen name="(tabs)" />
+
+                {/* Auth */}
                 <Stack.Screen name="(auth)/index" />
                 <Stack.Screen name="(auth)/password" />
                 <Stack.Screen name="(auth)/reset-password" />
                 <Stack.Screen name="(auth)/signup" />
+
+                {/* Config */}
+                <Stack.Screen name="(config)/accountType" />
+                <Stack.Screen name="(config)/privacy" />
+
                 <Stack.Screen name="notifications" />
                 <Stack.Screen name="myprofile" />
 
@@ -136,7 +143,6 @@ const RootLayout = () => {
                 <Stack.Screen name="selectpaytype" />
                 <Stack.Screen name="withdrawtype" />
 
-                <Stack.Screen name="privacit" />
                 <Stack.Screen name="permisions" />
                 <Stack.Screen name="confignotific" />
                 <Stack.Screen name="configchatoptions" />
