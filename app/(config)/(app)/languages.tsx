@@ -5,9 +5,13 @@ import {
     HStack,
     Text,
     Switch,
-    Heading,
     Pressable,
     Icon,
+    FlatList,
+    useToast,
+    Toast,
+    ToastTitle,
+    ToastDescription,
 } from "@/gluestackComponents";
 
 import { Check } from "lucide-react-native";
@@ -20,18 +24,24 @@ const OtherInfoProfile = ({
     name,
     onSelect,
     isSelected,
+    isDisabled,
 }: {
     name: string;
     onSelect: (name: string) => void;
     isSelected: boolean;
+    isDisabled?: boolean;
 }) => (
-    <Pressable onPress={() => onSelect(name)}>
-        <VStack px="$4">
+    <Pressable onPress={() => onSelect(name)} opacity={isDisabled ? 0.9 : 1}>
+        <VStack px="$1">
             <HStack justifyContent="space-between" alignItems="center" py="$3">
-                <Text fontSize={15} fontWeight={isSelected ? "bold" : "normal"}>
+                <Text
+                    fontSize={19}
+                    fontWeight={isSelected ? "bold" : "normal"}
+                    color={isDisabled ? "$gray400" : "$black"}
+                >
                     {name}
                 </Text>
-                {isSelected && <Icon as={Check} size="md" color="#007BFF" />}
+                {isSelected && <Icon as={Check} size="xl" color="#007BFF" />}
             </HStack>
         </VStack>
     </Pressable>
@@ -41,23 +51,31 @@ const SwitchOption = ({
     title,
     value,
     onToggle,
+    textSize,
+    disabled,
 }: {
     title: string;
     value: boolean;
     onToggle: () => void;
+    textSize?: number;
+    disabled?: boolean;
 }) => (
     <VStack>
         <HStack
             justifyContent="space-between"
             alignItems="center"
-            px="$4"
-            py="$3"
+            mt="$1"
+            px="$1"
+            pt="$3"
         >
-            <Text fontSize={17}>{title}</Text>
+            <Text fontSize={textSize || 17} color="$black">
+                {title}
+            </Text>
             <Switch
+                disabled={disabled}
                 value={value}
                 onValueChange={onToggle}
-                trackColor={{ false: "#ccc", true: "#007BFF" }}
+                trackColor={{ false: "#ccc", true: "$primaryDefault" }}
                 thumbColor={value ? "#fff" : "#f4f4f4"}
             />
         </HStack>
@@ -66,66 +84,106 @@ const SwitchOption = ({
 );
 
 export default function IdiomScreen() {
-    const [isSwitchOn, setIsSwitchOn] = useState(true);
-    const [selectedLanguage, setSelectedLanguage] = useState<string | null>(
-        null,
-    );
+    const toast = useToast();
+    const [isSwitchOn, setIsSwitchOn] = useState(false);
+    const [selectedLanguage, setSelectedLanguage] =
+        useState<string>("Português (Brasil)");
+
+    const languages = [
+        "Português (Brasil)",
+        "English",
+        "Arabic",
+        "Belarusian",
+        "Catalan",
+        "Croatian",
+        "Czech",
+        "Dutch",
+        "Finnish",
+        "French",
+        "German",
+    ];
 
     const handleToggleSwitch = () => {
         setIsSwitchOn(!isSwitchOn);
         if (!isSwitchOn) {
-            setSelectedLanguage(null);
+            setSelectedLanguage("Português (Brasil)");
         }
     };
 
     const handleSelectLanguage = (language: string) => {
+        if (language !== "Português (Brasil)") {
+            toast.show({
+                placement: "bottom",
+                duration: 2500,
+                render: ({ id }) => {
+                    const toastId = "toast-" + id;
+                    return (
+                        <Toast
+                            nativeID={toastId}
+                            action="warning"
+                            variant="accent"
+                        >
+                            <VStack space="xs">
+                                <ToastTitle>Atenção</ToastTitle>
+                                <ToastDescription>
+                                    Este idioma ainda não está disponível.
+                                </ToastDescription>
+                            </VStack>
+                        </Toast>
+                    );
+                },
+            });
+            return;
+        }
         setSelectedLanguage(language);
         setIsSwitchOn(false);
     };
 
     return (
         <BaseContainer backgroundColor="$gray50">
-            <VStack gap="$4">
+            <VStack gap="$4" flex={1}>
                 <HeaderContainer title="Idiomas" />
 
-                <SwitchOption
-                    title="Traduzir automaticamente"
-                    value={isSwitchOn}
-                    onToggle={handleToggleSwitch}
-                />
+                <VStack flex={1}>
+                    <SwitchOption
+                        title="Traduzir automaticamente"
+                        value={isSwitchOn}
+                        onToggle={handleToggleSwitch}
+                        textSize={18}
+                        disabled={true}
+                    />
 
-                <Heading py="$4" fontSize={19}>
-                    Idioma de Interface
-                </Heading>
+                    <Text
+                        mt="$5"
+                        fontSize={21}
+                        fontFamily="$heading"
+                        color="$black"
+                    >
+                        Idioma da Interface
+                    </Text>
 
-                <VStack
-                    bgColor="#fff"
-                    px="$4"
-                    py="$4"
-                    borderRadius="$xl"
-                    elevation={2}
-                    gap="$2"
-                >
-                    {[
-                        "Português (Brasil)",
-                        "English",
-                        "Arabic",
-                        "Belarusian",
-                        "Catalan",
-                        "Croatian",
-                        "Czech",
-                        "Dutch",
-                        "Finnish",
-                        "French",
-                        "German",
-                    ].map((language) => (
-                        <OtherInfoProfile
-                            key={language}
-                            name={language}
-                            onSelect={handleSelectLanguage}
-                            isSelected={selectedLanguage === language}
+                    <VStack
+                        bgColor="#fff"
+                        px="$4"
+                        borderRadius="$xl"
+                        elevation={2}
+                        my="$3"
+                        flex={1}
+                    >
+                        <FlatList
+                            data={languages}
+                            renderItem={({ item }: { item: any }) => (
+                                <OtherInfoProfile
+                                    name={item}
+                                    onSelect={handleSelectLanguage}
+                                    isSelected={selectedLanguage === item}
+                                    isDisabled={item !== "Português (Brasil)"}
+                                />
+                            )}
+                            keyExtractor={(item: any) => item}
+                            showsVerticalScrollIndicator={false}
                         />
-                    ))}
+                    </VStack>
                 </VStack>
             </VStack>
         </BaseContainer>

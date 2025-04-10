@@ -131,40 +131,36 @@ const RootLayout = () => {
                 <Stack.Screen name="(config)/(message)/permissions" />
                 <Stack.Screen name="(config)/(message)/chatoptions" />
 
-                <Stack.Screen name="notifications" />
-                <Stack.Screen name="myprofile" />
+                {/* App */}
+                <Stack.Screen name="(config)/(app)/about" />
+                <Stack.Screen name="(config)/(app)/invitefriends" />
+                <Stack.Screen name="(config)/(app)/terms" />
+                <Stack.Screen name="(config)/(app)/privacy" />
+                <Stack.Screen name="(config)/(app)/languages" />
+                <Stack.Screen name="(config)/(app)/help" />
 
+                <Stack.Screen name="notifications" />
+
+                {/* Wallet */}
+                <Stack.Screen name="(wallet)/extract" />
+                <Stack.Screen name="(wallet)/totalbalance" />
+                {/* Donation */}
+                <Stack.Screen name="(wallet)/(donation)/list" />
+                <Stack.Screen name="(wallet)/(donation)/instituition" />
+                <Stack.Screen name="(wallet)/(donation)/profile" />
+                {/* card */}
+                <Stack.Screen name="(wallet)/(card)/cards" />
+                <Stack.Screen name="(wallet)/(card)/newcard" />
+                {/* withdraw */}
+                <Stack.Screen name="(wallet)/(withdraw)/index" />
+
+                {/* Profile - TODO: Move to (profile) */}
+                <Stack.Screen name="myprofile" />
                 <Stack.Screen name="profileusermsg" />
                 <Stack.Screen name="editmyprofile" />
                 {/* <Stack.Screen name="editcategorysmyprofile" />
                 <Stack.Screen name="editsocialinfosmyprofile" />
                 <Stack.Screen name="editmyinterestsprofile" /> */}
-                <Stack.Screen name="profileinstituition" />
-
-                <Stack.Screen name="donationinstituition" />
-                <Stack.Screen name="listinstituition" />
-                <Stack.Screen name="mycards" />
-                <Stack.Screen name="comprovantpix" />
-                <Stack.Screen name="withdraw" />
-                <Stack.Screen name="sharedimber" />
-                <Stack.Screen name="newcard" />
-                <Stack.Screen name="confirmpaymsg" />
-                <Stack.Screen name="selectpaytype" />
-                <Stack.Screen name="withdrawtype" />
-
-                <Stack.Screen name="permisions" />
-                <Stack.Screen name="confignotific" />
-                <Stack.Screen name="configchatoptions" />
-                <Stack.Screen name="configdefinedvaluemsg" />
-                {/* <Stack.Screen name="createnewcart" /> */}
-                <Stack.Screen name="sakeconfirmsucess" />
-                <Stack.Screen name="confirmwithdraw" />
-                <Stack.Screen name="totalbalance" />
-                <Stack.Screen name="historicbalance" />
-                <Stack.Screen name="detailinfomsg" />
-                <Stack.Screen name="listblockusers" />
-                <Stack.Screen name="configsecurity2fa" />
-                <Stack.Screen name="changepassword" />
             </Stack>
         </GluestackUIProvider>
     );

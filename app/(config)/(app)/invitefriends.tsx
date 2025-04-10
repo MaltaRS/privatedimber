@@ -1,12 +1,19 @@
-import { View, Image, TouchableOpacity, Share, Alert } from "react-native";
+import { View, Image, Share, Alert } from "react-native";
 
 import { useRouter } from "expo-router";
 
 import * as Clipboard from "expo-clipboard";
 
-import { Text, Heading, VStack, HStack } from "@/gluestackComponents";
+import {
+    Text,
+    Heading,
+    VStack,
+    HStack,
+    ScrollView,
+    ButtonText,
+    Pressable,
+} from "@/gluestackComponents";
 
-import ButtonPadrao from "@/components/ButtonPadrao";
 import HeaderContainer from "@/components/HeaderContainer";
 import { BaseContainer } from "@/components/BaseContainer";
 
@@ -14,6 +21,8 @@ import MaterialIcons from "@expo/vector-icons/MaterialIcons";
 
 import iconqrcode from "@/assets/images/iconqrcode.png";
 import icongift from "@/assets/images/icongift.png";
+
+import { Button } from "@/components/ui/Button";
 
 export default function SharedDimberScreen() {
     const codigoIndicacao = "979848389";
@@ -57,14 +66,14 @@ export default function SharedDimberScreen() {
                 <Text bold fontSize={21}>
                     {codigoIndicacao}
                 </Text>
-                <TouchableOpacity onPress={copiarCodigo}>
+                <Pressable onPress={copiarCodigo}>
                     <MaterialIcons
                         name="content-copy"
                         size={20}
                         color="#00A8FF"
                         style={{ marginLeft: 15 }}
                     />
-                </TouchableOpacity>
+                </Pressable>
             </HStack>
         </View>
     );
@@ -105,7 +114,7 @@ export default function SharedDimberScreen() {
             />
 
             <HStack alignItems="center" justifyContent="center">
-                <TouchableOpacity onPress={compartilharCodigo}>
+                <Pressable onPress={compartilharCodigo}>
                     <Text
                         bold
                         size="sm"
@@ -114,7 +123,7 @@ export default function SharedDimberScreen() {
                     >
                         Salvar QR Code
                     </Text>
-                </TouchableOpacity>
+                </Pressable>
                 <MaterialIcons
                     name="share"
                     size={20}
@@ -131,24 +140,43 @@ export default function SharedDimberScreen() {
 
             <HStack alignItems="center" justifyContent="center" mt={8}>
                 <Text size="sm">Clique aqui e leia os</Text>
-                <TouchableOpacity onPress={() => router.push("/terms")}>
+                <Pressable onPress={() => router.push("/(config)/(app)/terms")}>
                     <Text size="sm" style={{ color: "#00A8FF", marginLeft: 6 }}>
                         termos e condições
                     </Text>
-                </TouchableOpacity>
+                </Pressable>
             </HStack>
         </VStack>
     );
 
     return (
         <BaseContainer>
-            <HeaderContainer title="Convidar amigos" />
-            <ContainerGiftTitle />
-            <ContainerQRcode />
-            <ButtonPadrao
-                name="Compartilhar código"
-                onPress={compartilharCodigo}
-            />
+            <VStack flex={1}>
+                <HeaderContainer title="Convidar amigos" />
+                <ScrollView
+                    showsVerticalScrollIndicator={false}
+                    contentContainerStyle={{ flexGrow: 1 }}
+                >
+                    <VStack flex={1} justifyContent="space-between">
+                        <VStack>
+                            <ContainerGiftTitle />
+                            <ContainerQRcode />
+                        </VStack>
+                        <VStack px="$4" pb="$4" mt="$4">
+                            <Button
+                                size="lg"
+                                variant="solid"
+                                action="primary"
+                                onPress={compartilharCodigo}
+                            >
+                                <ButtonText textAlign="center">
+                                    Compartilhar código
+                                </ButtonText>
+                            </Button>
+                        </VStack>
+                    </VStack>
+                </ScrollView>
+            </VStack>
         </BaseContainer>
     );
 }
