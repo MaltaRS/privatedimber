@@ -20,6 +20,7 @@ export type User = {
     bio: string;
     icon: string;
     type: "REGULAR" | "PROFESSIONAL";
+    price: number;
     createdAt: string;
     defaultPaymentMethodLast4?: string;
     defaultPaymentMethodBrand?: string;

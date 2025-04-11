@@ -229,7 +229,7 @@ const ChatsScreen = () => {
                                     fontFamily="$arialHeading"
                                     color="$black"
                                 >
-                                    R$ 100,00
+                                    R$ {contact.price}
                                 </Text>
                             </VStack>
                         </Fragment>
@@ -243,6 +243,10 @@ const ChatsScreen = () => {
                         sendMessage={sendMessage}
                         setFormActive={setFormActive}
                         conversationId={conversationId}
+                        recipientSettings={{
+                            chatSettings:
+                                contactConversation?.contactChatSettings ?? {},
+                        }}
                     />
                 ) : (
                     <VStack flex={1}>

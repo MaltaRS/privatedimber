@@ -10,16 +10,16 @@ import {
     VStack,
 } from "@/gluestackComponents";
 
-import HeaderContainer from "@/components/HeaderContainer";
-import { BaseContainer } from "@/components/BaseContainer";
-import { PriceInput } from "@/components/tabs/config/PriceInput";
 import { PercentageSelect } from "@/components/tabs/config/PercentageSelect";
+import { PriceInput } from "@/components/tabs/config/PriceInput";
+import { SkeletonBox } from "@/components/utils/SkeletonBox";
+import { BaseContainer } from "@/components/BaseContainer";
+import HeaderContainer from "@/components/HeaderContainer";
 import { Button } from "@/components/ui/Button";
 
 import { useSettings } from "@/hooks/SettingsHook";
 
 import { toast } from "burnt";
-import { SkeletonBox } from "@/components/utils/SkeletonBox";
 
 export default function ConfigDefinedValueMsgScreen() {
     const router = useRouter();
@@ -37,14 +37,28 @@ export default function ConfigDefinedValueMsgScreen() {
     useEffect(() => {
         if (settings?.priceSettings) {
             setValues({
-                basePrice: settings.priceSettings.basePrice?.toString() || "",
-                attachmentPercentage:
-                    settings.priceSettings.attachmentPercentage?.toString() ||
-                    "",
-                videoPercentage:
-                    settings.priceSettings.videoPercentage?.toString() || "",
-                imagePercentage:
-                    settings.priceSettings.imagePercentage?.toString() || "",
+                basePrice: settings.priceSettings.basePrice
+                    ? String(settings.priceSettings.basePrice)
+                    : "",
+                attachmentPercentage: settings.priceSettings
+                    .attachmentPercentage
+                    ? String(settings.priceSettings.attachmentPercentage)
+                    : "",
+                videoPercentage: settings.priceSettings.videoPercentage
+                    ? String(settings.priceSettings.videoPercentage)
+                    : "",
+                imagePercentage: settings.priceSettings.imagePercentage
+                    ? String(settings.priceSettings.imagePercentage)
+                    : "",
+            });
+            setIsInitialLoading(false);
+        }
+        if (!settings?.priceSettings) {
+            setValues({
+                basePrice: "",
+                attachmentPercentage: "",
+                videoPercentage: "",
+                imagePercentage: "",
             });
             setIsInitialLoading(false);
         }
@@ -54,11 +68,18 @@ export default function ConfigDefinedValueMsgScreen() {
         try {
             const updatePayload = {
                 priceSettings: {
-                    basePrice: parseInt(values.basePrice) || 0,
-                    attachmentPercentage:
-                        parseInt(values.attachmentPercentage) || 0,
-                    videoPercentage: parseInt(values.videoPercentage) || 0,
-                    imagePercentage: parseInt(values.imagePercentage) || 0,
+                    basePrice: values.basePrice
+                        ? Number(values.basePrice) * 100
+                        : 10000,
+                    attachmentPercentage: values.attachmentPercentage
+                        ? Number(values.attachmentPercentage)
+                        : 10,
+                    videoPercentage: values.videoPercentage
+                        ? Number(values.videoPercentage)
+                        : 10,
+                    imagePercentage: values.imagePercentage
+                        ? Number(values.imagePercentage)
+                        : 10,
                 },
             };
 
@@ -75,30 +96,13 @@ export default function ConfigDefinedValueMsgScreen() {
     };
 
     const LoadingSkeleton = () => (
-        <VStack gap="$6">
-            <VStack gap="$2">
-                <SkeletonBox width={220} height={28} />
-                <VStack
-                    bgColor="$white"
-                    pl="$4"
-                    borderRadius="$xl"
-                    elevation={2}
-                >
-                    <VStack py="$4" pr="$4" gap="$2">
-                        <SkeletonBox width={160} height={24} />
-                        <SkeletonBox width={120} height={24} />
-                        <SkeletonBox
-                            width={200}
-                            height={48}
-                            borderRadius="$lg"
-                        />
-                    </VStack>
-                </VStack>
-            </VStack>
+        <VStack gap="$4" flex={1} w="100%">
+            <SkeletonBox width={350} height={28} />
 
-            {[1, 2, 3].map((item) => (
-                <VStack key={item} gap="$2">
-                    <SkeletonBox width={180} height={28} />
+            <VStack gap="$2" mt="$4" flex={1}>
+                <VStack gap="$2">
+                    <SkeletonBox width={120} height={24} />
+                    <SkeletonBox width={180} height={24} />
                     <VStack
                         bgColor="$white"
                         pl="$4"
@@ -106,8 +110,6 @@ export default function ConfigDefinedValueMsgScreen() {
                         elevation={2}
                     >
                         <VStack py="$4" pr="$4" gap="$2">
-                            <SkeletonBox width={160} height={24} />
-                            <SkeletonBox width={120} height={24} />
                             <SkeletonBox
                                 width={200}
                                 height={48}
@@ -116,18 +118,40 @@ export default function ConfigDefinedValueMsgScreen() {
                         </VStack>
                     </VStack>
                 </VStack>
-            ))}
+
+                {[1, 2, 3].map((item) => (
+                    <VStack mt="$2" key={item} gap="$2">
+                        <SkeletonBox width={180} height={28} />
+                        <VStack
+                            bgColor="$white"
+                            pl="$4"
+                            borderRadius="$xl"
+                            elevation={2}
+                        >
+                            <VStack py="$4" gap="$2">
+                                <SkeletonBox
+                                    width={200}
+                                    height={42}
+                                    borderRadius="$lg"
+                                />
+                            </VStack>
+                        </VStack>
+                    </VStack>
+                ))}
+            </VStack>
         </VStack>
     );
 
     return (
         <BaseContainer backgroundColor="$gray50">
-            <VStack alignItems="center" flex={1}>
+            <VStack flex={1}>
                 <ScrollView
-                    contentContainerStyle={{ flexGrow: 1 }}
                     showsVerticalScrollIndicator={false}
+                    contentContainerStyle={{
+                        paddingBottom: 20,
+                    }}
                 >
-                    <VStack gap="$4" flex={1}>
+                    <VStack gap="$4" flex={1} w="100%">
                         <HeaderContainer title="Definir valores" />
 
                         {isInitialLoading ? (

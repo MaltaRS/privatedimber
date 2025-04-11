@@ -2,7 +2,7 @@ import { useState, useEffect, Fragment } from "react";
 
 import { ScrollView } from "react-native";
 
-import { VStack } from "@/gluestackComponents";
+import { HStack, VStack } from "@/gluestackComponents";
 
 import { useSettings } from "@/hooks/SettingsHook";
 
@@ -18,9 +18,9 @@ const Permissions = () => {
     const [localSettings, setLocalSettings] = useState({
         allowResponse: true,
         allowAttachments: {
-            file: true,
-            photo: true,
-            video: true,
+            files: true,
+            images: true,
+            videos: true,
         },
     });
 
@@ -29,11 +29,12 @@ const Permissions = () => {
             setLocalSettings({
                 allowResponse: settings.chatSettings?.allowResponse ?? true,
                 allowAttachments: {
-                    file: settings.chatSettings?.allowAttachments?.file ?? true,
-                    photo:
-                        settings.chatSettings?.allowAttachments?.photo ?? true,
-                    video:
-                        settings.chatSettings?.allowAttachments?.video ?? true,
+                    files:
+                        settings.chatSettings?.allowAttachments?.files ?? true,
+                    images:
+                        settings.chatSettings?.allowAttachments?.images ?? true,
+                    videos:
+                        settings.chatSettings?.allowAttachments?.videos ?? true,
                 },
             });
             setIsInitialLoading(false);
@@ -74,7 +75,7 @@ const Permissions = () => {
                     borderRadius="$xl"
                     elevation={2}
                 >
-                    <VStack
+                    <HStack
                         py="$4"
                         pr="$4"
                         alignItems="center"
@@ -86,7 +87,7 @@ const Permissions = () => {
                             height={24}
                             borderRadius="$full"
                         />
-                    </VStack>
+                    </HStack>
                 </VStack>
             </VStack>
 
@@ -99,20 +100,20 @@ const Permissions = () => {
                     elevation={2}
                 >
                     {[1, 2, 3].map((item) => (
-                        <VStack
+                        <HStack
                             key={item}
                             py="$4"
                             pr="$4"
                             alignItems="center"
                             justifyContent="space-between"
                         >
-                            <SkeletonBox width={180} height={24} />
+                            <SkeletonBox width={160} height={24} />
                             <SkeletonBox
                                 width={40}
                                 height={24}
                                 borderRadius="$full"
                             />
-                        </VStack>
+                        </HStack>
                     ))}
                 </VStack>
             </VStack>
@@ -154,23 +155,23 @@ const Permissions = () => {
                                         {
                                             title: "Permitir arquivo",
                                             value: localSettings
-                                                .allowAttachments.file,
+                                                .allowAttachments.files,
                                             onToggle: (value) =>
-                                                handleToggle("file", value),
+                                                handleToggle("files", value),
                                         },
                                         {
                                             title: "Permitir foto",
                                             value: localSettings
-                                                .allowAttachments.photo,
+                                                .allowAttachments.images,
                                             onToggle: (value) =>
-                                                handleToggle("photo", value),
+                                                handleToggle("images", value),
                                         },
                                         {
                                             title: "Permitir vídeo",
                                             value: localSettings
-                                                .allowAttachments.video,
+                                                .allowAttachments.videos,
                                             onToggle: (value) =>
-                                                handleToggle("video", value),
+                                                handleToggle("videos", value),
                                         },
                                     ]}
                                 />

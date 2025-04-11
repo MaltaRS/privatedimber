@@ -50,6 +50,7 @@ export type MessagesPayload = {
     isFinished: boolean;
     priority: ConversationPriority;
     needReply: boolean;
+    contactChatSettings: Record<string, any>;
 };
 
 export type ConversationsResponse = {

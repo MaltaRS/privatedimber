@@ -62,7 +62,7 @@ export const ConfigCard = ({ items }: ConfigCardProps) => {
                             <ChevronRight size={24} color={Colors.black} />
                         )}
                     </HStack>
-                    {index < items.length - 1 && <Divider bgColor="$gray200" />}
+                    <Divider bgColor="$gray200" />
                 </Pressable>
             ))}
         </VStack>

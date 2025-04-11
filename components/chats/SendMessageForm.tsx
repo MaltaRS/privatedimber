@@ -58,6 +58,9 @@ type SendMessageFormProps = {
     }: SendMessageParams) => void;
     setFormActive: (value: boolean) => void;
     conversationId: string;
+    recipientSettings?: {
+        chatSettings: Record<string, any>;
+    };
 };
 
 const SendMessageSchema = z.object({
@@ -99,6 +102,7 @@ export const SendMessageForm = ({
     sendMessage,
     setFormActive,
     conversationId,
+    recipientSettings,
 }: SendMessageFormProps) => {
     const {
         control,
@@ -125,6 +129,12 @@ export const SendMessageForm = ({
     const [permissionFor, setPermissionFor] = useState<
         AvailableFeature[] | null
     >(null);
+
+    const allowAttachments = recipientSettings?.chatSettings;
+
+    const canSendFiles = allowAttachments?.files ?? false;
+    const canSendImages = allowAttachments?.images ?? false;
+    const canSendVideos = allowAttachments?.videos ?? false;
 
     const handleClose = () => {
         setNeedConfirmation(false);
@@ -209,6 +219,21 @@ export const SendMessageForm = ({
     }: {
         featureName: AvailableFeature;
     }) => {
+        if (featureName === "document" && !canSendFiles) {
+            alert("Este usuário não permite o envio de arquivos.");
+            return;
+        }
+
+        if (featureName === "image" && !canSendImages) {
+            alert("Este usuário não permite o envio de fotos ou vídeos.");
+            return;
+        }
+
+        if (featureName === "camera" && !canSendVideos) {
+            alert("Este usuário não permite o envio de vídeos.");
+            return;
+        }
+
         setPermissionFor([featureName]);
         setNeedConfirmation(true);
     };
@@ -481,27 +506,37 @@ export const SendMessageForm = ({
                 alignItems="center"
             >
                 <HStack gap="$3" pl="$2">
-                    <Pressable
-                        onPress={() =>
-                            ValidateFeature({ featureName: "document" })
-                        }
-                    >
-                        <Paperclip size={22} color="#374151" />
-                    </Pressable>
-                    <Pressable
-                        onPress={() =>
-                            ValidateFeature({ featureName: "image" })
-                        }
-                    >
-                        <ImageSquare width={20} height={20} color="#374151" />
-                    </Pressable>
-                    <Pressable
-                        onPress={() =>
-                            ValidateFeature({ featureName: "camera" })
-                        }
-                    >
-                        <Camera width={22} height={22} />
-                    </Pressable>
+                    {canSendFiles && (
+                        <Pressable
+                            onPress={() =>
+                                ValidateFeature({ featureName: "document" })
+                            }
+                        >
+                            <Paperclip size={22} color="#374151" />
+                        </Pressable>
+                    )}
+                    {canSendImages && (
+                        <Pressable
+                            onPress={() =>
+                                ValidateFeature({ featureName: "image" })
+                            }
+                        >
+                            <ImageSquare
+                                width={20}
+                                height={20}
+                                color="#374151"
+                            />
+                        </Pressable>
+                    )}
+                    {canSendVideos && (
+                        <Pressable
+                            onPress={() =>
+                                ValidateFeature({ featureName: "camera" })
+                            }
+                        >
+                            <Camera width={22} height={22} />
+                        </Pressable>
+                    )}
                 </HStack>
                 <Pressable
                     backgroundColor="$primaryDefault"

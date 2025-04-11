@@ -139,6 +139,7 @@ const RootLayout = () => {
                 <Stack.Screen name="(config)/(app)/languages" />
                 <Stack.Screen name="(config)/(app)/help" />
 
+                {/* Notifications */}
                 <Stack.Screen name="notifications" />
 
                 {/* Wallet */}

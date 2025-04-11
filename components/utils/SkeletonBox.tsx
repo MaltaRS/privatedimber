@@ -41,21 +41,3 @@ export const SkeletonBox = ({ width, height, borderRadius }: any) => {
         </View>
     );
 };
-
-// const CardPlaceholder = () => {
-// const { primaryColor } = useTheme();
-// return (
-//     <HStack rounded='$xl' px='$4' py='$2' bgColor={primaryColor}>
-//         <VStack w='$full'>
-//             <HStack justifyContent='space-between'>
-//                 <SkeletonBox width={130} height={20} borderRadius={4} />
-//                 <SkeletonBox width={76} height={20} borderRadius={4} />
-//             </HStack>
-//             <HStack justifyContent='space-between' mt='$2'>
-//                 <SkeletonBox width={25} height={18} borderRadius={4} />
-//                 <SkeletonBox width={50} height={18} borderRadius={4} />
-//             </HStack>
-//         </VStack>
-//     </HStack>
-// );
-// };
