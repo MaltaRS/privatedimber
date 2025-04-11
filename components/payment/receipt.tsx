@@ -24,6 +24,8 @@ import { User } from "@/Context/AuthProvider";
 
 import { Colors } from "@/constants/Colors";
 import { formatSuccessDate } from "@/utils/dateFormat";
+import { PaymentMethods } from "./PaymentMethodSelection";
+import { PaymentMethodsResponse } from "@/connection/wallet/WalletConnection";
 
 type ReceiptProps = {
     showReceipt: boolean;
@@ -32,9 +34,10 @@ type ReceiptProps = {
     paymentItems: PaymentItems;
     totalAmount: string;
     transactionId: string;
-    cardBrand?: string;
-    cardLast4?: string;
-    installments?: number;
+    selectedPaymentMethods: PaymentMethods;
+    paymentMethodsData: PaymentMethodsResponse | undefined;
+    formattedBalance: string;
+    selectedInstallments: number;
     successfullAt?: string;
 };
 
@@ -45,19 +48,12 @@ export const Receipt = ({
     paymentItems,
     totalAmount,
     transactionId,
-    cardBrand,
-    cardLast4,
-    installments,
+    selectedPaymentMethods,
+    paymentMethodsData,
+    formattedBalance,
+    selectedInstallments,
     successfullAt,
 }: ReceiptProps) => {
-    const installmentText =
-        installments && installments > 1
-            ? `${installments}x de R$ ${(
-                  parseFloat(totalAmount.replace(",", ".")) / installments
-              )
-                  .toFixed(2)
-                  .replace(".", ",")} sem juros`
-            : `1x de R$ ${totalAmount} sem juros`;
     return (
         <Actionsheet
             isOpen={showReceipt}
@@ -102,7 +98,7 @@ export const Receipt = ({
                                 <Download size={20} color={Colors.gray700} />
                             </Pressable>
                         </HStack>
-                        <VStack gap="$4" pt="$7" pb="$12">
+                        <VStack gap="$4" pt="$7" pb="$6">
                             <HStack gap="$2" alignItems="center">
                                 <DimberGrayLogo
                                     height={28}
@@ -212,38 +208,89 @@ export const Receipt = ({
                                     Forma de pagamento
                                 </Text>
                                 <VStack>
-                                    <HStack justifyContent="space-between">
-                                        <Text color="$gray800" fontSize={17}>
-                                            Cartão de crédito
-                                        </Text>
-                                        <Text
-                                            fontFamily="$jakartHeading"
-                                            color="#000"
-                                            fontSize={18}
-                                        >
-                                            R$ {totalAmount}
-                                        </Text>
-                                    </HStack>
-                                    <HStack justifyContent="space-between">
-                                        <Text
-                                            fontFamily="novaBody"
-                                            lineHeight={22}
-                                            color="$gray400"
-                                            fontSize={16}
-                                        >
-                                            {cardBrand && cardLast4
-                                                ? `${cardBrand} ••••${cardLast4}`
-                                                : "Cartão não informado"}
-                                        </Text>
-                                        <Text
-                                            fontFamily="novaBody"
-                                            lineHeight={22}
-                                            color="$gray400"
-                                            fontSize={14}
-                                        >
-                                            {installmentText}
-                                        </Text>
-                                    </HStack>
+                                    {selectedPaymentMethods.balance && (
+                                        <HStack justifyContent="space-between">
+                                            <Text
+                                                fontFamily="novaBody"
+                                                lineHeight={22}
+                                                fontSize={18}
+                                            >
+                                                Saldo da carteira
+                                            </Text>
+                                            <Text
+                                                fontFamily="$jakartHeading"
+                                                color="#000"
+                                                fontSize={18}
+                                            >
+                                                R${" "}
+                                                {formattedBalance < totalAmount
+                                                    ? formattedBalance
+                                                    : totalAmount}
+                                            </Text>
+                                        </HStack>
+                                    )}
+                                    {selectedPaymentMethods.useCard && (
+                                        <HStack justifyContent="space-between">
+                                            <Text
+                                                color="$gray800"
+                                                fontSize={17}
+                                            >
+                                                Cartão de crédito
+                                            </Text>
+                                            <Text
+                                                fontFamily="$jakartHeading"
+                                                color="#000"
+                                                fontSize={18}
+                                            >
+                                                R$ {totalAmount}
+                                            </Text>
+                                        </HStack>
+                                    )}
+                                    {selectedPaymentMethods.cardId && (
+                                        <HStack justifyContent="space-between">
+                                            <Text
+                                                fontFamily="novaBody"
+                                                lineHeight={22}
+                                                color="$gray400"
+                                                fontSize={16}
+                                            >
+                                                {
+                                                    paymentMethodsData?.paymentMethods.find(
+                                                        (method) =>
+                                                            method.id ===
+                                                            selectedPaymentMethods.cardId,
+                                                    )?.cardBrand
+                                                }{" "}
+                                                ••••
+                                                {
+                                                    paymentMethodsData?.paymentMethods.find(
+                                                        (method) =>
+                                                            method.id ===
+                                                            selectedPaymentMethods.cardId,
+                                                    )?.last4
+                                                }
+                                            </Text>
+                                            <Text
+                                                fontFamily="novaBody"
+                                                lineHeight={22}
+                                                color="$gray400"
+                                                fontSize={14}
+                                            >
+                                                {selectedInstallments}x de R${" "}
+                                                {(
+                                                    parseFloat(
+                                                        totalAmount.replace(
+                                                            ",",
+                                                            ".",
+                                                        ),
+                                                    ) / selectedInstallments
+                                                )
+                                                    .toFixed(2)
+                                                    .replace(".", ",")}{" "}
+                                                sem juros
+                                            </Text>
+                                        </HStack>
+                                    )}
                                 </VStack>
                             </VStack>
                             <Divider mb="$2" bgColor="$gray200" />

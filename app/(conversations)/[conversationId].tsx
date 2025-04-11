@@ -37,6 +37,8 @@ import { Confirmation } from "@/components/payment/confirmation";
 import { BaseContainer } from "@/components/BaseContainer";
 import { GoBack } from "@/components/utils/GoBack";
 
+import { formatCentsToMoney } from "@/utils/money";
+
 export type PaymentItems = {
     name: string;
     description?: string;
@@ -87,7 +89,7 @@ const ChatsScreen = () => {
             ...prev,
             {
                 name: "Resposta",
-                amount: 1000,
+                amount: (contactConversation?.contact.price ?? 10000) * 0.1,
                 quantity: need ? 1 : 0,
             },
         ]);
@@ -120,6 +122,9 @@ const ChatsScreen = () => {
 
     useEffect(() => {
         const messages = contactConversation?.messages ?? [];
+        const priceSettings =
+            contactConversation?.contactSettings?.priceSettings;
+        const basePrice = contactConversation?.contact.price ?? 10000;
 
         markMessagesAsRead({ conversationId });
 
@@ -136,10 +141,25 @@ const ChatsScreen = () => {
                     message.deliveredAt === null,
             )
         ) {
+            const calculateMediaAmount = (
+                type: "image" | "video" | "document",
+            ) => {
+                if (!priceSettings) return basePrice * 0.1;
+
+                const percentage =
+                    type === "image"
+                        ? priceSettings.imagePercentage
+                        : type === "video"
+                          ? priceSettings.videoPercentage
+                          : priceSettings.attachmentPercentage;
+
+                return Math.round(basePrice * (1 + percentage / 100));
+            };
+
             setPaymentItems([
                 {
                     name: "Mensagem",
-                    amount: 10000,
+                    amount: basePrice,
                     quantity: 1,
                 },
                 ...messages.slice(1).map((message) => ({
@@ -148,7 +168,13 @@ const ChatsScreen = () => {
                         : message.image
                           ? "Imagem"
                           : "Vídeo",
-                    amount: 1000,
+                    amount: calculateMediaAmount(
+                        message.document
+                            ? "document"
+                            : message.image
+                              ? "image"
+                              : "video",
+                    ),
                     quantity: 1,
                 })),
             ]);
@@ -229,7 +255,7 @@ const ChatsScreen = () => {
                                     fontFamily="$arialHeading"
                                     color="$black"
                                 >
-                                    R$ {contact.price}
+                                    {formatCentsToMoney(contact.price)}
                                 </Text>
                             </VStack>
                         </Fragment>
@@ -245,8 +271,15 @@ const ChatsScreen = () => {
                         conversationId={conversationId}
                         recipientSettings={{
                             chatSettings:
-                                contactConversation?.contactChatSettings ?? {},
+                                contactConversation?.contactSettings
+                                    ?.chatSettings ?? {},
+                            priceSettings:
+                                contactConversation?.contactSettings
+                                    ?.priceSettings ?? {},
                         }}
+                        contactPrice={
+                            contactConversation?.contact.price ?? 10000
+                        }
                     />
                 ) : (
                     <VStack flex={1}>

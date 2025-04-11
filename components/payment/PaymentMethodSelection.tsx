@@ -8,6 +8,8 @@ import Wallet from "@/assets/icons/appIcons/wallet.svg";
 import Card from "@/assets/icons/appIcons/newCard.svg";
 import Pix from "@/assets/icons/appIcons/pix.svg";
 
+import { toast } from "burnt";
+
 type PaymentMethodSelectionProps = {
     totalAmount: string;
     onMethodsSelected: (methods: PaymentMethods) => void;
@@ -45,7 +47,8 @@ export const PaymentMethodSelection = ({
 
     const canUseBalance = balance && balance > 0;
     const isBalanceEnough = balance && balance >= totalAmountNumber;
-    const isBalanceDisabled = !!(!canUseBalance || isBalanceEnough);
+
+    const isBalanceDisabled = !!(!canUseBalance || !isBalanceEnough);
 
     const handleMethodSelection = (method: keyof PaymentMethods) => {
         const newMethods = { ...selectedMethods };
@@ -54,7 +57,14 @@ export const PaymentMethodSelection = ({
             if (method === "balance") {
                 newMethods.balance = !newMethods.balance;
             } else {
-                return;
+                if (newMethods.balance) {
+                    toast({
+                        title: "Saldo da carteira é suficiente",
+                        duration: 3000,
+                        from: "bottom",
+                        haptic: "warning",
+                    });
+                }
             }
         } else {
             if (method === "balance") {
@@ -139,9 +149,7 @@ export const PaymentMethodSelection = ({
 
                 <Pressable
                     onPress={() => {
-                        if (!isBalanceEnough) {
-                            handleMethodSelection("useCard");
-                        }
+                        handleMethodSelection("useCard");
                     }}
                     bgColor="white"
                     p="$4"
@@ -150,7 +158,6 @@ export const PaymentMethodSelection = ({
                     borderColor={
                         selectedMethods.useCard ? "$primaryDefault" : "$gray200"
                     }
-                    opacity={isBalanceEnough ? 0.5 : 1}
                 >
                     <HStack alignItems="center" height={50} gap="$3">
                         <Card width={22} height={22} />
@@ -167,7 +174,14 @@ export const PaymentMethodSelection = ({
                 </Pressable>
 
                 <Pressable
-                    onPress={() => {}}
+                    onPress={() => {
+                        toast({
+                            title: "Pix não disponível",
+                            duration: 3000,
+                            from: "bottom",
+                            haptic: "warning",
+                        });
+                    }}
                     bgColor="white"
                     p="$4"
                     rounded="$xl"

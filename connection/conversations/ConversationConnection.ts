@@ -50,7 +50,18 @@ export type MessagesPayload = {
     isFinished: boolean;
     priority: ConversationPriority;
     needReply: boolean;
-    contactChatSettings: Record<string, any>;
+    contactSettings: {
+        chatSettings: {
+            files: boolean;
+            images: boolean;
+            videos: boolean;
+        };
+        priceSettings: {
+            attachmentPercentage: number;
+            videoPercentage: number;
+            imagePercentage: number;
+        };
+    };
 };
 
 export type ConversationsResponse = {

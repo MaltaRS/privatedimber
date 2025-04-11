@@ -69,7 +69,7 @@ export default function ConfigDefinedValueMsgScreen() {
             const updatePayload = {
                 priceSettings: {
                     basePrice: values.basePrice
-                        ? Number(values.basePrice) * 100
+                        ? Number(values.basePrice)
                         : 10000,
                     attachmentPercentage: values.attachmentPercentage
                         ? Number(values.attachmentPercentage)

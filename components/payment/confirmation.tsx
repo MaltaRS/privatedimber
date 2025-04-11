@@ -537,7 +537,7 @@ export const Confirmation = ({
                                             >
                                                 <Text
                                                     color="$gray700"
-                                                    fontSize={17}
+                                                    fontSize={18}
                                                 >
                                                     {item.name}
                                                 </Text>
@@ -561,7 +561,7 @@ export const Confirmation = ({
                                         justifyContent="space-between"
                                         mt="$1"
                                     >
-                                        <Text color="$gray700" fontSize={17}>
+                                        <Text color="$gray700" fontSize={18}>
                                             Valor total
                                         </Text>
                                         <Text
@@ -590,8 +590,7 @@ export const Confirmation = ({
                                             <Text
                                                 fontFamily="novaBody"
                                                 lineHeight={22}
-                                                color="$gray400"
-                                                fontSize={16}
+                                                fontSize={18}
                                             >
                                                 Saldo da carteira
                                             </Text>
@@ -712,9 +711,10 @@ export const Confirmation = ({
                 transactionId={
                     transactionId ?? "Id da transação não encontrado"
                 }
-                cardBrand={transactionInfo.cardBrand}
-                cardLast4={transactionInfo.last4}
-                installments={transactionInfo.installments}
+                selectedPaymentMethods={selectedPaymentMethods}
+                paymentMethodsData={paymentMethodsData}
+                formattedBalance={formattedBalance}
+                selectedInstallments={selectedInstallments}
                 successfullAt={transactionInfo.successfullAt}
             />
         </Fragment>

@@ -58,8 +58,10 @@ type SendMessageFormProps = {
     }: SendMessageParams) => void;
     setFormActive: (value: boolean) => void;
     conversationId: string;
+    contactPrice: number;
     recipientSettings?: {
         chatSettings: Record<string, any>;
+        priceSettings: Record<string, any>;
     };
 };
 
@@ -103,6 +105,7 @@ export const SendMessageForm = ({
     setFormActive,
     conversationId,
     recipientSettings,
+    contactPrice,
 }: SendMessageFormProps) => {
     const {
         control,
@@ -239,6 +242,37 @@ export const SendMessageForm = ({
     };
 
     const HandleSendMessage = async (data: SendMessageData) => {
+        const priceSettings = recipientSettings?.priceSettings;
+        if (!priceSettings) {
+            alert("Configurações de preço não encontradas.");
+            return;
+        }
+
+        const { imagePercentage, videoPercentage, attachmentPercentage } =
+            priceSettings;
+        const basePrice = contactPrice ?? 10000;
+
+        if (imagePercentage < 0 || imagePercentage > 100) {
+            alert(
+                "Porcentagem para imagens inválida. Deve estar entre 0 e 100.",
+            );
+            return;
+        }
+
+        if (videoPercentage < 0 || videoPercentage > 100) {
+            alert(
+                "Porcentagem para vídeos inválida. Deve estar entre 0 e 100.",
+            );
+            return;
+        }
+
+        if (attachmentPercentage < 0 || attachmentPercentage > 100) {
+            alert(
+                "Porcentagem para documentos inválida. Deve estar entre 0 e 100.",
+            );
+            return;
+        }
+
         sendMessage({
             conversationId,
             content: `*${data.title}*\n\n${data.content}`,
@@ -301,7 +335,9 @@ export const SendMessageForm = ({
                               previewImagesToSend.length > 1
                                   ? "Imagens"
                                   : "Imagem",
-                          amount: previewImagesToSend.length * 1000,
+                          amount: Math.round(
+                              basePrice * (1 + imagePercentage / 100),
+                          ),
                           quantity: previewImagesToSend.length,
                       },
                   ]
@@ -313,7 +349,9 @@ export const SendMessageForm = ({
                               previewDocumentsToSend.length > 1
                                   ? "Documentos"
                                   : "Documento",
-                          amount: previewDocumentsToSend.length * 1000,
+                          amount: Math.round(
+                              basePrice * (1 + attachmentPercentage / 100),
+                          ),
                           quantity: previewDocumentsToSend.length,
                       },
                   ]
@@ -325,7 +363,9 @@ export const SendMessageForm = ({
                               previewVideosToSend.length > 1
                                   ? "Vídeos"
                                   : "Vídeo",
-                          amount: previewVideosToSend.length * 1000,
+                          amount: Math.round(
+                              basePrice * (1 + videoPercentage / 100),
+                          ),
                           quantity: previewVideosToSend.length,
                       },
                   ]
