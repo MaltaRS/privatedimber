@@ -413,9 +413,28 @@ export const SendMessageForm = ({
                                 fontFamily="$arialBody"
                                 lineHeight={24}
                             >
-                                Para incluir um arquivo (PDF ou documento) na
-                                sua mensagem, será cobrado um valor adicional de
-                                <Text fontWeight="$bold"> 10% </Text>
+                                Para incluir um(a) {activePermissionNeededText}{" "}
+                                na sua mensagem, será cobrado um valor adicional
+                                de
+                                <Text fontWeight="$bold">
+                                    {permissionFor && permissionFor.length > 0
+                                        ? permissionFor[
+                                              permissionFor.length - 1
+                                          ] === "document"
+                                            ? (recipientSettings?.priceSettings
+                                                  ?.attachmentPercentage ?? 10)
+                                            : permissionFor[
+                                                    permissionFor.length - 1
+                                                ] === "image"
+                                              ? (recipientSettings
+                                                    ?.priceSettings
+                                                    ?.imagePercentage ?? 10)
+                                              : (recipientSettings
+                                                    ?.priceSettings
+                                                    ?.videoPercentage ?? 10)
+                                        : 10}
+                                    %
+                                </Text>
                                 sobre o valor original. Você poderá excluir o
                                 arquivo antes do envio da mensagem, se
                                 necessário. Deseja continuar?

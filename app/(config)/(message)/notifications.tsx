@@ -12,24 +12,24 @@ const ConfigNotifications = () => {
     const { settings, updateSettings } = useSettings();
     const [isInitialLoading, setIsInitialLoading] = useState(true);
     const [localSettings, setLocalSettings] = useState({
-        emailNotifications: true,
-        pushNotifications: true,
         messageNotifications: true,
         paymentNotifications: true,
         supportNotifications: true,
+        messageSolicitationNotifications: true,
     });
 
     useEffect(() => {
         if (settings) {
             setLocalSettings({
-                emailNotifications: settings.emailNotifications,
-                pushNotifications: settings.pushNotifications,
                 messageNotifications:
                     settings.customSettings?.notifications?.messages ?? true,
                 paymentNotifications:
                     settings.customSettings?.notifications?.payments ?? true,
                 supportNotifications:
                     settings.customSettings?.notifications?.support ?? true,
+                messageSolicitationNotifications:
+                    settings.customSettings?.notifications
+                        ?.messageSolicitation ?? true,
             });
             setIsInitialLoading(false);
         }
@@ -40,8 +40,6 @@ const ConfigNotifications = () => {
         setLocalSettings(newSettings);
 
         const updatePayload = {
-            emailNotifications: newSettings.emailNotifications,
-            pushNotifications: newSettings.pushNotifications,
             customSettings: {
                 ...settings?.customSettings,
                 notifications: {
@@ -49,6 +47,8 @@ const ConfigNotifications = () => {
                     messages: newSettings.messageNotifications,
                     payments: newSettings.paymentNotifications,
                     support: newSettings.supportNotifications,
+                    messageSolicitation:
+                        newSettings.messageSolicitationNotifications,
                 },
             },
         };
@@ -157,10 +157,10 @@ const ConfigNotifications = () => {
                                     items={[
                                         {
                                             title: "Solicitação de mensagem",
-                                            value: localSettings.emailNotifications,
+                                            value: localSettings.messageSolicitationNotifications,
                                             onToggle: (value) =>
                                                 handleToggle(
-                                                    "emailNotifications",
+                                                    "messageSolicitationNotifications",
                                                     value,
                                                 ),
                                         },

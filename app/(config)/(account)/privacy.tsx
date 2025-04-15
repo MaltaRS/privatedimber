@@ -1,15 +1,19 @@
 import { useState, useEffect, Fragment } from "react";
-import { VStack, Text } from "@/gluestackComponents";
+import { VStack } from "@/gluestackComponents";
 
-import HeaderContainer from "@/components/HeaderContainer";
+import { useSocket } from "@/Context/SocketProvider";
+
+import { useSettings } from "@/hooks/SettingsHook";
+
 import { ConfigCardSwitch } from "@/components/tabs/config/configCardSwitch";
 import { ConfigCard } from "@/components/tabs/config/configCard";
-import { BaseContainer } from "@/components/BaseContainer";
-import { useSettings } from "@/hooks/SettingsHook";
 import { SkeletonBox } from "@/components/utils/SkeletonBox";
+import HeaderContainer from "@/components/HeaderContainer";
+import { BaseContainer } from "@/components/BaseContainer";
 
 const PrivacyScreen = () => {
     const { settings, updateSettings } = useSettings();
+    const { socket } = useSocket();
     const [isInitialLoading, setIsInitialLoading] = useState(true);
     const [localSettings, setLocalSettings] = useState({
         showOnline: true,
@@ -39,6 +43,10 @@ const PrivacyScreen = () => {
         await updateSettings({
             privacySettings: newSettings,
         });
+
+        if (key === "showOnline" && socket) {
+            socket.emit("updateOnlineStatus", { showOnlineStatus: value });
+        }
     };
 
     const LoadingSkeleton = () => (
