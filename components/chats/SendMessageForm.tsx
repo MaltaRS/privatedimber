@@ -336,7 +336,7 @@ export const SendMessageForm = ({
                                   ? "Imagens"
                                   : "Imagem",
                           amount: Math.round(
-                              basePrice * (1 + imagePercentage / 100),
+                              basePrice * (0 + imagePercentage / 100),
                           ),
                           quantity: previewImagesToSend.length,
                       },
@@ -350,7 +350,7 @@ export const SendMessageForm = ({
                                   ? "Documentos"
                                   : "Documento",
                           amount: Math.round(
-                              basePrice * (1 + attachmentPercentage / 100),
+                              basePrice * (0 + attachmentPercentage / 100),
                           ),
                           quantity: previewDocumentsToSend.length,
                       },
@@ -364,7 +364,7 @@ export const SendMessageForm = ({
                                   ? "Vídeos"
                                   : "Vídeo",
                           amount: Math.round(
-                              basePrice * (1 + videoPercentage / 100),
+                              basePrice * (0 + videoPercentage / 100),
                           ),
                           quantity: previewVideosToSend.length,
                       },
