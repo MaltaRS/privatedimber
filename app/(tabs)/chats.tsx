@@ -40,8 +40,8 @@ import { CircleUserRound, Search, X } from "lucide-react-native";
 
 import { DeleteConversation } from "@/components/tabs/conversations/DeleteConversation";
 import { ClearConversation } from "@/components/tabs/conversations/ClearConversation";
-import { BlockUser } from "@/components/tabs/conversations/BlockUser";
 import { Category, CategoryTabs } from "@/components/tabs/explore/CategoryTabs";
+import { BlockUser } from "@/components/tabs/conversations/BlockUser";
 import { BaseContainer } from "@/components/BaseContainer";
 import { ChatCard } from "@/components/chats/ChatCard";
 import { MainTitle } from "@/components/MainTitle";
@@ -186,12 +186,15 @@ const ChatsScreen = () => {
                                     Number(item.participant.id),
                                 );
 
+                                console.log(item.participant);
+
                                 return (
                                     <ChatCard
                                         chat={item}
                                         name={item.participant.name}
                                         icon={item.participant.icon}
                                         isOnline={isOnline}
+                                        isCreator={item.participant.isCreator}
                                         isProfessional={
                                             user?.type === "PROFESSIONAL"
                                         }

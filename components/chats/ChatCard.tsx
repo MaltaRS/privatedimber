@@ -1,4 +1,4 @@
-import React from "react";
+import { Fragment } from "react";
 
 import { useRouter } from "expo-router";
 
@@ -27,7 +27,6 @@ import { MessageText } from "./MessageText";
 import Read from "@/assets/icons/appIcons/read.svg";
 import Camera from "@/assets/icons/appIcons/camera.svg";
 import ImageSquare from "@/assets/icons/appIcons/imageSquare.svg";
-import ArrowLeft from "@/assets/icons/appIcons/arrowLeft.svg";
 
 import { Colors } from "@/constants/Colors";
 
@@ -40,6 +39,7 @@ export type ChatCardProps = {
     chat: Conversation;
     isOnline: boolean;
     isProfessional: boolean;
+    isCreator: boolean;
     onLongPress: () => void;
 };
 
@@ -49,6 +49,7 @@ export const ChatCard = ({
     chat,
     isOnline,
     isProfessional,
+    isCreator,
     onLongPress,
 }: ChatCardProps) => {
     const router = useRouter();
@@ -107,7 +108,7 @@ export const ChatCard = ({
                 </Avatar>
                 <VStack flex={1}>
                     <Text fontFamily="$arialBody" size="lg" color="#000">
-                        {!isProfessional
+                        {!isProfessional || isCreator
                             ? name
                             : chat.paidPrice > 0
                               ? formatCentsToMoney(chat.paidPrice)
@@ -115,7 +116,7 @@ export const ChatCard = ({
                     </Text>
                     <HStack alignItems="center">
                         {newMessages.length > 1 ? (
-                            <>
+                            <Fragment>
                                 <Box
                                     width={5}
                                     height={5}
@@ -130,9 +131,9 @@ export const ChatCard = ({
                                 >
                                     {newMessages.length} novas mensagens
                                 </Text>
-                            </>
+                            </Fragment>
                         ) : lastMessage.image ? (
-                            <>
+                            <Fragment>
                                 <ImageSquare
                                     width={14}
                                     height={14}
@@ -146,9 +147,9 @@ export const ChatCard = ({
                                 >
                                     Imagem
                                 </Text>
-                            </>
+                            </Fragment>
                         ) : lastMessage.video ? (
-                            <>
+                            <Fragment>
                                 <Camera
                                     width={16}
                                     height={16}
@@ -162,9 +163,9 @@ export const ChatCard = ({
                                 >
                                     Vídeo
                                 </Text>
-                            </>
+                            </Fragment>
                         ) : lastMessage.document ? (
-                            <>
+                            <Fragment>
                                 <Paperclip size={16} color="#6B7280" />
                                 <Text
                                     ml="$1"
@@ -174,9 +175,9 @@ export const ChatCard = ({
                                 >
                                     Documento
                                 </Text>
-                            </>
+                            </Fragment>
                         ) : (
-                            <>
+                            <Fragment>
                                 {lastMessageRead && (
                                     <Read
                                         width={16}
@@ -197,7 +198,7 @@ export const ChatCard = ({
                                     preview
                                     previewRead={lastMessageRead}
                                 />
-                            </>
+                            </Fragment>
                         )}
                     </HStack>
                 </VStack>

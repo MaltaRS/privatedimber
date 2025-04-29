@@ -11,6 +11,7 @@ export type Conversation = {
         email: string;
         icon: string | null;
         verifiedAt: string | null;
+        isCreator: boolean;
     };
     paidPrice: number;
     isPresenting: boolean;
