@@ -121,18 +121,13 @@ const InterestsScreen = () => {
                                             : "$gray400"
                                     }
                                     borderRadius="$xl"
-                                    bg={
-                                        selectedInterests.includes(interest)
-                                            ? "$primaryDefault"
-                                            : "transparent"
-                                    }
                                     justifyContent="flex-end"
                                 >
                                     <Text
-                                        fontSize={17}
+                                        fontSize={19}
                                         color={
                                             selectedInterests.includes(interest)
-                                                ? "$white"
+                                                ? "$primaryDefault"
                                                 : "$gray600"
                                         }
                                         textAlign="left"

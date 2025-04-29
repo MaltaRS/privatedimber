@@ -154,7 +154,12 @@ export default function ProfileScreen() {
                 </HStack>
 
                 <VStack mt="$4">
-                    <Text fontFamily="$novaBody" fontSize="$md" lineHeight={20}>
+                    <Text
+                        fontFamily="$novaBody"
+                        fontSize={16.5}
+                        color="$gray900"
+                        lineHeight={24}
+                    >
                         {validatedUser?.bio ? validatedUser.bio : "Sem bio"}
                     </Text>
                 </VStack>
@@ -204,7 +209,7 @@ export default function ProfileScreen() {
             <VStack>
                 <VStack mt="$6">
                     <Text
-                        fontSize={19}
+                        fontSize={20.5}
                         fontFamily="$medium"
                         color="#15161E"
                         lineHeight={22}
@@ -216,7 +221,8 @@ export default function ProfileScreen() {
                 <VStack width="100%">
                     <Text
                         fontFamily="$novaMedium"
-                        fontSize={16}
+                        fontSize={18}
+                        color="$gray900"
                         textAlign="justify"
                         mt="$2"
                     >
@@ -247,7 +253,7 @@ export default function ProfileScreen() {
 
                 <VStack my="$4">
                     <Text
-                        fontSize={19}
+                        fontSize={20.5}
                         fontFamily="$medium"
                         color="#15161E"
                         lineHeight={22}
@@ -274,7 +280,7 @@ export default function ProfileScreen() {
 
                 <VStack my="$4">
                     <Text
-                        fontSize={19}
+                        fontSize={20.5}
                         fontFamily="$medium"
                         color="#15161E"
                         lineHeight={22}
@@ -321,7 +327,7 @@ export default function ProfileScreen() {
             <VStack>
                 <VStack my="$6">
                     <Text
-                        fontSize={19}
+                        fontSize={20.5}
                         fontFamily="$medium"
                         color="#15161E"
                         lineHeight={22}
