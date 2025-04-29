@@ -155,10 +155,10 @@ const RootLayout = () => {
                 {/* withdraw */}
                 <Stack.Screen name="(wallet)/(withdraw)/index" />
 
-                {/* Profile - TODO: Move to (profile) */}
-                <Stack.Screen name="myprofile" />
-                <Stack.Screen name="profileusermsg" />
-                <Stack.Screen name="editmyprofile" />
+                {/* Profile */}
+                <Stack.Screen name="(profile)/myprofile" />
+                <Stack.Screen name="(profile)/profileusermsg" />
+                <Stack.Screen name="(profile)/editmyprofile" />
                 {/* <Stack.Screen name="editcategorysmyprofile" />
                 <Stack.Screen name="editsocialinfosmyprofile" />
                 <Stack.Screen name="editmyinterestsprofile" /> */}

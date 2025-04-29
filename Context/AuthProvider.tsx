@@ -12,19 +12,27 @@ import { useSocket } from "./SocketProvider";
 import { fetchUser } from "@/connection/auth/UserConnection";
 
 export type User = {
-    id: string;
+    id: number;
     uuid: string;
+    name: string;
     username: string;
     email: string;
-    name: string;
-    bio: string;
-    icon: string;
-    type: "REGULAR" | "PROFESSIONAL";
-    price: number;
+    icon: string | null;
+    type: string;
+    bio: string | null;
+    about: string | null;
+    links: {
+        name: string;
+        icon: string;
+        color: string;
+        url: string;
+    }[];
+    tags: string[];
+    interests: string[];
+    verifiedAt: string | null;
     createdAt: string;
-    defaultPaymentMethodLast4?: string;
-    defaultPaymentMethodBrand?: string;
-    verifiedAt?: string;
+    lastAccessAt: string;
+    price: number | null;
 };
 
 type AuthContextData = {
@@ -42,12 +50,10 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({
     children,
 }) => {
     const router = useRouter();
+    const queryClient = useQueryClient();
+    const { socket, recreate } = useSocket();
 
     const [isSigningOut, setIsSigningOut] = useState(false);
-
-    const queryClient = useQueryClient();
-
-    const { socket, recreate } = useSocket();
 
     const { data: user, isLoading } = useQuery<User | null>({
         queryKey: ["authenticatedUser"],

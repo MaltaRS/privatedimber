@@ -8,6 +8,22 @@ type FetchUserByIdResponse = {
     isFavorited: boolean;
 };
 
+type UpdateProfileData = {
+    name?: string;
+    username?: string;
+    bio?: string;
+    about?: string;
+    icon?: string;
+    tags?: string[];
+    interests?: string[];
+    links?: {
+        name: string;
+        icon: string;
+        color: string;
+        url: string;
+    }[];
+};
+
 export const fetchUser = async (): Promise<User | null> => {
     try {
         await setAuthorizationHeader();
@@ -54,6 +70,19 @@ export const updateProfileImage = async (icon: string): Promise<boolean> => {
         return true;
     } catch (error) {
         console.error("Error updating profile image:", error);
+        return false;
+    }
+};
+
+export const updateProfile = async (
+    data: UpdateProfileData,
+): Promise<boolean> => {
+    try {
+        await setAuthorizationHeader();
+        await api.put("/user", data);
+        return true;
+    } catch (error) {
+        console.error("Error updating profile:", error);
         return false;
     }
 };

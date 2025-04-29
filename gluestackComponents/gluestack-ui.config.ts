@@ -569,7 +569,7 @@ export const gluestackUIConfig = createConfig({
             medium: "NovaMedium",
             jakartMedium: "Inter_500Medium",
             body: "Inter_400Regular",
-            novaBody: "NovaRegular",
+            novaBody: "Inter_400Regular",
             arialBody: "Arial",
         },
         fontSizes: {

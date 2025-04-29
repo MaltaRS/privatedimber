@@ -1,3 +1,5 @@
+import { Fragment } from "react";
+
 import {
     AlertDialog,
     AlertDialogBackdrop,
@@ -9,6 +11,7 @@ import {
     Button,
     ButtonGroup,
     ButtonText,
+    HStack,
     Text,
 } from "@/gluestackComponents";
 
@@ -33,30 +36,60 @@ export const ConfirmationModal = ({
 }: ConfirmationModalProps) => {
     return (
         <AlertDialog isOpen={isOpen} onClose={onClose}>
-            <AlertDialogBackdrop backgroundColor="#000" />
-            <AlertDialogContent bgColor="$gray100">
+            <AlertDialogBackdrop backgroundColor="rgba(0, 0, 0, 0.5)" />
+            <AlertDialogContent
+                bgColor="$white"
+                borderRadius="$xl"
+                shadowColor="$black"
+                shadowOffset={{ width: 0, height: 2 }}
+                shadowOpacity={0.25}
+                shadowRadius={3.84}
+                elevation={5}
+            >
                 <AlertDialogHeader alignItems="center">
-                    <Text textAlign="center" fontSize="$lg" fontWeight="bold">
-                        {title}
-                    </Text>
-                    <AlertDialogCloseButton>
-                        <X size={20} color="#000" />
-                    </AlertDialogCloseButton>
+                    <HStack
+                        alignItems="center"
+                        justifyContent="space-between"
+                        width="100%"
+                    >
+                        <Text fontSize={21} fontWeight="bold" color="$black">
+                            {title}
+                        </Text>
+                        <AlertDialogCloseButton
+                            bg="$gray100"
+                            borderRadius="$full"
+                        >
+                            <X size={20} color="#000" />
+                        </AlertDialogCloseButton>
+                    </HStack>
                 </AlertDialogHeader>
-                <AlertDialogBody mb="$2">
-                    <Text textAlign="center">{message}</Text>
+                <AlertDialogBody mb="$1">
+                    <Text
+                        textAlign="center"
+                        fontSize={17}
+                        color="$gray700"
+                        lineHeight="$xl"
+                    >
+                        {message}
+                    </Text>
                 </AlertDialogBody>
                 <AlertDialogFooter>
-                    <ButtonGroup gap="$4">
+                    <ButtonGroup gap="$4" width="100%">
                         {!invert ? (
-                            <>
+                            <Fragment>
                                 <Button
                                     flex={1}
                                     action="negative"
                                     rounded="$full"
                                     onPress={onClose}
+                                    bg="$gray200"
+                                    _pressed={{ bg: "$gray300" }}
                                 >
-                                    <ButtonText textAlign="center">
+                                    <ButtonText
+                                        textAlign="center"
+                                        color="$gray700"
+                                        fontWeight="bold"
+                                    >
                                         Cancelar
                                     </ButtonText>
                                 </Button>
@@ -64,30 +97,36 @@ export const ConfirmationModal = ({
                                     flex={1}
                                     bg="$primaryDefault"
                                     rounded="$full"
-                                    action="negative"
                                     onPress={() => {
                                         onConfirm();
                                         onClose();
                                     }}
+                                    _pressed={{ bg: "$primary600" }}
                                 >
-                                    <ButtonText textAlign="center">
+                                    <ButtonText
+                                        textAlign="center"
+                                        fontWeight="bold"
+                                    >
                                         Sim
                                     </ButtonText>
                                 </Button>
-                            </>
+                            </Fragment>
                         ) : (
-                            <>
+                            <Fragment>
                                 <Button
                                     flex={1}
                                     bg="$primaryDefault"
                                     rounded="$full"
-                                    action="negative"
                                     onPress={() => {
                                         onConfirm();
                                         onClose();
                                     }}
+                                    _pressed={{ bg: "$primary600" }}
                                 >
-                                    <ButtonText textAlign="center">
+                                    <ButtonText
+                                        textAlign="center"
+                                        fontWeight="bold"
+                                    >
                                         Sim
                                     </ButtonText>
                                 </Button>
@@ -96,12 +135,18 @@ export const ConfirmationModal = ({
                                     action="negative"
                                     rounded="$full"
                                     onPress={onClose}
+                                    bg="$gray200"
+                                    _pressed={{ bg: "$gray300" }}
                                 >
-                                    <ButtonText textAlign="center">
+                                    <ButtonText
+                                        textAlign="center"
+                                        color="$gray700"
+                                        fontWeight="bold"
+                                    >
                                         Cancelar
                                     </ButtonText>
                                 </Button>
-                            </>
+                            </Fragment>
                         )}
                     </ButtonGroup>
                 </AlertDialogFooter>

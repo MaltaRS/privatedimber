@@ -28,6 +28,7 @@ const ConfigScreen = () => {
     const router = useRouter();
     const { user } = useAuth();
     const { signOut } = useGoogleAuth();
+
     const [modalVisible, setModalVisible] = useState(false);
 
     const handleSignOut = async () => {
@@ -77,7 +78,7 @@ const ConfigScreen = () => {
                             justifyContent="space-between"
                             elevation={2}
                             flexDirection="row"
-                            onPress={() => router.push("/myprofile")}
+                            onPress={() => router.push("/(profile)/myprofile")}
                         >
                             <HStack gap="$5" alignItems="center">
                                 <Avatar width={56} height={56}>

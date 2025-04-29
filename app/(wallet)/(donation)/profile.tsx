@@ -20,6 +20,7 @@ import { Button } from "@/components/ui/Button";
 import MaterialIcons from "@expo/vector-icons/MaterialIcons";
 
 import { useRouter } from "expo-router";
+import { TabButton } from "@/components/utils/TabButton";
 
 export default function ProfileInstituition() {
     const router = useRouter();
@@ -100,47 +101,6 @@ export default function ProfileInstituition() {
             </VStack>
         );
     };
-
-    const TabButton = ({
-        title,
-        isActive,
-        onPress,
-    }: {
-        title: string;
-        isActive: boolean;
-        onPress: () => void;
-    }) => (
-        <Pressable
-            onPress={onPress}
-            flex={1}
-            py="$2"
-            backgroundColor={isActive ? "$white" : "transparent"}
-            borderRadius="$full"
-            elevation={isActive ? 6 : 0}
-        >
-            <HStack space="sm" alignItems="center" justifyContent="center">
-                {isActive && (
-                    <View
-                        style={{
-                            width: 4,
-                            height: 4,
-                            borderRadius: 2,
-                            backgroundColor: "white",
-                        }}
-                    />
-                )}
-                <Text
-                    textAlign="center"
-                    fontSize={20}
-                    fontFamily="$novaTitle"
-                    lineHeight={24}
-                    color={isActive ? "$gray900" : "$gray500"}
-                >
-                    {title}
-                </Text>
-            </HStack>
-        </Pressable>
-    );
 
     const AboutSection = () => {
         return (

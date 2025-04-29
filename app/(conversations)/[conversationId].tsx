@@ -153,7 +153,7 @@ const ChatsScreen = () => {
                           ? priceSettings.videoPercentage
                           : priceSettings.attachmentPercentage;
 
-                return Math.round(basePrice * (1 + percentage / 100));
+                return Math.round(basePrice * (percentage / 100));
             };
 
             setPaymentItems([

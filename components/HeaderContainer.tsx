@@ -1,8 +1,4 @@
-import React from "react";
-
-import { TouchableOpacity } from "react-native";
-
-import { Box, HStack, Text } from "@/gluestackComponents";
+import { Box, HStack, Text, Pressable } from "@/gluestackComponents";
 
 import { useRouter } from "expo-router";
 
@@ -11,9 +7,10 @@ import { GoBack } from "@/components/utils/GoBack";
 type HeaderContainerProps = {
     title: string;
     showTitle?: boolean;
-    onBackPress?: () => void;
     namebuttontab?: string;
+    onBackPress?: () => void;
     onSave?: () => void;
+    isLoading?: boolean;
 };
 
 const HeaderContainer = ({
@@ -22,6 +19,7 @@ const HeaderContainer = ({
     namebuttontab,
     onSave,
     onBackPress,
+    isLoading = false,
 }: HeaderContainerProps) => {
     const router = useRouter();
 
@@ -34,7 +32,7 @@ const HeaderContainer = ({
         >
             <GoBack
                 onPress={onBackPress ? onBackPress : () => router.back()}
-                iconSize={23}
+                iconSize={22}
             />
 
             {showTitle && (
@@ -61,17 +59,25 @@ const HeaderContainer = ({
             )}
 
             {namebuttontab && (
-                <TouchableOpacity
-                    style={{ paddingHorizontal: 10, paddingVertical: 5 }}
+                <Pressable
+                    bg="$primaryDefault"
+                    rounded="$full"
+                    py={9}
+                    px="$4"
                     onPress={() => {
                         onSave && onSave();
-                        console.log(`${namebuttontab} pressionado`);
                     }}
+                    disabled={isLoading}
                 >
-                    <Text color="#00A8FF" fontSize={17}>
+                    <Text
+                        color="$white"
+                        fontFamily="$heading"
+                        fontWeight="$bold"
+                        size="md"
+                    >
                         {namebuttontab}
                     </Text>
-                </TouchableOpacity>
+                </Pressable>
             )}
         </HStack>
     );

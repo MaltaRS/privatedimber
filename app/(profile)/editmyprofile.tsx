@@ -25,8 +25,6 @@ import { useRouter } from "expo-router";
 
 import { useAuth } from "@/Context/AuthProvider";
 
-import { StatusBar } from "expo-status-bar";
-
 import * as ImagePicker from "expo-image-picker";
 
 import { useMutation, useQueryClient } from "@tanstack/react-query";
@@ -178,7 +176,7 @@ export default function EditMyProfileSocialLinks() {
     const handleSave = () => {
         console.log("Perfis salvos:", socialLinks);
         Alert.alert("Sucesso", "Suas redes sociais foram atualizadas!");
-        router.push("/myprofile");
+        router.push("/(profile)/myprofile");
     };
 
     return (
