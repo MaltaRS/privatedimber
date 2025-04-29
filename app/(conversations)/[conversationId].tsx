@@ -255,7 +255,7 @@ const ChatsScreen = () => {
                                     fontFamily="$arialHeading"
                                     color="$black"
                                 >
-                                    {formatCentsToMoney(contact.price)}
+                                    {formatCentsToMoney(contact.price ?? 10000)}
                                 </Text>
                             </VStack>
                         </Fragment>

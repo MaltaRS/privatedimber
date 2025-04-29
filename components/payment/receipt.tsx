@@ -14,8 +14,6 @@ import {
 
 import { Download } from "lucide-react-native";
 
-import { GoBack } from "../utils/GoBack";
-
 import DimberGrayLogo from "@/assets/icons/DimberLogoGray.svg";
 
 import { PaymentItems } from "@/app/(conversations)/[conversationId]";
@@ -23,9 +21,13 @@ import { PaymentItems } from "@/app/(conversations)/[conversationId]";
 import { User } from "@/Context/AuthProvider";
 
 import { Colors } from "@/constants/Colors";
-import { formatSuccessDate } from "@/utils/dateFormat";
+
 import { PaymentMethods } from "./PaymentMethodSelection";
+
 import { PaymentMethodsResponse } from "@/connection/wallet/WalletConnection";
+
+import { formatSuccessDate } from "@/utils/dateFormat";
+import { GoBack } from "../utils/GoBack";
 
 type ReceiptProps = {
     showReceipt: boolean;

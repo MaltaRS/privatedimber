@@ -26,15 +26,22 @@ import { updateProfile } from "@/connection/auth/UserConnection";
 
 import { useAuth } from "@/Context/AuthProvider";
 
+import Linkedin from "@/assets/icons/socialIcons/linkedin.svg";
+import Instagram from "@/assets/icons/socialIcons/instagram.svg";
+import Facebook from "@/assets/icons/socialIcons/facebook.svg";
+import Twitter from "@/assets/icons/socialIcons/x.svg";
+import Youtube from "@/assets/icons/socialIcons/youtube.svg";
+import Tiktok from "@/assets/icons/socialIcons/tiktok.svg";
+
 import { toast } from "burnt";
 
 const socialNetworks = [
-    { name: "Facebook", icon: "facebook", color: "#4267B2" },
-    { name: "Instagram", icon: "instagram", color: "#C13584" },
-    { name: "TikTok", icon: "music", color: "#000000" },
-    { name: "YouTube", icon: "youtube", color: "#FF0000" },
-    { name: "LinkedIn", icon: "linkedin", color: "#0077B5" },
-    { name: "Twitter", icon: "twitter", color: "#1DA1F2" },
+    { name: "Facebook", icon: Facebook, color: "#4267B2" },
+    { name: "Instagram", icon: Instagram, color: "#C13584" },
+    { name: "TikTok", icon: Tiktok, color: "#000000" },
+    { name: "YouTube", icon: Youtube, color: "#FF0000" },
+    { name: "LinkedIn", icon: Linkedin, color: "#0077B5" },
+    { name: "Twitter", icon: Twitter, color: "#1DA1F2" },
 ];
 
 const getBaseUrl = (socialName: string): string => {
@@ -62,8 +69,12 @@ const SocialScreen = () => {
     const queryClient = useQueryClient();
 
     const [socialLinks, setSocialLinks] = useState(
-        user?.links ||
-            socialNetworks.map((network) => ({ ...network, url: "" })),
+        socialNetworks.map((network) => ({
+            ...network,
+            url:
+                user?.links.find((link) => link.name === network.name)?.url ||
+                "",
+        })),
     );
 
     const { mutate: updateUserProfile, isPending } = useMutation({
@@ -99,8 +110,13 @@ const SocialScreen = () => {
             return;
         }
 
+        const links = validLinks.map((link) => ({
+            name: link.name,
+            url: link.url,
+        }));
+
         updateUserProfile({
-            links: validLinks,
+            links: links,
         });
     };
 
@@ -155,10 +171,9 @@ const SocialScreen = () => {
                                         pl="$3"
                                     >
                                         <InputIcon>
-                                            <Feather
-                                                name={social.icon as any}
-                                                size={24}
-                                                color={social.color}
+                                            <social.icon
+                                                width={23}
+                                                height={23}
                                             />
                                         </InputIcon>
                                     </InputSlot>

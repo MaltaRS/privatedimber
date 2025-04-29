@@ -1,6 +1,8 @@
 import { Fragment, useState } from "react";
-import { useLocalSearchParams, useRouter, Link } from "expo-router";
+
 import { Linking } from "react-native";
+
+import { useLocalSearchParams, useRouter } from "expo-router";
 
 import {
     Text,
@@ -14,22 +16,28 @@ import {
     Pressable,
 } from "@/gluestackComponents";
 
-import Feather from "@expo/vector-icons/Feather";
-
-import ProfileStatistics from "../../components/ProfileStatistics";
-import { BaseContainer } from "@/components/BaseContainer";
-import HeaderContainer from "../../components/HeaderContainer";
-
 import { useAuth, User } from "@/Context/AuthProvider";
 
 import { fetchUserById } from "@/connection/auth/UserConnection";
 
 import { useQuery } from "@tanstack/react-query";
 
-import { formatTime } from "@/utils/dateFormat";
+import { formatTime, formatLastAccess } from "@/utils/dateFormat";
 
+import MaterialIcons from "@expo/vector-icons/MaterialIcons";
+import Feather from "@expo/vector-icons/Feather";
+
+import { BaseContainer } from "@/components/BaseContainer";
+import ProfileStatistics from "@/components/ProfileStatistics";
+import HeaderContainer from "@/components/HeaderContainer";
 import { TabButton } from "@/components/utils/TabButton";
-import { MaterialIcons } from "@expo/vector-icons";
+
+import Linkedin from "@/assets/icons/socialIcons/linkedin.svg";
+import Instagram from "@/assets/icons/socialIcons/instagram.svg";
+import Facebook from "@/assets/icons/socialIcons/facebook.svg";
+import Twitter from "@/assets/icons/socialIcons/x.svg";
+import Youtube from "@/assets/icons/socialIcons/youtube.svg";
+import Tiktok from "@/assets/icons/socialIcons/tiktok.svg";
 
 const socialNetworks = [
     { name: "Facebook", icon: "facebook", color: "#4267B2" },
@@ -39,25 +47,6 @@ const socialNetworks = [
     { name: "LinkedIn", icon: "linkedin", color: "#0077B5" },
     { name: "Twitter", icon: "twitter", color: "#1DA1F2" },
 ];
-
-const getBaseUrl = (socialName: string): string => {
-    switch (socialName) {
-        case "Facebook":
-            return "https://www.facebook.com/";
-        case "Instagram":
-            return "https://www.instagram.com/";
-        case "TikTok":
-            return "https://www.tiktok.com/@";
-        case "YouTube":
-            return "https://www.youtube.com/@";
-        case "LinkedIn":
-            return "https://www.linkedin.com/in/";
-        case "Twitter":
-            return "https://x.com/";
-        default:
-            return "";
-    }
-};
 
 export default function ProfileScreen() {
     const { user } = useAuth();
@@ -133,13 +122,13 @@ export default function ProfileScreen() {
                                 {validatedUser?.lastAccessAt && (
                                     <Text
                                         fontFamily="$novaBody"
-                                        fontSize="$xs"
+                                        fontSize={12.5}
                                         textAlign="left"
                                         lineHeight={20}
-                                        color="$gray500"
+                                        color="$gray600"
                                     >
-                                        Ultima conexão ontem as{" "}
-                                        {formatTime(
+                                        Ultima conexão{" "}
+                                        {formatLastAccess(
                                             validatedUser?.lastAccessAt,
                                         )}
                                     </Text>
@@ -321,8 +310,6 @@ export default function ProfileScreen() {
     }: {
         validatedUser: User | null | undefined;
     }) => {
-        console.log(validatedUser);
-
         if (!validatedUser?.links?.length) return null;
 
         const handleSocialPress = (url: string) => {
@@ -342,12 +329,22 @@ export default function ProfileScreen() {
                     >
                         Social
                     </Text>
-                    <HStack mt="$6" flexWrap="wrap" gap="$4">
+                    <HStack mt="$4" flexWrap="wrap" gap="$4">
                         {validatedUser.links.map((link, index) => {
                             const social = socialNetworks.find(
                                 (s) => s.name === link.name,
                             );
                             if (!social) return null;
+
+                            const Icon =
+                                {
+                                    Facebook: Facebook,
+                                    Instagram: Instagram,
+                                    TikTok: Tiktok,
+                                    YouTube: Youtube,
+                                    LinkedIn: Linkedin,
+                                    Twitter: Twitter,
+                                }[social.name] ?? null;
 
                             return (
                                 <Pressable
@@ -358,14 +355,8 @@ export default function ProfileScreen() {
                                     borderRadius="$lg"
                                     alignItems="center"
                                     justifyContent="center"
-                                    width={50}
-                                    height={50}
                                 >
-                                    <Feather
-                                        name={social.icon as any}
-                                        size={24}
-                                        color={social.color}
-                                    />
+                                    {Icon && <Icon width={24} height={24} />}
                                 </Pressable>
                             );
                         })}

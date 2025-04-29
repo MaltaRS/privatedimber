@@ -12,7 +12,7 @@ import { useSocket } from "./SocketProvider";
 import { fetchUser } from "@/connection/auth/UserConnection";
 
 export type User = {
-    id: number;
+    id: string;
     uuid: string;
     name: string;
     username: string;
@@ -23,8 +23,6 @@ export type User = {
     about: string | null;
     links: {
         name: string;
-        icon: string;
-        color: string;
         url: string;
     }[];
     tags: string[];

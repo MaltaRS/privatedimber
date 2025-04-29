@@ -73,7 +73,7 @@ const EditProfileScreen = () => {
     const {
         control,
         handleSubmit,
-        formState: { errors },
+        formState: { errors, isDirty },
         watch,
     } = useForm<EditProfileData>({
         resolver: zodResolver(EditProfileSchema),
@@ -231,7 +231,11 @@ const EditProfileScreen = () => {
     };
 
     const handleBack = () => {
-        setIsBackModalOpen(true);
+        if (isDirty) {
+            setIsBackModalOpen(true);
+        } else {
+            router.back();
+        }
     };
 
     return (
