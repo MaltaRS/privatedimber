@@ -66,11 +66,22 @@ export default function ConfigDefinedValueMsgScreen() {
 
     const handleSave = async () => {
         try {
+            const basePrice = values.basePrice
+                ? Number(values.basePrice)
+                : 10000;
+
+            if (basePrice < 50) {
+                toast({
+                    title: "Erro",
+                    message: "O valor mínimo da base de preço é de R$ 0,50",
+                    haptic: "error",
+                });
+                return;
+            }
+
             const updatePayload = {
                 priceSettings: {
-                    basePrice: values.basePrice
-                        ? Number(values.basePrice)
-                        : 10000,
+                    basePrice: basePrice,
                     attachmentPercentage: values.attachmentPercentage
                         ? Number(values.attachmentPercentage)
                         : 10,
