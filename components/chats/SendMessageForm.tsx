@@ -135,9 +135,9 @@ export const SendMessageForm = ({
 
     const allowAttachments = recipientSettings?.chatSettings;
 
-    const canSendFiles = allowAttachments?.files ?? false;
-    const canSendImages = allowAttachments?.images ?? false;
-    const canSendVideos = allowAttachments?.videos ?? false;
+    const canSendFiles = allowAttachments?.files ?? true;
+    const canSendImages = allowAttachments?.images ?? true;
+    const canSendVideos = allowAttachments?.videos ?? true;
 
     const handleClose = () => {
         setNeedConfirmation(false);

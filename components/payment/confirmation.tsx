@@ -47,6 +47,7 @@ import {
 } from "./PaymentMethodSelection";
 
 import { CardSelection } from "./CardSelection";
+
 import { useBalance } from "@/providers/BalanceProvider";
 
 type ConfirmationProps = {
@@ -186,7 +187,8 @@ export const Confirmation = ({
                     )
                         ? transaction.statusHistory.find(
                               (e: { event: string; at: string }) =>
-                                  e.event === "payment_intent.succeeded",
+                                  e.event === "payment_intent.succeeded" ||
+                                  e.event === "balance_payment.succeeded",
                           )
                         : null;
 
@@ -237,7 +239,8 @@ export const Confirmation = ({
             }
         },
         onError: (err: any) => {
-            console.error("Erro ao criar Payment Intent:", err);
+            console.log(err.response.data);
+            console.error("Erro ao criar Payment Intent:", err.response.data);
             toast({
                 title: "Não foi possivel criar o pagamento!",
                 preset: "error",
