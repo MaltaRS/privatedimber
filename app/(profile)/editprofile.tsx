@@ -50,15 +50,24 @@ import {
 import { ConfirmationModal } from "@/components/ui/ConfirmationModal";
 import { ProfilePhotoSheet } from "@/components/ui/ProfilePhotoSheet";
 
-const EditProfileSchema = z.object({
-    name: z.string().min(1, "O nome é obrigatório"),
-    username: z.string().min(1, "O usuário é obrigatório"),
-    bio: z
-        .string()
-        .max(100, "A bio deve ter no máximo 100 caracteres")
-        .optional(),
-    about: z.string().optional(),
-});
+const EditProfileSchema = z
+    .object({
+        name: z.string().min(1, "O nome é obrigatório"),
+        username: z.string().min(1, "O usuário é obrigatório"),
+        bio: z
+            .string()
+            .max(100, "A bio deve ter no máximo 100 caracteres")
+            .optional(),
+        about: z.string().optional(),
+    })
+    .transform((data) => {
+        return {
+            name: data.name,
+            username: data.username.trim().toLocaleLowerCase(),
+            bio: data.bio,
+            about: data.about,
+        };
+    });
 
 type EditProfileData = z.infer<typeof EditProfileSchema>;
 
@@ -66,6 +75,7 @@ const EditProfileScreen = () => {
     const router = useRouter();
     const queryClient = useQueryClient();
     const { user } = useAuth();
+
     const [isSaveModalOpen, setIsSaveModalOpen] = useState(false);
     const [isBackModalOpen, setIsBackModalOpen] = useState(false);
     const [isPhotoSheetOpen, setIsPhotoSheetOpen] = useState(false);
@@ -74,6 +84,8 @@ const EditProfileScreen = () => {
         control,
         handleSubmit,
         formState: { errors, isDirty },
+        trigger,
+        setError,
         watch,
     } = useForm<EditProfileData>({
         resolver: zodResolver(EditProfileSchema),
@@ -100,11 +112,12 @@ const EditProfileScreen = () => {
                     queryKey: ["authenticatedUser"],
                 });
             },
-            onError: (error) => {
-                console.error(error);
+            onError: (error: any) => {
+                console.log(error.response.data);
+                console.error(error.response.data.message);
                 Alert.alert(
                     "Erro",
-                    "Não foi possível atualizar a imagem de perfil.",
+                    `Não foi possível atualizar a imagem de perfil. devido a: ${error.response.data.message}`,
                 );
             },
         });
@@ -119,9 +132,21 @@ const EditProfileScreen = () => {
                 });
                 router.back();
             },
-            onError: (error) => {
-                console.error(error);
-                Alert.alert("Erro", "Não foi possível atualizar o perfil.");
+            onError: (error: any) => {
+                console.error(error.response.data.message);
+
+                if (error.response.data.message === "Username já está em uso") {
+                    setError("username", {
+                        message: "Username já está em uso",
+                    });
+
+                    return;
+                }
+
+                Alert.alert(
+                    "Erro",
+                    `Não foi possível atualizar o perfil. erro: ${error.response.data.message}`,
+                );
             },
         });
 
@@ -220,14 +245,12 @@ const EditProfileScreen = () => {
     };
 
     const handleSave = async (data: EditProfileData) => {
-        await updateUserProfile({
+        updateUserProfile({
             name: data.name,
-            username: data.username,
+            username: data.username.trim().toLocaleLowerCase(),
             bio: data.bio,
             about: data.about,
         });
-
-        queryClient.invalidateQueries({ queryKey: ["authenticatedUser"] });
     };
 
     const handleBack = () => {
@@ -244,7 +267,13 @@ const EditProfileScreen = () => {
                 <HeaderContainer
                     title="Editar perfil"
                     namebuttontab="Salvar"
-                    onSave={() => setIsSaveModalOpen(true)}
+                    onSave={async () => {
+                        const isValid = await trigger();
+
+                        if (isValid) {
+                            setIsSaveModalOpen(true);
+                        }
+                    }}
                     onBackPress={handleBack}
                     isLoading={isUpdatingProfile}
                 />
@@ -275,7 +304,7 @@ const EditProfileScreen = () => {
                             onPress={() => setIsPhotoSheetOpen(true)}
                             disabled={isUploadingImage}
                         >
-                            {isUploadingImage ? (
+                            {isUploadingImage || isUpdatingImage ? (
                                 <ActivityIndicator size="small" color="white" />
                             ) : (
                                 <Pencil size={16} color="white" />
@@ -316,16 +345,28 @@ const EditProfileScreen = () => {
                                         borderWidth={1}
                                         borderRadius="$xl"
                                         isInvalid={!!errors.name}
+                                        $invalid-borderColor="$negative"
                                     >
                                         <InputField
                                             placeholder="Nome..."
                                             fontSize="$xl"
+                                            maxLength={50}
                                             value={value}
                                             onChangeText={onChange}
                                         />
                                     </Input>
                                 )}
                             />
+                            {errors.name?.message &&
+                                typeof errors.name.message === "string" && (
+                                    <Text
+                                        color="$negative"
+                                        fontSize="$md"
+                                        mt="$1"
+                                    >
+                                        {errors.name.message}
+                                    </Text>
+                                )}
                         </FormControl>
 
                         <FormControl>
@@ -350,16 +391,29 @@ const EditProfileScreen = () => {
                                         borderWidth={1}
                                         borderRadius="$xl"
                                         isInvalid={!!errors.username}
+                                        $invalid-borderColor="$negative"
                                     >
                                         <InputField
                                             placeholder="@"
                                             fontSize="$xl"
+                                            maxLength={30}
+                                            textTransform="lowercase"
                                             value={value}
                                             onChangeText={onChange}
                                         />
                                     </Input>
                                 )}
                             />
+                            {errors.username?.message &&
+                                typeof errors.username.message === "string" && (
+                                    <Text
+                                        color="$negative"
+                                        fontSize="$md"
+                                        mt="$1"
+                                    >
+                                        {errors.username.message}
+                                    </Text>
+                                )}
                         </FormControl>
 
                         <FormControl>

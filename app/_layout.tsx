@@ -157,7 +157,6 @@ const RootLayout = () => {
 
                 {/* Profile */}
                 <Stack.Screen name="(profile)/myprofile" />
-                <Stack.Screen name="(profile)/profileusermsg" />
                 <Stack.Screen name="(profile)/editmyprofile" />
                 {/* <Stack.Screen name="editcategorysmyprofile" />
                 <Stack.Screen name="editsocialinfosmyprofile" />

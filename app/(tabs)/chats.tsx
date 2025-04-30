@@ -186,8 +186,6 @@ const ChatsScreen = () => {
                                     Number(item.participant.id),
                                 );
 
-                                console.log(item.participant);
-
                                 return (
                                     <ChatCard
                                         chat={item}

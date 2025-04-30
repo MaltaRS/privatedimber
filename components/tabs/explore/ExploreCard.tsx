@@ -44,7 +44,7 @@ const CardAvatar = ({
             rounded="$full"
             height={128}
             position="relative"
-            source={{ uri: imageLink }}
+            source={imageLink ? { uri: imageLink } : undefined}
             alt={"Foto de perfil de ${name}"}
         />
     </Avatar>
@@ -71,7 +71,7 @@ const CardPrice = ({ price }: { price: string }) => (
         borderBottomRightRadius={12}
         p="$2"
     >
-        <Text size="lg" fontFamily="$novaTitle" color="#fff" lineHeight={24}>
+        <Text size="lg" fontFamily="$heading" color="#fff" lineHeight={24}>
             {price}
         </Text>
     </HStack>
@@ -94,11 +94,11 @@ const ImageLikeButton = ({
         alignItems="center"
         onPress={onLike}
         position="absolute"
-        top={0}
-        right={0}
+        top={6}
+        right={2}
     >
         <Star
-            size={18}
+            size={22}
             color={liked ? "#FDD015" : "#D1D5DB"}
             fill={liked ? "#FDD015" : "none"}
         />
@@ -121,12 +121,10 @@ export const ExploreCard = ({
             <Card
                 variant="ghost"
                 p="$0"
-                style={{
-                    backgroundColor: "#fff",
-                    borderRadius: 12,
-                    borderWidth: 0.9,
-                    borderColor: "#E5E7EB",
-                }}
+                bgColor="#fff"
+                borderColor="#E5E7EB"
+                borderWidth={0.9}
+                borderRadius="$3xl"
             >
                 <VStack alignItems="center">
                     <CardAvatar name={name} imageLink={icon} />
@@ -140,7 +138,8 @@ export const ExploreCard = ({
                                 justifyContent="center"
                             >
                                 <Text
-                                    fontSize="$md"
+                                    mt="$1"
+                                    fontSize="$xl"
                                     color="$gray900"
                                     fontFamily="$novaTitle"
                                     lineHeight={20}
@@ -149,19 +148,21 @@ export const ExploreCard = ({
                                 >
                                     {name}
                                 </Text>
-                                <MaterialIcons
-                                    name="verified"
-                                    size={13}
-                                    color="#00A8FF"
-                                    style={{ marginLeft: 4 }}
-                                />
+                                {isChecked && (
+                                    <MaterialIcons
+                                        name="verified"
+                                        size={13}
+                                        color="#00A8FF"
+                                        style={{ marginLeft: 4 }}
+                                    />
+                                )}
                             </HStack>
                             <HStack
                                 alignItems="center"
                                 gap="$1"
                                 justifyContent="center"
                             >
-                                <CardTags tags={["Atleta", "Investidor"]} />
+                                <CardTags tags={tags} />
                             </HStack>
                         </VStack>
                         <HStack alignItems="center" justifyContent="center">

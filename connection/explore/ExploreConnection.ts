@@ -1,19 +1,21 @@
 import api from "@/utils/api";
 
-type ExploreUser = {
+export interface ExploreUser {
     id: number;
+    uuid: string;
     name: string;
     username: string;
-    email: string;
-    icon: string;
-    isFavorited: boolean;
-};
+    icon?: string;
+    tags?: string[];
+    price?: string;
+    isChecked?: boolean;
+    isFavorited?: boolean;
+}
 
-type PopularResponse = {
+export interface PopularUsersResponse {
     popularUsers: ExploreUser[];
-    total: number;
     nextPage: number | null;
-};
+}
 
 export const GetFavorites = async () => {
     const { data } =
@@ -23,8 +25,8 @@ export const GetFavorites = async () => {
 
 export const GetMostPopular = async ({
     pageParam,
-}: any): Promise<PopularResponse> => {
-    const { data } = await api.get<PopularResponse>("/user/popular", {
+}: any): Promise<PopularUsersResponse> => {
+    const { data } = await api.get<PopularUsersResponse>("/user/popular", {
         params: { offset: pageParam },
     });
 

@@ -29,8 +29,6 @@ import Animated, {
 
 import api from "@/utils/api";
 
-import { useSocket } from "@/Context/SocketProvider";
-
 import {
     useInfiniteQuery,
     useQuery,
@@ -51,8 +49,6 @@ import { useOnlineUsersStore } from "@/stores/onlineUsersStore";
 const ExploreScreen = () => {
     const router = useRouter();
     const queryClient = useQueryClient();
-
-    const { socket } = useSocket();
 
     const { notificationsCount } = useNotifications();
 
@@ -194,36 +190,6 @@ const ExploreScreen = () => {
         }
     };
 
-    const CreateConversation = async (participantId: number) => {
-        if (!socket) return;
-
-        socket.emit(
-            "CreateConversation",
-            { participantId },
-            (response: any) => {
-                if (response.error) {
-                    console.error(
-                        "Error creating conversation: ",
-                        response.error,
-                    );
-                    toast({
-                        title: "Erro ao criar conversa, tente novamente mais tarde!",
-                        haptic: "error",
-                        duration: 3,
-                        preset: "error",
-                        from: "top",
-                    });
-                } else {
-                    queryClient.invalidateQueries({
-                        queryKey: ["conversations"],
-                    });
-
-                    router.push(`/(conversations)/${response.id}`);
-                }
-            },
-        );
-    };
-
     const onlineUsers = useOnlineUsersStore((state) => state.onlineUsers);
 
     return (
@@ -287,11 +253,11 @@ const ExploreScreen = () => {
                                                 <FavoriteCard
                                                     key={index}
                                                     name={item.name}
-                                                    icon={item.icon}
+                                                    icon={item.icon || ""}
                                                     isOnline={isOnline}
                                                     onPress={() =>
-                                                        CreateConversation(
-                                                            item.id,
+                                                        router.push(
+                                                            `/(profile)/${item.uuid}`,
                                                         )
                                                     }
                                                 />
@@ -320,7 +286,7 @@ const ExploreScreen = () => {
                         >
                             Mais populares
                         </Text>
-                        {popularUsers.length === 0 ? (
+                        {popularUsers.length === 0 && !isLoadingPopularUsers ? (
                             <VStack
                                 flex={1}
                                 py="$10"
@@ -352,7 +318,7 @@ const ExploreScreen = () => {
                                     <ExploreCard
                                         key={item.id}
                                         id={item.id}
-                                        icon={item.icon}
+                                        icon={item.icon || ""}
                                         name={item.name}
                                         tags={item.tags ?? []}
                                         price={item.price ?? "R$ 100,00"}
@@ -360,7 +326,9 @@ const ExploreScreen = () => {
                                         liked={item.isFavorited ?? false}
                                         onLike={(id) => HandleLike(id)}
                                         onPress={() =>
-                                            CreateConversation(item.id)
+                                            router.push(
+                                                `/(profile)/${item.uuid}`,
+                                            )
                                         }
                                     />
                                 )}

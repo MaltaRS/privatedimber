@@ -33,7 +33,7 @@ export const fetchUser = async (): Promise<User | null> => {
     }
 };
 
-export const fetchUserById = async (
+export const GetUserProfile = async (
     userId: string,
 ): Promise<FetchUserByIdResponse | null> => {
     try {
@@ -61,50 +61,28 @@ export const unblockUser = async (blockedId: string) => {
     await api.delete(`/user/unblock/${blockedId}`);
 };
 
-export const updateProfileImage = async (icon: string): Promise<boolean> => {
-    try {
-        await setAuthorizationHeader();
-        await api.put("/user", { icon });
-        return true;
-    } catch (error) {
-        console.error("Error updating profile image:", error);
-        return false;
-    }
+export const updateProfileImage = async (icon: string): Promise<any> => {
+    await setAuthorizationHeader();
+    const response = await api.put("/user", { icon });
+    return response.data;
 };
 
-export const updateProfile = async (
-    data: UpdateProfileData,
-): Promise<boolean> => {
-    try {
-        await setAuthorizationHeader();
-        await api.put("/user", data);
-        return true;
-    } catch (error) {
-        console.error("Error updating profile:", error);
-        return false;
-    }
+export const updateProfile = async (data: UpdateProfileData): Promise<any> => {
+    await setAuthorizationHeader();
+    const response = await api.put("/user", data);
+    return response.data;
 };
 
 export const updateUserAccountType = async (
     type: "REGULAR" | "PROFESSIONAL",
-): Promise<boolean> => {
-    try {
-        await setAuthorizationHeader();
-        await api.put("/user/account-type", { type });
-        return true;
-    } catch (error) {
-        console.error("Error updating account type:", error);
-        return false;
-    }
+): Promise<any> => {
+    await setAuthorizationHeader();
+    const response = await api.put("/user/account-type", { type });
+    return response.data;
 };
 
 export const getBlockedUsers = async (): Promise<User[]> => {
-    try {
-        const response = await api.get("/user/blocked");
+    const response = await api.get("/user/blocked");
 
-        return response.data;
-    } catch (error) {
-        console.error("Erro ao buscar usuários bloqueados:", error);
-        return [];
-    }
+    return response.data;
 };
