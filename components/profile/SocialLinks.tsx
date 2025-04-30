@@ -41,7 +41,8 @@ export const SocialLinks: React.FC<SocialLinksProps> = ({ links = [] }) => {
                     Social
                 </Text>
                 <HStack mt="$4" flexWrap="wrap" gap="$4">
-                    {links &&
+                    {links != null &&
+                        Array.isArray(links) &&
                         links.map((link, index) => {
                             const social = socialNetworks.find(
                                 (s) => s.name === link.name,
