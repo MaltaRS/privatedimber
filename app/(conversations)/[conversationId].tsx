@@ -16,7 +16,6 @@ import {
     InputField,
     InputSlot,
     Pressable,
-    Spinner,
     Text,
     VStack,
 } from "@/gluestackComponents";
@@ -29,6 +28,7 @@ import { ConversationPriority, useChatContext } from "@/Context/ChatProvider";
 import { useOnlineUsersStore } from "@/stores/onlineUsersStore";
 
 import { findConversationById } from "@/connection/conversations/ConversationConnection";
+import { ConversationSkeleton } from "@/components/chats/ConversationSkeleton";
 import { InternalMessages } from "@/components/chats/InternalMessages";
 import { AttachmentsMenu } from "@/components/chats/attachmentsMenu";
 import { SendMessageForm } from "@/components/chats/SendMessageForm";
@@ -38,6 +38,7 @@ import { BaseContainer } from "@/components/BaseContainer";
 import { GoBack } from "@/components/utils/GoBack";
 
 import { formatCentsToMoney } from "@/utils/money";
+import { ConversationHeaderSkeleton } from "@/components/chats/ConversationHeaderSkeleton";
 
 export type PaymentItems = {
     name: string;
@@ -225,40 +226,47 @@ const ChatsScreen = () => {
                         router.push(`/myprofile?userUuid=${contact.uuid}`);
                     }}
                 >
-                    {isLoading && <Spinner size="small" />}
-                    {contact && (
-                        <Fragment>
-                            <Avatar width={44} height={44} rounded="$full">
-                                <AvatarFallbackText>
-                                    {contact.name}
-                                </AvatarFallbackText>
-                                {contact.icon && (
-                                    <AvatarImage
-                                        source={{
-                                            uri: contact.icon,
-                                        }}
-                                        alt={`Foto de perfil de ${contact.name}`}
-                                    />
-                                )}
-                                {isOnline && <AvatarBadge bgColor="#339058" />}
-                            </Avatar>
-                            <VStack gap={2}>
-                                <Text
-                                    size="md"
-                                    fontFamily="$title"
-                                    color="$black"
-                                >
-                                    {contact.name}
-                                </Text>
-                                <Text
-                                    fontSize={15}
-                                    fontFamily="$arialHeading"
-                                    color="$black"
-                                >
-                                    {formatCentsToMoney(contact.price ?? 10000)}
-                                </Text>
-                            </VStack>
-                        </Fragment>
+                    {isLoading ? (
+                        <ConversationHeaderSkeleton />
+                    ) : (
+                        contact && (
+                            <Fragment>
+                                <Avatar width={44} height={44} rounded="$full">
+                                    <AvatarFallbackText>
+                                        {contact.name}
+                                    </AvatarFallbackText>
+                                    {contact.icon && (
+                                        <AvatarImage
+                                            source={{
+                                                uri: contact.icon,
+                                            }}
+                                            alt={`Foto de perfil de ${contact.name}`}
+                                        />
+                                    )}
+                                    {isOnline && (
+                                        <AvatarBadge bgColor="#339058" />
+                                    )}
+                                </Avatar>
+                                <VStack gap={2}>
+                                    <Text
+                                        size="md"
+                                        fontFamily="$title"
+                                        color="$black"
+                                    >
+                                        {contact.name}
+                                    </Text>
+                                    <Text
+                                        fontSize={15}
+                                        fontFamily="$arialHeading"
+                                        color="$black"
+                                    >
+                                        {formatCentsToMoney(
+                                            contact.price ?? 10000,
+                                        )}
+                                    </Text>
+                                </VStack>
+                            </Fragment>
+                        )
                     )}
                 </Pressable>
             </HStack>
@@ -291,14 +299,7 @@ const ChatsScreen = () => {
                             zIndex={2}
                         >
                             {!contactConversation && isLoading ? (
-                                <VStack
-                                    px="$3"
-                                    alignItems="center"
-                                    justifyContent="center"
-                                    flex={1}
-                                >
-                                    <Spinner size="large" />
-                                </VStack>
+                                <ConversationSkeleton />
                             ) : !contactConversation ? (
                                 <VStack
                                     px="$3"

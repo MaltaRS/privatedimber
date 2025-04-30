@@ -9,7 +9,6 @@ import {
     ScrollView,
     VStack,
     Text,
-    Spinner,
     FlatList,
 } from "@/gluestackComponents";
 
@@ -19,6 +18,8 @@ import { Category, CategoryTabs } from "@/components/tabs/explore/CategoryTabs";
 import { FavoriteCard } from "@/components/tabs/explore/FavoriteCard";
 import { SearchInput } from "@/components/tabs/explore/SearchInput";
 import { ExploreCard } from "@/components/tabs/explore/ExploreCard";
+import { ExploreCardSkeleton } from "@/components/tabs/explore/ExploreCardSkeleton";
+import { FavoriteCardSkeleton } from "@/components/tabs/explore/FavoriteCardSkeleton";
 
 import { useNotifications } from "@/hooks/NotificationHook";
 
@@ -172,8 +173,8 @@ const ExploreScreen = () => {
 
             if (newFavorite) {
                 queryClient.setQueryData(["userFavorites"], (prev: any) => [
-                    ...(prev || []),
                     newFavorite,
+                    ...(prev || []),
                 ]);
             }
         } catch (error) {
@@ -230,7 +231,7 @@ const ExploreScreen = () => {
                         !isLoadingFavorites ? (
                             <Fragment>
                                 <Text
-                                    py="$1"
+                                    pt="$1"
                                     fontFamily="$novaTitle"
                                     fontSize={20}
                                     color="#000"
@@ -242,7 +243,7 @@ const ExploreScreen = () => {
                                     horizontal
                                     showsHorizontalScrollIndicator={false}
                                 >
-                                    <HStack>
+                                    <HStack gap="$4">
                                         {userFavorites.map((item, index) => {
                                             const isOnline =
                                                 onlineUsers.includes(
@@ -267,18 +268,36 @@ const ExploreScreen = () => {
                                 </ScrollView>
                             </Fragment>
                         ) : userFavorites?.length === 0 ? null : (
-                            <VStack
-                                alignItems="center"
-                                justifyContent="center"
-                                py="$4"
-                            >
-                                <Spinner size="large" />
-                            </VStack>
+                            <Fragment>
+                                <Text
+                                    pt="$1"
+                                    fontFamily="$novaTitle"
+                                    fontSize={20}
+                                    color="#000"
+                                    lineHeight={28}
+                                >
+                                    Favoritos
+                                </Text>
+                                <ScrollView
+                                    horizontal
+                                    showsHorizontalScrollIndicator={false}
+                                >
+                                    <HStack gap="$4">
+                                        {Array(4)
+                                            .fill(null)
+                                            .map((_, index) => (
+                                                <FavoriteCardSkeleton
+                                                    key={index}
+                                                />
+                                            ))}
+                                    </HStack>
+                                </ScrollView>
+                            </Fragment>
                         )}
                     </VStack>
-                    <VStack gap="$1" flex={1} pt="$2">
+                    <VStack gap="$1" flex={1}>
                         <Text
-                            py="$1"
+                            pb="$1"
                             fontFamily="$novaTitle"
                             fontSize={20}
                             color="#0f1010"
@@ -306,32 +325,45 @@ const ExploreScreen = () => {
                             </VStack>
                         ) : (
                             <FlatList
-                                data={popularUsers}
-                                keyExtractor={(item: any) => item.id.toString()}
-                                refreshing={isLoadingPopularUsers}
+                                data={
+                                    isLoadingPopularUsers
+                                        ? Array(6).fill(null)
+                                        : popularUsers
+                                }
+                                keyExtractor={(item: any, index) =>
+                                    item?.id?.toString() || index.toString()
+                                }
+                                refreshing={
+                                    isLoadingPopularUsers &&
+                                    popularUsers.length > 0
+                                }
                                 onRefresh={() => {
                                     queryClient.invalidateQueries({
                                         queryKey: ["popularUsers"],
                                     });
                                 }}
-                                renderItem={({ item }: any) => (
-                                    <ExploreCard
-                                        key={item.id}
-                                        id={item.id}
-                                        icon={item.icon || ""}
-                                        name={item.name}
-                                        tags={item.tags ?? []}
-                                        price={item.price ?? "R$ 100,00"}
-                                        isChecked={item.isChecked ?? false}
-                                        liked={item.isFavorited ?? false}
-                                        onLike={(id) => HandleLike(id)}
-                                        onPress={() =>
-                                            router.push(
-                                                `/(profile)/${item.uuid}`,
-                                            )
-                                        }
-                                    />
-                                )}
+                                renderItem={({ item }: any) =>
+                                    isLoadingPopularUsers ? (
+                                        <ExploreCardSkeleton />
+                                    ) : (
+                                        <ExploreCard
+                                            key={item.uuid}
+                                            id={item.id}
+                                            icon={item.icon || ""}
+                                            name={item.name}
+                                            tags={item.tags ?? []}
+                                            price={item.price ?? "R$ 100,00"}
+                                            isChecked={item.isChecked ?? false}
+                                            liked={item.isFavorited ?? false}
+                                            onLike={(id) => HandleLike(id)}
+                                            onPress={() =>
+                                                router.push(
+                                                    `/(profile)/${item.uuid}`,
+                                                )
+                                            }
+                                        />
+                                    )
+                                }
                                 numColumns={2}
                                 columnWrapperStyle={{
                                     justifyContent: "space-between",
@@ -340,17 +372,6 @@ const ExploreScreen = () => {
                                 onEndReached={GetPopularUsers}
                                 onEndReachedThreshold={0.5}
                                 showsVerticalScrollIndicator={false}
-                                ListFooterComponent={
-                                    isLoadingPopularUsers ? (
-                                        <VStack
-                                            alignItems="center"
-                                            justifyContent="center"
-                                            py="$4"
-                                        >
-                                            <Spinner size="large" />
-                                        </VStack>
-                                    ) : null
-                                }
                             />
                         )}
                     </VStack>

@@ -2,7 +2,7 @@ import { useEffect, useRef } from "react";
 
 import { Animated, View } from "react-native";
 
-export const SkeletonBox = ({ width, height, borderRadius }: any) => {
+export const SkeletonBox = ({ width, height, borderRadius, ...props }: any) => {
     const shimmerAnim = useRef(new Animated.Value(0)).current;
 
     useEffect(() => {
@@ -28,6 +28,7 @@ export const SkeletonBox = ({ width, height, borderRadius }: any) => {
                 borderRadius,
                 backgroundColor: "#E8E8E8",
                 overflow: "hidden",
+                ...props,
             }}
         >
             <Animated.View

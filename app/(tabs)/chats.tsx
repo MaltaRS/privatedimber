@@ -45,6 +45,7 @@ import { BlockUser } from "@/components/tabs/conversations/BlockUser";
 import { BaseContainer } from "@/components/BaseContainer";
 import { ChatCard } from "@/components/chats/ChatCard";
 import { MainTitle } from "@/components/MainTitle";
+import { ChatCardSkeleton } from "@/components/chats/ChatCardSkeleton";
 
 import { useAuth } from "@/Context/AuthProvider";
 
@@ -179,9 +180,17 @@ const ChatsScreen = () => {
                         </VStack>
                     ) : (
                         <FlatList
-                            data={filteredChats}
-                            keyExtractor={(chat: any) => chat.id.toString()}
+                            data={
+                                isLoading ? Array(5).fill(null) : filteredChats
+                            }
+                            keyExtractor={(item: any, index) =>
+                                item?.id?.toString() || index.toString()
+                            }
                             renderItem={({ item }: any) => {
+                                if (isLoading) {
+                                    return <ChatCardSkeleton />;
+                                }
+
                                 const isOnline = onlineUsers.includes(
                                     Number(item.participant.id),
                                 );
@@ -206,17 +215,6 @@ const ChatsScreen = () => {
                             onEndReached={fetchMoreConversations}
                             onEndReachedThreshold={0.5}
                             showsVerticalScrollIndicator={false}
-                            ListFooterComponent={
-                                isLoading ? (
-                                    <VStack
-                                        alignItems="center"
-                                        justifyContent="center"
-                                        flex={1}
-                                    >
-                                        <Spinner size="large" />
-                                    </VStack>
-                                ) : null
-                            }
                         />
                     )}
                 </Box>

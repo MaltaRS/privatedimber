@@ -21,14 +21,23 @@ export const FavoriteCard = ({
     onPress,
 }: FavoriteCardProps) => {
     return (
-        <Pressable onPress={onPress} width={76} height={82} alignItems="center">
-            <Avatar width={60} height={60} rounded="$full">
+        <Pressable
+            onPress={onPress}
+            width={76}
+            height={100}
+            alignItems="center"
+        >
+            <Avatar width={70} height={70} rounded="$full">
                 <AvatarFallbackText size="2xl">{name}</AvatarFallbackText>
                 <AvatarImage
                     rounded="$full"
-                    source={{
-                        uri: icon,
-                    }}
+                    source={
+                        icon
+                            ? {
+                                  uri: icon,
+                              }
+                            : undefined
+                    }
                     alt="Foto de perfil"
                 />
                 {isOnline && <AvatarBadge bgColor="#339058" />}
@@ -41,7 +50,7 @@ export const FavoriteCard = ({
                 color="$gray900"
                 lineHeight={20}
                 numberOfLines={1}
-                fontSize={13}
+                fontSize={15}
                 mt="$1"
             >
                 {name}

@@ -50,13 +50,30 @@ const CardAvatar = ({
     </Avatar>
 );
 
-const CardTags = ({ tags }: { tags: string[] }) => (
-    <Text size="xs" lineHeight={16} flexWrap="wrap" color="$gray600">
-        {tags
-            .filter((_, i) => i <= 1)
-            .map((tag, index) => tag + (index === 1 ? "" : ", "))}
-    </Text>
-);
+const CardTags = ({ tags }: { tags: string[] }) =>
+    tags.length > 0 ? (
+        <Text
+            size="md"
+            lineHeight={16}
+            flexWrap="wrap"
+            color="$gray600"
+            mt="$1"
+        >
+            {tags
+                .filter((_, i) => i <= 1)
+                .map((tag, index) => tag + (index === 1 ? "" : ", "))}
+        </Text>
+    ) : (
+        <Text
+            size="md"
+            lineHeight={16}
+            flexWrap="wrap"
+            color="$gray600"
+            mt="$1"
+        >
+            Sem categorias
+        </Text>
+    );
 
 const CardPrice = ({ price }: { price: string }) => (
     <HStack
@@ -67,8 +84,8 @@ const CardPrice = ({ price }: { price: string }) => (
         bgColor="#00A8FF"
         borderWidth={0.9}
         borderColor="#00A8FF"
-        borderBottomLeftRadius={12}
-        borderBottomRightRadius={12}
+        borderBottomLeftRadius="$3xl"
+        borderBottomRightRadius="$3xl"
         p="$2"
     >
         <Text size="lg" fontFamily="$heading" color="#fff" lineHeight={24}>
@@ -124,7 +141,7 @@ export const ExploreCard = ({
                 bgColor="#fff"
                 borderColor="#E5E7EB"
                 borderWidth={0.9}
-                borderRadius="$3xl"
+                rounded="$3xl"
             >
                 <VStack alignItems="center">
                     <CardAvatar name={name} imageLink={icon} />

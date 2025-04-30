@@ -1,6 +1,6 @@
-import { useEffect } from "react";
+import { Fragment, useEffect } from "react";
 
-import { Box, GluestackUIProvider, Spinner } from "@/gluestackComponents";
+import { Box, GluestackUIProvider } from "@/gluestackComponents";
 
 import { useFonts as useFontsExpo } from "expo-font";
 
@@ -36,6 +36,8 @@ import { GoogleSignin } from "@react-native-google-signin/google-signin";
 import { GoogleAuthProvider } from "@/Context/GoogleAuthProvider";
 import { ChatProvider } from "@/Context/ChatProvider";
 import { BalanceProvider } from "@/providers/BalanceProvider";
+import { ExploreSkeleton } from "@/components/skeletons/ExploreSkeleton";
+import { LoginSkeleton } from "@/components/skeletons/LoginSkeleton";
 
 GoogleSignin.configure({
     webClientId: process.env.EXPO_PUBLIC_GOOGLE_CLIENT_ID,
@@ -85,13 +87,14 @@ const RootLayout = () => {
     if (!loaded || loading || !loadedExpo || !loadedInter) {
         return (
             <GluestackUIProvider>
-                <Box
-                    flex={1}
-                    bg="white"
-                    justifyContent="center"
-                    alignItems="center"
-                >
-                    <Spinner size="large" />
+                <Box flex={1} bg="white">
+                    {loading ? (
+                        <Fragment></Fragment>
+                    ) : false ? (
+                        <ExploreSkeleton />
+                    ) : (
+                        <LoginSkeleton />
+                    )}
                 </Box>
             </GluestackUIProvider>
         );
