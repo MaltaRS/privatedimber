@@ -57,7 +57,6 @@ export const SearchInput = ({
     onCancel,
 }: SearchInputProps) => {
     const router = useRouter();
-    const toast = useToast();
     const queryClient = useQueryClient();
 
     const { socket } = useSocket();
@@ -142,40 +141,7 @@ export const SearchInput = ({
 
         SaveRecentUserSearch(user);
 
-        socket.emit(
-            "CreateConversation",
-            { participantId: user.id },
-            (response: any) => {
-                if (response.error) {
-                    console.error(
-                        "Error creating conversation: ",
-                        response.error,
-                    );
-                    toast.show({
-                        placement: "top",
-                        render: ({ id }) => {
-                            const toastId = "toast-" + id;
-                            return (
-                                <Toast nativeID={toastId} action="error">
-                                    <VStack space="xs" flex={1}>
-                                        <ToastTitle>Erro</ToastTitle>
-                                        <ToastDescription>
-                                            Ocorreu um erro ao criar a conversa.
-                                        </ToastDescription>
-                                    </VStack>
-                                </Toast>
-                            );
-                        },
-                    });
-                } else {
-                    queryClient.invalidateQueries({
-                        queryKey: ["conversations"],
-                    });
-
-                    router.push(`/(conversations)/${response.id}`);
-                }
-            },
-        );
+        router.push(`/(profile)/${user.uuid}`);
     };
 
     useEffect(() => {
@@ -393,7 +359,10 @@ export const SearchInput = ({
                                                     <SavedSearchCard
                                                         id={recentSearch.id}
                                                         name={recentSearch.name}
-                                                        icon={recentSearch.icon}
+                                                        icon={
+                                                            recentSearch.icon ??
+                                                            ""
+                                                        }
                                                         price={100}
                                                         index={index}
                                                         onPress={() =>

@@ -55,9 +55,13 @@ export const SavedSearchCard = ({
                         {icon && (
                             <AvatarImage
                                 rounded="$lg"
-                                source={{
-                                    uri: icon,
-                                }}
+                                source={
+                                    icon
+                                        ? {
+                                              uri: icon,
+                                          }
+                                        : undefined
+                                }
                                 alt={`Foto de perfil de ${name}`}
                             />
                         )}
