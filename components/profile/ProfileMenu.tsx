@@ -28,12 +28,8 @@ export const ProfileMenu = ({
 }: ProfileMenuProps) => {
     const { data: blockedUsers = [] } = useBlockedUsers();
 
-    console.log("blockedUsers", blockedUsers);
-
     const isBlocked =
         blockedUsers.some((user) => user.id === userId) || initialIsBlocked;
-
-    console.log("isBlocked", userId, isBlocked);
 
     return (
         <Menu
