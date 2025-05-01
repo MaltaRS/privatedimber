@@ -83,7 +83,7 @@ export const ConfirmationModal = ({
                                     rounded="$full"
                                     onPress={onClose}
                                     bg="$gray200"
-                                    _pressed={{ bg: "$gray300" }}
+                                    $pressed={{ bg: "$gray300" }}
                                 >
                                     <ButtonText
                                         textAlign="center"
@@ -101,7 +101,7 @@ export const ConfirmationModal = ({
                                         onConfirm();
                                         onClose();
                                     }}
-                                    _pressed={{ bg: "$primary600" }}
+                                    $pressed={{ bg: "$primary600" }}
                                 >
                                     <ButtonText
                                         textAlign="center"
@@ -121,7 +121,7 @@ export const ConfirmationModal = ({
                                         onConfirm();
                                         onClose();
                                     }}
-                                    _pressed={{ bg: "$primary600" }}
+                                    $pressed={{ bg: "$primary600" }}
                                 >
                                     <ButtonText
                                         textAlign="center"
@@ -136,7 +136,7 @@ export const ConfirmationModal = ({
                                     rounded="$full"
                                     onPress={onClose}
                                     bg="$gray200"
-                                    _pressed={{ bg: "$gray300" }}
+                                    $pressed={{ bg: "$gray300" }}
                                 >
                                     <ButtonText
                                         textAlign="center"

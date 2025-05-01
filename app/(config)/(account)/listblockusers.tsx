@@ -187,6 +187,7 @@ const ListBlockUsersScreen = () => {
                                                         borderRadius={10}
                                                         width={60}
                                                         height={60}
+                                                        rounded="$full"
                                                     >
                                                         <AvatarFallbackText
                                                             fontSize={30}
@@ -197,9 +198,7 @@ const ListBlockUsersScreen = () => {
                                                             source={{
                                                                 uri: item.icon,
                                                             }}
-                                                            alt={
-                                                                "Foto de perfil de ${name}"
-                                                            }
+                                                            alt={`Foto de perfil de ${item.name}`}
                                                         />
                                                     </Avatar>
 

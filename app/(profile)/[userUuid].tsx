@@ -1,4 +1,4 @@
-import { Fragment, useState } from "react";
+import { Fragment, useEffect, useState } from "react";
 
 import { useLocalSearchParams, useRouter } from "expo-router";
 
@@ -22,20 +22,28 @@ import { ProfileHeader } from "@/components/profile/ProfileHeader";
 import { ProfileAbout } from "@/components/profile/ProfileAbout";
 import { SocialLinks } from "@/components/profile/SocialLinks";
 import { ProfileSkeleton } from "@/components/profile/ProfileSkeleton";
+import { BlockUser } from "@/components/tabs/conversations/BlockUser";
 
 import { useAuth, User } from "@/Context/AuthProvider";
 import { useSocket } from "@/Context/SocketProvider";
+import { useBlockUser } from "@/hooks/BlockUser";
 
 import { useQuery, useQueryClient } from "@tanstack/react-query";
 
-import { GetUserProfile } from "@/connection/auth/UserConnection";
+import {
+    GetUserProfile,
+    isUserBlocked,
+} from "@/connection/auth/UserConnection";
 
 import { formatCentsToMoney } from "@/utils/money";
+import { handleFavorite } from "@/utils/favorites";
+
 import { toast } from "burnt";
 
 interface ExtendedUser extends User {
     isFavorited?: boolean;
     price: number | null;
+    isBlocked?: boolean;
 }
 
 export default function ProfileScreen() {
@@ -45,10 +53,12 @@ export default function ProfileScreen() {
     const { userUuid } = useLocalSearchParams<{ userUuid: string }>();
 
     const { user } = useAuth();
+    const { block, unblock } = useBlockUser();
 
     const { socket } = useSocket();
 
     const [creatingConversation, setCreatingConversation] = useState(false);
+    const [showBlockModal, setShowBlockModal] = useState(false);
 
     let shouldGetUserData = false;
     if (userUuid && user?.uuid !== userUuid) {
@@ -61,10 +71,19 @@ export default function ProfileScreen() {
         enabled: shouldGetUserData,
     });
 
+    const { data: isBlocked } = useQuery({
+        queryKey: ["isBlocked", userUuid],
+        queryFn: () => isUserBlocked(userUuid),
+        enabled: shouldGetUserData,
+    });
+
     const validatedUser = shouldGetUserData
         ? ({
               ...userData?.user,
               price: userData?.user?.price || null,
+              isFavorited: userData?.isFavorited,
+              verifiedAt: userData?.user?.verifiedAt || null,
+              isBlocked,
           } as ExtendedUser)
         : ({ ...user, price: user?.price || null } as ExtendedUser);
 
@@ -97,6 +116,38 @@ export default function ProfileScreen() {
                 }
             },
         );
+    };
+
+    const handleBlock = () => {
+        if (!validatedUser.id) return;
+
+        if (validatedUser.isBlocked) {
+            unblock.mutate(validatedUser.id.toString(), {
+                onSuccess: () => {
+                    queryClient.invalidateQueries({
+                        queryKey: ["isBlocked", userUuid],
+                    });
+                    setShowBlockModal(false);
+                    toast({
+                        title: "Usuário desbloqueado com sucesso",
+                        haptic: "success",
+                    });
+                },
+            });
+        } else {
+            block.mutate(validatedUser.id.toString(), {
+                onSuccess: () => {
+                    queryClient.invalidateQueries({
+                        queryKey: ["isBlocked", userUuid],
+                    });
+                    setShowBlockModal(false);
+                    toast({
+                        title: "Usuário bloqueado com sucesso",
+                        haptic: "success",
+                    });
+                },
+            });
+        }
     };
 
     if (!validatedUser) {
@@ -142,7 +193,9 @@ export default function ProfileScreen() {
 
                 <ScrollView
                     showsVerticalScrollIndicator={false}
-                    contentContainerStyle={{ paddingBottom: 86 }}
+                    contentContainerStyle={{
+                        paddingBottom: 86,
+                    }}
                 >
                     <VStack mt="$2">
                         <ProfileHeader
@@ -162,8 +215,32 @@ export default function ProfileScreen() {
                             }
                             shouldGetUserData={shouldGetUserData}
                             isFavorited={validatedUser.isFavorited}
-                            onFavorite={() => {}}
-                            onOpenMenu={() => {}}
+                            onFavorite={() => {
+                                if (!validatedUser.id) return;
+                                handleFavorite({
+                                    id: String(validatedUser.id),
+                                    userUuid,
+                                    isFavorited: !!validatedUser.isFavorited,
+                                    queryClient,
+                                    onSuccess: () => {
+                                        queryClient.invalidateQueries({
+                                            queryKey: ["popularUsers"],
+                                        });
+                                        queryClient.invalidateQueries({
+                                            queryKey: ["userFavorites"],
+                                        });
+                                    },
+                                });
+                            }}
+                            userId={validatedUser.id?.toString()}
+                            isBlocked={validatedUser.isBlocked}
+                            onBlock={() => setShowBlockModal(true)}
+                            onPayments={() => {
+                                // Handle payments
+                            }}
+                            onReport={() => {
+                                // Handle report
+                            }}
                         />
 
                         <HStack bg="$gray100" borderRadius="$full" mt="$6">
@@ -269,6 +346,18 @@ export default function ProfileScreen() {
                     </Box>
                 )}
             </VStack>
+
+            {validatedUser.id && (
+                <BlockUser
+                    blockedId={validatedUser.id.toString()}
+                    blockedName={validatedUser.name}
+                    onClose={() => setShowBlockModal(false)}
+                    onBlock={handleBlock}
+                    isBlocked={validatedUser.isBlocked}
+                    showTrigger={false}
+                    isOpen={showBlockModal}
+                />
+            )}
         </BaseContainer>
     );
 }

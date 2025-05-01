@@ -18,8 +18,6 @@ import {
 import { BaseContainer } from "@/components/BaseContainer";
 import HeaderContainer from "@/components/HeaderContainer";
 
-import { Feather } from "@expo/vector-icons";
-
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 
 import { updateProfile } from "@/connection/auth/UserConnection";

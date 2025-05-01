@@ -29,6 +29,7 @@ const HeaderContainer = ({
             alignItems="center"
             width="100%"
             px="$1"
+            pb={4}
         >
             <GoBack
                 onPress={onBackPress ? onBackPress : () => router.back()}

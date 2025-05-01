@@ -1,4 +1,4 @@
-import React, { Fragment, useState } from "react";
+import { Fragment, useState } from "react";
 
 import { Keyboard } from "react-native";
 
@@ -28,8 +28,6 @@ import Animated, {
     withTiming,
 } from "react-native-reanimated";
 
-import api from "@/utils/api";
-
 import {
     useInfiniteQuery,
     useQuery,
@@ -38,14 +36,14 @@ import {
 
 import { Search } from "lucide-react-native";
 
-import { toast } from "burnt";
-
 import {
     GetFavorites,
     GetMostPopular,
 } from "@/connection/explore/ExploreConnection";
 
 import { useOnlineUsersStore } from "@/stores/onlineUsersStore";
+
+import { handleFavorite } from "@/utils/favorites";
 
 const ExploreScreen = () => {
     const router = useRouter();
@@ -126,69 +124,21 @@ const ExploreScreen = () => {
 
         setLikedIds((prev) => [...prev, id]);
 
-        try {
-            const isFavorited = popularUsers?.some(
-                (item) => String(item.id) === String(id) && item.isFavorited,
-            );
+        const isFavorited = popularUsers?.some(
+            (item) => String(item.id) === String(id) && item.isFavorited,
+        );
 
-            if (isFavorited) {
-                await api.delete(`/user/favorites/${id}`);
-
-                queryClient.setQueryData(["popularUsers"], (prev: any) => ({
-                    ...prev,
-                    pages: prev.pages.map((page: any) => ({
-                        ...page,
-                        popularUsers: page.popularUsers.map((item: any) =>
-                            item.id === id
-                                ? { ...item, isFavorited: false }
-                                : item,
-                        ),
-                    })),
-                }));
-
-                queryClient.setQueryData(["userFavorites"], (prev: any) =>
-                    prev.filter((item: any) => item.id !== id),
-                );
-
-                return;
-            }
-
-            await api.post("/user/favorites", {
-                userId: id,
-            });
-
-            queryClient.setQueryData(["popularUsers"], (prev: any) => ({
-                ...prev,
-                pages: prev.pages.map((page: any) => ({
-                    ...page,
-                    popularUsers: page.popularUsers.map((item: any) =>
-                        item.id === id ? { ...item, isFavorited: true } : item,
-                    ),
-                })),
-            }));
-
-            const newFavorite = popularUsers?.find(
-                (item) => String(item.id) === String(id),
-            );
-
-            if (newFavorite) {
-                queryClient.setQueryData(["userFavorites"], (prev: any) => [
-                    newFavorite,
-                    ...(prev || []),
-                ]);
-            }
-        } catch (error) {
-            console.error("Erro ao (des)favoritar:", error);
-            toast({
-                title: "Erro ao processar sua solicitação!",
-                haptic: "error",
-                duration: 2,
-                preset: "error",
-                from: "top",
-            });
-        } finally {
-            setLikedIds((prev) => prev.filter((likedId) => likedId !== id));
-        }
+        await handleFavorite({
+            id,
+            isFavorited: !!isFavorited,
+            queryClient,
+            onError: () => {
+                setLikedIds((prev) => prev.filter((likedId) => likedId !== id));
+            },
+            onSuccess: () => {
+                setLikedIds((prev) => prev.filter((likedId) => likedId !== id));
+            },
+        });
     };
 
     const onlineUsers = useOnlineUsersStore((state) => state.onlineUsers);

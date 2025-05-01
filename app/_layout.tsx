@@ -159,11 +159,11 @@ const RootLayout = () => {
                 <Stack.Screen name="(wallet)/(withdraw)/index" />
 
                 {/* Profile */}
+                <Stack.Screen name="(profile)/categories" />
+                <Stack.Screen name="(profile)/interests" />
+                <Stack.Screen name="(profile)/editprofile" />
                 <Stack.Screen name="(profile)/myprofile" />
-                <Stack.Screen name="(profile)/editmyprofile" />
-                {/* <Stack.Screen name="editcategorysmyprofile" />
-                <Stack.Screen name="editsocialinfosmyprofile" />
-                <Stack.Screen name="editmyinterestsprofile" /> */}
+                <Stack.Screen name="(profile)/social" />
             </Stack>
         </GluestackUIProvider>
     );

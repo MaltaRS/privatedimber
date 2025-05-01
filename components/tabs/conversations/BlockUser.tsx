@@ -19,20 +19,34 @@ import {
 import { Button } from "@/components/ui/Button";
 
 import Octicons from "@expo/vector-icons/Octicons";
+
 import { useBlockUser } from "@/hooks/BlockUser";
+
 import { isUserBlocked } from "@/connection/auth/UserConnection";
+
+import { useQueryClient } from "@tanstack/react-query";
 
 type BlockUserProps = {
     blockedId: string;
     blockedName: string;
     onClose: () => void;
+    onBlock?: () => void;
+    isBlocked?: boolean;
+    showTrigger?: boolean;
+    isOpen?: boolean;
 };
 
 export const BlockUser = ({
     blockedId,
     blockedName,
     onClose,
+    onBlock,
+    isBlocked: initialIsBlocked,
+    showTrigger = true,
+    isOpen: controlledIsOpen,
 }: BlockUserProps) => {
+    const queryClient = useQueryClient();
+
     const [isOpen, setIsOpen] = useState(false);
     const [isBlocked, setIsBlocked] = useState<boolean | null>(null);
 
@@ -40,20 +54,32 @@ export const BlockUser = ({
 
     useEffect(() => {
         const checkIfBlocked = async () => {
+            if (initialIsBlocked !== undefined) {
+                setIsBlocked(initialIsBlocked);
+                return;
+            }
             const blockedStatus = await isUserBlocked(blockedId);
             setIsBlocked(blockedStatus);
         };
 
         checkIfBlocked();
-    }, [blockedId]);
+    }, [blockedId, initialIsBlocked]);
 
     const handleAction = () => {
+        if (onBlock) {
+            onBlock();
+            return;
+        }
+
         if (isBlocked) {
             unblock.mutate(blockedId, {
                 onSuccess: () => {
                     setIsBlocked(false);
                     setIsOpen(false);
                     onClose();
+                    queryClient.invalidateQueries({
+                        queryKey: ["blockedUsers"],
+                    });
                 },
             });
         } else {
@@ -62,35 +88,49 @@ export const BlockUser = ({
                     setIsBlocked(true);
                     setIsOpen(false);
                     onClose();
+                    queryClient.invalidateQueries({
+                        queryKey: ["blockedUsers"],
+                    });
                 },
             });
         }
-
-        queryClient.invalidateQueries({ queryKey: ["blockedUsers"] });
     };
+
+    const modalOpen =
+        controlledIsOpen !== undefined ? controlledIsOpen : isOpen;
 
     return (
         <Fragment>
-            <Pressable onPress={() => setIsOpen(true)}>
-                <HStack py="$3" px="$3" alignItems="center" gap="$3">
-                    <Box width={16} ml="$1">
-                        <Octicons
-                            name="circle-slash"
-                            size={16}
-                            color={isBlocked ? "#007BFF" : "#D32F2F"}
-                        />
-                    </Box>
-                    <Text
-                        fontFamily="$arialBody"
-                        color={isBlocked ? "$blue500" : "$negative"}
-                        size="lg"
-                    >
-                        {isBlocked ? "Desbloquear" : "Bloquear"}
-                    </Text>
-                </HStack>
-            </Pressable>
+            {showTrigger && (
+                <Pressable onPress={() => setIsOpen(true)}>
+                    <HStack py="$3" px="$3" alignItems="center" gap="$3">
+                        <Box width={16} ml="$1">
+                            <Octicons
+                                name="circle-slash"
+                                size={16}
+                                color={isBlocked ? "#007BFF" : "#D32F2F"}
+                            />
+                        </Box>
+                        <Text
+                            fontFamily="$arialBody"
+                            color={isBlocked ? "$blue500" : "$negative"}
+                            size="lg"
+                        >
+                            {isBlocked ? "Desbloquear" : "Bloquear"}
+                        </Text>
+                    </HStack>
+                </Pressable>
+            )}
 
-            <Actionsheet isOpen={isOpen} onClose={() => setIsOpen(false)}>
+            <Actionsheet
+                isOpen={modalOpen}
+                onClose={() => {
+                    if (controlledIsOpen === undefined) {
+                        setIsOpen(false);
+                    }
+                    onClose();
+                }}
+            >
                 <ActionsheetBackdrop backgroundColor="#000" />
                 <ActionsheetContent bgColor="$gray200">
                     <ActionsheetDragIndicatorWrapper>
@@ -144,7 +184,12 @@ export const BlockUser = ({
                                 w="$full"
                                 mt="$3"
                                 p="$2"
-                                onPress={() => setIsOpen(false)}
+                                onPress={() => {
+                                    if (controlledIsOpen === undefined) {
+                                        setIsOpen(false);
+                                    }
+                                    onClose();
+                                }}
                             >
                                 <Text
                                     color="$black"

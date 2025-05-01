@@ -149,10 +149,10 @@ const ChatsScreen = () => {
 
                 const percentage =
                     type === "image"
-                        ? priceSettings.imagePercentage
+                        ? (priceSettings.imagePercentage ?? 10)
                         : type === "video"
-                          ? priceSettings.videoPercentage
-                          : priceSettings.attachmentPercentage;
+                          ? (priceSettings.videoPercentage ?? 10)
+                          : (priceSettings.attachmentPercentage ?? 10);
 
                 return Math.round(basePrice * (percentage / 100));
             };

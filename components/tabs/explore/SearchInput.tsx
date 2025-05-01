@@ -1,21 +1,8 @@
-import React, { Fragment, useCallback, useEffect, useState } from "react";
+import { Fragment, useEffect, useState } from "react";
 
 import { useRouter } from "expo-router";
 
 import {
-    AlertDialog,
-    AlertDialogBackdrop,
-    AlertDialogBody,
-    AlertDialogCloseButton,
-    AlertDialogContent,
-    AlertDialogFooter,
-    AlertDialogHeader,
-    Avatar,
-    AvatarFallbackText,
-    AvatarImage,
-    Button,
-    ButtonGroup,
-    ButtonText,
     HStack,
     Input,
     InputField,
@@ -25,31 +12,33 @@ import {
     ScrollView,
     Spinner,
     Text,
-    Toast,
-    ToastDescription,
-    ToastTitle,
-    useToast,
     VStack,
 } from "@/gluestackComponents";
 
-import { SecureStoreUnencrypted } from "@/utils/SecureStorage";
-import api from "@/utils/api";
-
-import { User } from "@/Context/AuthProvider";
 import { useSocket } from "@/Context/SocketProvider";
-
-import { useQueryClient } from "@tanstack/react-query";
 
 import { ArrowLeft, Search, SlidersHorizontal, X } from "lucide-react-native";
 
 import { SavedSearchCard } from "../search/savedSearchs";
 import { Filter } from "./Filter";
 
-interface SearchInputProps {
+import { ConfirmationModal } from "@/components/ui/ConfirmationModal";
+
+import { SecureStoreUnencrypted } from "@/utils/SecureStorage";
+import {
+    SearchUsers,
+    ExploreUser,
+} from "@/connection/explore/ExploreConnection";
+
+import { useQuery } from "@tanstack/react-query";
+
+type ExtendedUser = ExploreUser;
+
+type SearchInputProps = {
     isSearching: boolean;
     onFocus: () => void;
     onCancel: () => void;
-}
+};
 
 export const SearchInput = ({
     isSearching,
@@ -57,18 +46,18 @@ export const SearchInput = ({
     onCancel,
 }: SearchInputProps) => {
     const router = useRouter();
-    const queryClient = useQueryClient();
-
     const { socket } = useSocket();
 
-    const [isLoading, setIsLoading] = useState(false);
-
     const [value, setValue] = useState("");
-    const [lastValueChecked, setLastValueChecked] = useState("");
+    const [debouncedValue, setDebouncedValue] = useState("");
 
-    const [searchResults, setSearchResults] = useState<User[]>([]);
+    const { data: searchResults = [], isLoading } = useQuery({
+        queryKey: ["search", debouncedValue],
+        queryFn: () => SearchUsers(debouncedValue),
+        enabled: debouncedValue.length > 0,
+    });
 
-    const [recentSearchs, setRecentSearchs] = useState<User[]>([]);
+    const [recentSearchs, setRecentSearchs] = useState<ExtendedUser[]>([]);
 
     const [showConfirmation, setShowConfirmation] = useState(false);
 
@@ -87,11 +76,11 @@ export const SearchInput = ({
         setRecentSearchs([]);
     };
 
-    const SaveRecentUserSearch = (user: User) => {
+    const SaveRecentUserSearch = (user: ExtendedUser) => {
         let recentSearchsSaved =
             SecureStoreUnencrypted.getItem("recentSearchs");
 
-        let recentSearchs: User[] = [];
+        let recentSearchs: ExtendedUser[] = [];
 
         if (recentSearchsSaved) {
             recentSearchs = JSON.parse(recentSearchsSaved);
@@ -115,28 +104,7 @@ export const SearchInput = ({
         setRecentSearchs(recentSearchs);
     };
 
-    const HandleSearch = useCallback(
-        async (search: string) => {
-            if (searchResults.length === 0) {
-                setIsLoading(true);
-            }
-
-            setLastValueChecked(search);
-
-            try {
-                const response = await api.get(`/user/search/${search}`);
-
-                setSearchResults(response.data);
-            } catch (error) {
-                console.error("Error searching: ", error);
-            } finally {
-                setIsLoading(false);
-            }
-        },
-        [searchResults],
-    );
-
-    const HandleUserSelect = async (user: User) => {
+    const HandleUserSelect = async (user: ExtendedUser) => {
         if (!socket) return;
 
         SaveRecentUserSearch(user);
@@ -145,17 +113,14 @@ export const SearchInput = ({
     };
 
     useEffect(() => {
-        if (!value) return;
+        const timeoutId = setTimeout(() => {
+            if (value !== debouncedValue) {
+                setDebouncedValue(value);
+            }
+        }, 500);
 
-        let delayDebounceFn: NodeJS.Timeout;
-        if (value !== lastValueChecked && value.trim() !== "") {
-            delayDebounceFn = setTimeout(() => {
-                HandleSearch(value);
-            }, 500);
-        }
-
-        return () => clearTimeout(delayDebounceFn);
-    }, [lastValueChecked, value, HandleSearch]);
+        return () => clearTimeout(timeoutId);
+    }, [value, debouncedValue]);
 
     useEffect(() => {
         GetRecentSearchs();
@@ -163,62 +128,16 @@ export const SearchInput = ({
 
     return (
         <VStack gap="$2" mt="$2">
-            {showConfirmation && (
-                <AlertDialog
-                    isOpen={showConfirmation}
-                    onClose={() => setShowConfirmation(false)}
-                >
-                    <AlertDialogBackdrop backgroundColor="#000" />
-                    <AlertDialogContent bgColor="$gray100">
-                        <AlertDialogHeader alignItems="center">
-                            <Text
-                                textAlign="center"
-                                fontSize="$lg"
-                                fontWeight="bold"
-                            >
-                                Limpar histórico de buscas
-                            </Text>
-                            <AlertDialogCloseButton>
-                                <X size={20} color="#000" />
-                            </AlertDialogCloseButton>
-                        </AlertDialogHeader>
-                        <AlertDialogBody mb="$2">
-                            <Text textAlign="center">
-                                Você realmente deseja limpar o historico de
-                                buscas?
-                            </Text>
-                        </AlertDialogBody>
-                        <AlertDialogFooter>
-                            <ButtonGroup gap="$4">
-                                <Button
-                                    flex={1}
-                                    action="negative"
-                                    onPress={() => {
-                                        setShowConfirmation(false);
-                                    }}
-                                >
-                                    <ButtonText textAlign="center">
-                                        Cancelar
-                                    </ButtonText>
-                                </Button>
-                                <Button
-                                    flex={1}
-                                    bg="$primaryDefault"
-                                    action="negative"
-                                    onPress={() => {
-                                        DeleteAllRecentSearchs();
-                                        setShowConfirmation(false);
-                                    }}
-                                >
-                                    <ButtonText textAlign="center">
-                                        Sim
-                                    </ButtonText>
-                                </Button>
-                            </ButtonGroup>
-                        </AlertDialogFooter>
-                    </AlertDialogContent>
-                </AlertDialog>
-            )}
+            <ConfirmationModal
+                isOpen={showConfirmation}
+                onClose={() => setShowConfirmation(false)}
+                onConfirm={() => {
+                    DeleteAllRecentSearchs();
+                    setShowConfirmation(false);
+                }}
+                title="Limpar histórico"
+                message="Você realmente deseja limpar o histórico de buscas?"
+            />
             <HStack gap="$2" alignItems="center">
                 {isSearching && (
                     <Pressable
@@ -274,12 +193,12 @@ export const SearchInput = ({
                     ) : (
                         value.trim() !== "" && (
                             <InputSlot
-                                bgColor="#E5E7EB"
+                                bgColor="$gray100"
                                 pr="$3"
                                 pt="$1"
                                 onPress={() => {
                                     setValue("");
-                                    setSearchResults([]);
+                                    setDebouncedValue("");
                                 }}
                             >
                                 <InputIcon>
@@ -302,7 +221,7 @@ export const SearchInput = ({
                 ) : (
                     <VStack>
                         <ScrollView showsVerticalScrollIndicator={false}>
-                            <VStack gap="$4" w="$full">
+                            <VStack gap="$4" w="$full" mt="$1">
                                 {recentSearchs.length === 0 && value === "" ? (
                                     <Fragment></Fragment>
                                 ) : value === "" ? (
@@ -313,14 +232,14 @@ export const SearchInput = ({
                                         alignItems="center"
                                     >
                                         <Text
-                                            fontSize={21}
+                                            fontSize={23}
                                             color="#000"
                                             fontWeight="bold"
                                         >
                                             Recentes
                                         </Text>
                                         <Text
-                                            fontSize={16}
+                                            fontSize={19}
                                             fontWeight="bold"
                                             letterSpacing="$xl"
                                             color="$primaryDefault"
@@ -334,7 +253,7 @@ export const SearchInput = ({
                                     </HStack>
                                 ) : (
                                     <Text
-                                        fontSize={21}
+                                        fontSize={23}
                                         color="#000"
                                         fontWeight="bold"
                                     >
@@ -353,18 +272,25 @@ export const SearchInput = ({
                                             emails ou nomes
                                         </Text>
                                     ) : (
-                                        <VStack>
+                                        <VStack gap="$2">
                                             {recentSearchs.map(
                                                 (recentSearch, index) => (
                                                     <SavedSearchCard
-                                                        id={recentSearch.id}
+                                                        id={String(
+                                                            recentSearch.id,
+                                                        )}
                                                         name={recentSearch.name}
                                                         icon={
                                                             recentSearch.icon ??
                                                             ""
                                                         }
-                                                        price={100}
+                                                        tags={recentSearch.tags}
                                                         index={index}
+                                                        isFavorited={
+                                                            recentSearch.isFavorited ??
+                                                            false
+                                                        }
+                                                        showFavorite={false}
                                                         onPress={() =>
                                                             HandleUserSelect(
                                                                 recentSearch,
@@ -389,58 +315,30 @@ export const SearchInput = ({
                                 ) : (
                                     <VStack w="$full" gap="$3">
                                         {searchResults.map(
-                                            (searchResult, index) => (
-                                                <Pressable
+                                            (
+                                                searchResult: ExploreUser,
+                                                index: number,
+                                            ) => (
+                                                <SavedSearchCard
+                                                    id={String(searchResult.id)}
+                                                    name={searchResult.name}
+                                                    icon={
+                                                        searchResult.icon ?? ""
+                                                    }
+                                                    isFavorited={
+                                                        searchResult.isFavorited ??
+                                                        false
+                                                    }
+                                                    tags={searchResult.tags}
+                                                    index={index}
+                                                    showFavorite={true}
                                                     onPress={() =>
                                                         HandleUserSelect(
                                                             searchResult,
                                                         )
                                                     }
-                                                    w="$full"
                                                     key={index}
-                                                >
-                                                    <HStack
-                                                        gap="$1"
-                                                        justifyContent="space-between"
-                                                        alignItems="center"
-                                                        p="$1"
-                                                        w="$full"
-                                                    >
-                                                        <HStack gap="$2">
-                                                            <Avatar
-                                                                width={60}
-                                                                height={60}
-                                                                rounded="$lg"
-                                                                bgColor="$primaryDark"
-                                                            >
-                                                                <AvatarFallbackText>
-                                                                    {
-                                                                        searchResult.name
-                                                                    }
-                                                                </AvatarFallbackText>
-                                                                {searchResult.icon && (
-                                                                    <AvatarImage
-                                                                        rounded="$lg"
-                                                                        source={{
-                                                                            uri: searchResult.icon,
-                                                                        }}
-                                                                        alt={`Foto de perfil de ${searchResult.name}`}
-                                                                    />
-                                                                )}
-                                                            </Avatar>
-                                                            <VStack gap="$2">
-                                                                <Text
-                                                                    fontFamily="$arialBody"
-                                                                    size="lg"
-                                                                >
-                                                                    {
-                                                                        searchResult.name
-                                                                    }
-                                                                </Text>
-                                                            </VStack>
-                                                        </HStack>
-                                                    </HStack>
-                                                </Pressable>
+                                                />
                                             ),
                                         )}
                                     </VStack>

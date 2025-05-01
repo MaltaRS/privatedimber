@@ -12,6 +12,9 @@ export const useBlockUser = () => {
                 queryClient.invalidateQueries({
                     queryKey: ["popularUsers"],
                 });
+                queryClient.invalidateQueries({
+                    queryKey: ["blockedUsers"],
+                });
             },
             onError: (error) => {
                 console.error(
@@ -26,6 +29,9 @@ export const useBlockUser = () => {
             onSuccess: () => {
                 queryClient.invalidateQueries({
                     queryKey: ["popularUsers"],
+                });
+                queryClient.invalidateQueries({
+                    queryKey: ["blockedUsers"],
                 });
             },
             onError: (error) => {

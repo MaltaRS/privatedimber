@@ -1,4 +1,4 @@
-import React from "react";
+import { Fragment } from "react";
 
 import { useRouter } from "expo-router";
 
@@ -15,9 +15,10 @@ import {
 
 import MaterialIcons from "@expo/vector-icons/MaterialIcons";
 
-import { Heart, MoreHorizontal } from "lucide-react-native";
+import { Star } from "lucide-react-native";
 
 import { formatLastAccess } from "@/utils/dateFormat";
+import { ProfileMenu } from "./ProfileMenu";
 
 interface ProfileHeaderProps {
     name: string;
@@ -29,7 +30,11 @@ interface ProfileHeaderProps {
     shouldGetUserData?: boolean;
     onFavorite?: () => void;
     isFavorited?: boolean;
-    onOpenMenu?: () => void;
+    onBlock?: () => void;
+    onPayments?: () => void;
+    onReport?: () => void;
+    isBlocked?: boolean;
+    userId?: string;
 }
 
 export const ProfileHeader: React.FC<ProfileHeaderProps> = ({
@@ -42,7 +47,11 @@ export const ProfileHeader: React.FC<ProfileHeaderProps> = ({
     shouldGetUserData = false,
     onFavorite,
     isFavorited,
-    onOpenMenu,
+    onBlock,
+    onPayments,
+    onReport,
+    isBlocked,
+    userId,
 }) => {
     const router = useRouter();
 
@@ -66,7 +75,7 @@ export const ProfileHeader: React.FC<ProfileHeaderProps> = ({
                 </Avatar>
 
                 {!shouldGetUserData ? (
-                    <>
+                    <Fragment>
                         <VStack gap={3}>
                             <HStack alignItems="center">
                                 <Text
@@ -129,7 +138,7 @@ export const ProfileHeader: React.FC<ProfileHeaderProps> = ({
                                 color="#111827"
                             />
                         </Pressable>
-                    </>
+                    </Fragment>
                 ) : (
                     <HStack space="md">
                         <Pressable
@@ -140,28 +149,27 @@ export const ProfileHeader: React.FC<ProfileHeaderProps> = ({
                             p={17}
                             bgColor="$gray100"
                         >
-                            <Heart
+                            <Star
                                 size={26}
-                                color={isFavorited ? "#ef4444" : "#4B5563"}
-                                fill={isFavorited ? "#ef4444" : "none"}
+                                color={isFavorited ? "#FDD015" : "#4B5563"}
+                                fill={isFavorited ? "#FDD015" : "none"}
                             />
                         </Pressable>
-                        <Pressable
-                            onPress={onOpenMenu}
-                            borderRadius="$full"
-                            alignItems="center"
-                            justifyContent="center"
-                            p={17}
-                            bgColor="$gray100"
-                        >
-                            <MoreHorizontal size={26} color="#4B5563" />
-                        </Pressable>
+                        {userId && (
+                            <ProfileMenu
+                                userId={userId}
+                                isBlocked={isBlocked}
+                                onBlock={onBlock || (() => {})}
+                                onPayments={onPayments || (() => {})}
+                                onReport={onReport || (() => {})}
+                            />
+                        )}
                     </HStack>
                 )}
             </HStack>
 
             {shouldGetUserData && (
-                <>
+                <Fragment>
                     <VStack alignItems="flex-start" mt="$2">
                         <HStack alignItems="center" space="sm">
                             <Text
@@ -192,7 +200,7 @@ export const ProfileHeader: React.FC<ProfileHeaderProps> = ({
                                 @{username}
                             </Text>
                             {lastAccessAt && (
-                                <>
+                                <Fragment>
                                     <Box
                                         width={4}
                                         height={4}
@@ -202,28 +210,28 @@ export const ProfileHeader: React.FC<ProfileHeaderProps> = ({
                                     <Text
                                         fontFamily="$novaBody"
                                         fontSize="$md"
-                                        lineHeight={20}
                                         color="$gray600"
+                                        lineHeight={20}
                                     >
                                         Ultima conexão{" "}
                                         {formatLastAccess(lastAccessAt)}
                                     </Text>
-                                </>
+                                </Fragment>
                             )}
                         </HStack>
-
-                        {bio && (
-                            <Text
-                                fontFamily="$novaBody"
-                                fontSize="$md"
-                                color="$black"
-                                lineHeight={24}
-                            >
-                                {bio}
-                            </Text>
-                        )}
                     </VStack>
-                </>
+                </Fragment>
+            )}
+
+            {bio && (
+                <Text
+                    fontFamily="$novaBody"
+                    fontSize="$md"
+                    color="$gray600"
+                    lineHeight={20}
+                >
+                    {bio}
+                </Text>
             )}
         </VStack>
     );

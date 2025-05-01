@@ -248,9 +248,10 @@ export const SendMessageForm = ({
             return;
         }
 
-        const { imagePercentage, videoPercentage, attachmentPercentage } =
-            priceSettings;
         const basePrice = contactPrice ?? 10000;
+        const imagePercentage = priceSettings.imagePercentage ?? 10;
+        const videoPercentage = priceSettings.videoPercentage ?? 10;
+        const attachmentPercentage = priceSettings.attachmentPercentage ?? 10;
 
         if (imagePercentage < 0 || imagePercentage > 100) {
             alert(
@@ -415,7 +416,7 @@ export const SendMessageForm = ({
                             >
                                 Para incluir um(a) {activePermissionNeededText}{" "}
                                 na sua mensagem, será cobrado um valor adicional
-                                de
+                                de{" "}
                                 <Text fontWeight="$bold">
                                     {permissionFor && permissionFor.length > 0
                                         ? permissionFor[
@@ -434,7 +435,7 @@ export const SendMessageForm = ({
                                                     ?.videoPercentage ?? 10)
                                         : 10}
                                     %
-                                </Text>
+                                </Text>{" "}
                                 sobre o valor original. Você poderá excluir o
                                 arquivo antes do envio da mensagem, se
                                 necessário. Deseja continuar?

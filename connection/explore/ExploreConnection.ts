@@ -32,3 +32,9 @@ export const GetMostPopular = async ({
 
     return data;
 };
+
+export const SearchUsers = async (query: string) => {
+    if (!query || query.trim() === "") return [];
+    const response = await api.get(`/user/search/${query}`);
+    return response.data;
+};

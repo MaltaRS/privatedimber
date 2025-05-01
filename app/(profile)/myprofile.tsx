@@ -44,8 +44,6 @@ export default function ProfileScreen() {
                             lastAccessAt={user.lastAccessAt}
                             verifiedAt={user.verifiedAt}
                             shouldGetUserData={false}
-                            onFavorite={() => {}}
-                            onOpenMenu={() => {}}
                         />
 
                         <HStack bg="$gray100" borderRadius="$full" mt="$2">

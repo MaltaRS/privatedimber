@@ -142,6 +142,7 @@ export const ExploreCard = ({
                 borderColor="#E5E7EB"
                 borderWidth={0.9}
                 rounded="$3xl"
+                elevation={6}
             >
                 <VStack alignItems="center">
                     <CardAvatar name={name} imageLink={icon} />

@@ -24,11 +24,6 @@ export type SelectedFile = {
     name?: string;
 } | null;
 
-type Attachment = {
-    file: SelectedFile;
-    caption: string;
-};
-
 export const AttachmentsMenu = ({
     conversationId,
     sendMessage,
