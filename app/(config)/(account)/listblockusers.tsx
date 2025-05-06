@@ -17,6 +17,7 @@ import {
     Avatar,
     AvatarImage,
     AvatarFallbackText,
+    ScrollView,
 } from "@/gluestackComponents";
 
 import HeaderContainer from "@/components/HeaderContainer";
@@ -111,10 +112,10 @@ const ListBlockUsersScreen = () => {
 
     return (
         <BaseContainer backgroundColor="$gray50">
-            <VStack gap="$4">
+            <VStack gap="$4" flex={1}>
                 <HeaderContainer title="Usuários Bloqueados" />
 
-                <VStack p="$1" gap="$4">
+                <VStack p="$1" gap="$4" flex={1}>
                     <Input variant="rounded" size="xl" borderWidth={0}>
                         <InputSlot bgColor="$gray200" pl="$5" pt="$1">
                             <InputIcon>
@@ -158,7 +159,7 @@ const ListBlockUsersScreen = () => {
                             bgColor="$white"
                             borderRadius="$xl"
                             elevation={2}
-                            overflow="hidden"
+                            flex={1}
                         >
                             <FlatList
                                 data={filteredUsers}

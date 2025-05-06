@@ -26,6 +26,7 @@ import { Button } from "../ui/Button";
 import { formatMoney } from "@/utils/money";
 
 type InternalMessagesProps = {
+    isLoading: boolean;
     sendToPayment: boolean;
     contactConversation: MessagesPayload;
     paymentItems: PaymentItems;
@@ -61,6 +62,7 @@ type InternalMessage = {
 };
 
 export const InternalMessages = ({
+    isLoading,
     sendToPayment,
     contactName,
     paymentItems,
@@ -94,6 +96,8 @@ export const InternalMessages = ({
     const [internalMessages, setInternalMessages] = useState<InternalMessage[]>(
         [],
     );
+
+    const [isReady, setIsReady] = useState(false);
 
     useEffect(() => {
         const msgs: InternalMessage[] = [];
@@ -426,289 +430,311 @@ export const InternalMessages = ({
         setAnswerNotNeeded,
     ]);
 
+    useEffect(() => {
+        if (contactConversation && !isLoading) {
+            setIsReady(true);
+        }
+    }, [contactConversation, isLoading]);
+
     return (
         <Fragment>
-            {internalMessages
-                .filter((msg) => msg.active && msg.type === "floating")
-                .map((msg, index) => (
-                    <HStack
-                        key={index}
-                        w="$full"
-                        py="$6"
-                        justifyContent="center"
-                        alignContent="center"
-                    >
-                        <VStack
-                            maxWidth="92%"
-                            bgColor="$white"
-                            rounded="$xl"
-                            py={msg.buttons.length > 0 ? "$2" : "$3"}
-                            px="$4"
+            {isReady &&
+                internalMessages
+                    .filter((msg) => msg.active && msg.type === "floating")
+                    .map((msg, index) => (
+                        <HStack
+                            key={index}
+                            w="$full"
+                            py="$6"
+                            justifyContent="center"
+                            alignContent="center"
                         >
-                            {msg.text.title && (
-                                <Text
-                                    mt="$1"
-                                    textAlign="center"
-                                    fontFamily="$arialHeading"
-                                    fontWeight="$bold"
-                                    fontSize={17}
-                                    color="$black"
-                                    mb="$1"
-                                >
-                                    {msg.text.title}
-                                </Text>
-                            )}
-                            {msg.text.content && (
-                                <Text
-                                    textAlign="center"
-                                    fontFamily="$arialHeading"
-                                    fontWeight="$bold"
-                                    fontSize={msg.text.fontSize}
-                                    color={msg.text.color}
-                                    lineHeight={22}
-                                    mb={msg.buttons.length > 0 ? "$4" : "$0"}
-                                >
-                                    {msg.text.content}
-                                </Text>
-                            )}
-                            {msg.items && (
-                                <Fragment>
-                                    <VStack gap="$1">
-                                        {msg.items
-                                            .filter(
-                                                (item) =>
-                                                    parseFloat(item.value) > 0,
-                                            )
-                                            .map((item, i) => (
-                                                <HStack
-                                                    key={i}
-                                                    justifyContent="space-between"
-                                                >
-                                                    <Text
-                                                        color="$gray600"
-                                                        fontSize={14}
-                                                    >
-                                                        {item.name}
-                                                    </Text>
-                                                    <Text
-                                                        color="$gray600"
-                                                        fontSize={14}
-                                                    >
-                                                        R$ {item.value}
-                                                    </Text>
-                                                </HStack>
-                                            ))}
-                                    </VStack>
-                                    <Divider bgColor="$gray200" mt="$2" />
-                                    <HStack
-                                        justifyContent="space-between"
-                                        mt="$2"
-                                        mb="$3"
+                            <VStack
+                                maxWidth="92%"
+                                bgColor="$white"
+                                rounded="$xl"
+                                py={msg.buttons.length > 0 ? "$2" : "$3"}
+                                px="$4"
+                            >
+                                {msg.text.title && (
+                                    <Text
+                                        mt="$1"
+                                        textAlign="center"
+                                        fontFamily="$arialHeading"
+                                        fontWeight="$bold"
+                                        fontSize={17}
+                                        color="$black"
+                                        mb="$1"
                                     >
-                                        <Text
-                                            color="$black"
-                                            fontSize={17}
-                                            fontWeight="$bold"
-                                        >
-                                            Total
-                                        </Text>
-                                        <Text
-                                            color="$black"
-                                            fontSize={17}
-                                            fontWeight="$bold"
-                                        >
-                                            {formatMoney(
-                                                msg.items.reduce(
-                                                    (acc, item) =>
-                                                        acc +
-                                                        parseFloat(item.value),
-                                                    0,
-                                                ),
-                                            )}
-                                        </Text>
-                                    </HStack>
-                                </Fragment>
-                            )}
-                            <VStack gap="$2">
-                                {msg.buttons.map((button, i) => (
-                                    <Button
-                                        key={i}
-                                        w={"$full"}
-                                        bgColor="$gray100"
-                                        rounded="$lg"
-                                        height={36}
-                                        onPress={button.action}
+                                        {msg.text.title}
+                                    </Text>
+                                )}
+                                {msg.text.content && (
+                                    <Text
+                                        textAlign="center"
+                                        fontFamily="$arialHeading"
+                                        fontWeight="$bold"
+                                        fontSize={msg.text.fontSize}
+                                        color={msg.text.color}
+                                        lineHeight={22}
+                                        mb={
+                                            msg.buttons.length > 0 ? "$4" : "$0"
+                                        }
                                     >
-                                        <ButtonText
-                                            size="md"
-                                            textAlign="center"
-                                            color={
-                                                button.textColor
-                                                    ? button.textColor
-                                                    : button.type === "positive"
-                                                      ? "$primaryDefault"
-                                                      : "$negative"
-                                            }
-                                            fontWeight="$bold"
+                                        {msg.text.content}
+                                    </Text>
+                                )}
+                                {msg.items && (
+                                    <Fragment>
+                                        <VStack gap="$1">
+                                            {msg.items
+                                                .filter(
+                                                    (item) =>
+                                                        parseFloat(item.value) >
+                                                        0,
+                                                )
+                                                .map((item, i) => (
+                                                    <HStack
+                                                        key={i}
+                                                        justifyContent="space-between"
+                                                    >
+                                                        <Text
+                                                            color="$gray600"
+                                                            fontSize={14}
+                                                        >
+                                                            {item.name}
+                                                        </Text>
+                                                        <Text
+                                                            color="$gray600"
+                                                            fontSize={14}
+                                                        >
+                                                            R$ {item.value}
+                                                        </Text>
+                                                    </HStack>
+                                                ))}
+                                        </VStack>
+                                        <Divider bgColor="$gray200" mt="$2" />
+                                        <HStack
+                                            justifyContent="space-between"
+                                            mt="$2"
+                                            mb="$3"
                                         >
-                                            {button.text}
-                                        </ButtonText>
-                                    </Button>
-                                ))}
-                            </VStack>
-                        </VStack>
-                    </HStack>
-                ))}
-            {internalMessages
-                .filter((msg) => msg.active && msg.type === "actionSheet")
-                .map((msg, index) => (
-                    <Actionsheet
-                        key={index}
-                        isOpen={
-                            sendToPayment === false
-                                ? (needAnswerOpen ?? answerNotNeeded ?? true)
-                                : false
-                        }
-                        onClose={() => {
-                            router.back();
-                        }}
-                        closeOnOverlayClick={false}
-                        zIndex={999}
-                    >
-                        <ActionsheetBackdrop pointerEvents="none" />
-                        <ActionsheetContent zIndex={999} bgColor="white">
-                            <ActionsheetItem>
-                                <VStack gap="$2" w="$full">
-                                    {msg.text.title && (
-                                        <Text
-                                            mt="$1"
-                                            textAlign="center"
-                                            fontFamily="$arialHeading"
-                                            fontWeight="$bold"
-                                            fontSize={19}
-                                            color="$black"
-                                            mb="$1"
-                                        >
-                                            {msg.text.title}
-                                        </Text>
-                                    )}
-                                    {msg.text.content && (
-                                        <Text
-                                            textAlign="center"
-                                            fontFamily="$arialHeading"
-                                            fontWeight="$bold"
-                                            fontSize={msg.text.fontSize}
-                                            color={msg.text.color}
-                                            lineHeight={22}
-                                            mb={
-                                                msg.buttons.length > 0
-                                                    ? "$4"
-                                                    : "$0"
-                                            }
-                                        >
-                                            {msg.text.content}
-                                        </Text>
-                                    )}
-                                    {msg.items && (
-                                        <Fragment>
-                                            <VStack gap="$1">
-                                                {msg.items
-                                                    .filter(
-                                                        (item) =>
+                                            <Text
+                                                color="$black"
+                                                fontSize={17}
+                                                fontWeight="$bold"
+                                            >
+                                                Total
+                                            </Text>
+                                            <Text
+                                                color="$black"
+                                                fontSize={17}
+                                                fontWeight="$bold"
+                                            >
+                                                {formatMoney(
+                                                    msg.items.reduce(
+                                                        (acc, item) =>
+                                                            acc +
                                                             parseFloat(
                                                                 item.value,
-                                                            ) > 0,
-                                                    )
-                                                    .map((item, i) => (
-                                                        <HStack
-                                                            key={i}
-                                                            justifyContent="space-between"
-                                                        >
-                                                            <Text
-                                                                color="$gray600"
-                                                                fontSize={14}
-                                                            >
-                                                                {item.name}
-                                                            </Text>
-                                                            <Text
-                                                                color="$gray600"
-                                                                fontSize={14}
-                                                            >
-                                                                R$ {item.value}
-                                                            </Text>
-                                                        </HStack>
-                                                    ))}
-                                            </VStack>
-                                            <Divider
-                                                bgColor="$gray200"
-                                                mt="$2"
-                                            />
-                                            <HStack
-                                                justifyContent="space-between"
-                                                mt="$2"
-                                                mb="$3"
+                                                            ),
+                                                        0,
+                                                    ),
+                                                )}
+                                            </Text>
+                                        </HStack>
+                                    </Fragment>
+                                )}
+                                <VStack gap="$2">
+                                    {msg.buttons.map((button, i) => (
+                                        <Button
+                                            key={i}
+                                            w={"$full"}
+                                            bgColor="$gray100"
+                                            rounded="$lg"
+                                            height={36}
+                                            onPress={button.action}
+                                        >
+                                            <ButtonText
+                                                size="md"
+                                                textAlign="center"
+                                                color={
+                                                    button.textColor
+                                                        ? button.textColor
+                                                        : button.type ===
+                                                            "positive"
+                                                          ? "$primaryDefault"
+                                                          : "$negative"
+                                                }
+                                                fontWeight="$bold"
                                             >
-                                                <Text
-                                                    color="$black"
-                                                    fontSize={17}
-                                                    fontWeight="$bold"
-                                                >
-                                                    Total
-                                                </Text>
-                                                <Text
-                                                    color="$black"
-                                                    fontSize={17}
-                                                    fontWeight="$bold"
-                                                >
-                                                    {formatMoney(
-                                                        msg.items.reduce(
-                                                            (acc, item) =>
-                                                                acc +
+                                                {button.text}
+                                            </ButtonText>
+                                        </Button>
+                                    ))}
+                                </VStack>
+                            </VStack>
+                        </HStack>
+                    ))}
+            {isReady &&
+                internalMessages
+                    .filter((msg) => msg.active && msg.type === "actionSheet")
+                    .map((msg, index) => (
+                        <Actionsheet
+                            key={index}
+                            isOpen={
+                                sendToPayment === false
+                                    ? (needAnswerOpen ??
+                                      answerNotNeeded ??
+                                      true)
+                                    : false
+                            }
+                            onClose={() => {
+                                router.back();
+                            }}
+                            closeOnOverlayClick={false}
+                            zIndex={999}
+                        >
+                            <ActionsheetBackdrop pointerEvents="none" />
+                            <ActionsheetContent zIndex={999} bgColor="white">
+                                <ActionsheetItem>
+                                    <VStack gap="$2" w="$full">
+                                        {msg.text.title && (
+                                            <Text
+                                                mt="$1"
+                                                textAlign="center"
+                                                fontFamily="$arialHeading"
+                                                fontWeight="$bold"
+                                                fontSize={19}
+                                                color="$black"
+                                                mb="$1"
+                                            >
+                                                {msg.text.title}
+                                            </Text>
+                                        )}
+                                        {msg.text.content && (
+                                            <Text
+                                                textAlign="center"
+                                                fontFamily="$arialHeading"
+                                                fontWeight="$bold"
+                                                fontSize={msg.text.fontSize}
+                                                color={msg.text.color}
+                                                lineHeight={22}
+                                                mb={
+                                                    msg.buttons.length > 0
+                                                        ? "$4"
+                                                        : "$0"
+                                                }
+                                            >
+                                                {msg.text.content}
+                                            </Text>
+                                        )}
+                                        {msg.items && (
+                                            <Fragment>
+                                                <VStack gap="$1">
+                                                    {msg.items
+                                                        .filter(
+                                                            (item) =>
                                                                 parseFloat(
                                                                     item.value,
-                                                                ),
-                                                            0,
-                                                        ),
-                                                    )}
-                                                </Text>
-                                            </HStack>
-                                        </Fragment>
-                                    )}
-                                    <VStack gap="$2">
-                                        {msg.buttons.map((button, i) => (
-                                            <Button
-                                                key={i}
-                                                bgColor={
-                                                    button.type === "positive"
-                                                        ? "$primaryDefault"
-                                                        : "$transparent"
-                                                }
-                                                onPress={button.action}
-                                            >
-                                                <ButtonText
-                                                    textAlign="center"
-                                                    fontFamily="$heading"
-                                                    size="lg"
-                                                    color={
-                                                        button.textColor
-                                                            ? button.textColor
-                                                            : button.type ===
-                                                                "positive"
-                                                              ? "$white"
-                                                              : "$primaryDefault"
-                                                    }
-                                                    fontWeight="$bold"
+                                                                ) > 0,
+                                                        )
+                                                        .map((item, i) => (
+                                                            <HStack
+                                                                key={i}
+                                                                justifyContent="space-between"
+                                                            >
+                                                                <Text
+                                                                    color="$gray600"
+                                                                    fontSize={
+                                                                        14
+                                                                    }
+                                                                >
+                                                                    {item.name}
+                                                                </Text>
+                                                                <Text
+                                                                    color="$gray600"
+                                                                    fontSize={
+                                                                        14
+                                                                    }
+                                                                >
+                                                                    R${" "}
+                                                                    {item.value}
+                                                                </Text>
+                                                            </HStack>
+                                                        ))}
+                                                </VStack>
+                                                <Divider
+                                                    bgColor="$gray200"
+                                                    mt="$2"
+                                                />
+                                                <HStack
+                                                    justifyContent="space-between"
+                                                    mt="$2"
+                                                    mb="$3"
                                                 >
-                                                    {button.text}
-                                                </ButtonText>
-                                            </Button>
-                                        ))}
+                                                    <Text
+                                                        color="$black"
+                                                        fontSize={17}
+                                                        fontWeight="$bold"
+                                                    >
+                                                        Total
+                                                    </Text>
+                                                    <Text
+                                                        color="$black"
+                                                        fontSize={17}
+                                                        fontWeight="$bold"
+                                                    >
+                                                        {formatMoney(
+                                                            msg.items.reduce(
+                                                                (acc, item) =>
+                                                                    acc +
+                                                                    parseFloat(
+                                                                        item.value,
+                                                                    ),
+                                                                0,
+                                                            ),
+                                                        )}
+                                                    </Text>
+                                                </HStack>
+                                            </Fragment>
+                                        )}
+                                        <VStack gap="$2">
+                                            {msg.buttons.map((button, i) => (
+                                                <Button
+                                                    key={i}
+                                                    bgColor={
+                                                        button.type ===
+                                                        "positive"
+                                                            ? "$primaryDefault"
+                                                            : "$transparent"
+                                                    }
+                                                    onPress={button.action}
+                                                >
+                                                    <ButtonText
+                                                        textAlign="center"
+                                                        fontFamily="$heading"
+                                                        size="lg"
+                                                        color={
+                                                            button.textColor
+                                                                ? button.textColor
+                                                                : button.type ===
+                                                                    "positive"
+                                                                  ? "$white"
+                                                                  : "$primaryDefault"
+                                                        }
+                                                        fontWeight="$bold"
+                                                    >
+                                                        {button.text}
+                                                    </ButtonText>
+                                                </Button>
+                                            ))}
+                                        </VStack>
                                     </VStack>
-                                </VStack>
-                            </ActionsheetItem>
-                        </ActionsheetContent>
-                    </Actionsheet>
-                ))}
+                                </ActionsheetItem>
+                            </ActionsheetContent>
+                        </Actionsheet>
+                    ))}
         </Fragment>
     );
 };

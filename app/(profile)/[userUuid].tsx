@@ -83,7 +83,7 @@ export default function ProfileScreen() {
               price: userData?.user?.price || null,
               isFavorited: userData?.isFavorited,
               verifiedAt: userData?.user?.verifiedAt || null,
-              isBlocked,
+              isBlocked: !!isBlocked,
           } as ExtendedUser)
         : ({ ...user, price: user?.price || null } as ExtendedUser);
 
@@ -124,9 +124,7 @@ export default function ProfileScreen() {
         if (validatedUser.isBlocked) {
             unblock.mutate(validatedUser.id.toString(), {
                 onSuccess: () => {
-                    queryClient.invalidateQueries({
-                        queryKey: ["isBlocked", userUuid],
-                    });
+                    queryClient.setQueryData(["isBlocked", userUuid], false);
                     setShowBlockModal(false);
                     toast({
                         title: "Usuário desbloqueado com sucesso",
@@ -137,9 +135,7 @@ export default function ProfileScreen() {
         } else {
             block.mutate(validatedUser.id.toString(), {
                 onSuccess: () => {
-                    queryClient.invalidateQueries({
-                        queryKey: ["isBlocked", userUuid],
-                    });
+                    queryClient.setQueryData(["isBlocked", userUuid], true);
                     setShowBlockModal(false);
                     toast({
                         title: "Usuário bloqueado com sucesso",

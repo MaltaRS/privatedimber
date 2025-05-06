@@ -28,7 +28,7 @@ export const ConfigCard = ({ items }: ConfigCardProps) => {
 
     return (
         <VStack bgColor="#fff" pl="$4" borderRadius="$xl" elevation={1}>
-            {items.map((item, index) => (
+            {items.map((item) => (
                 <Pressable
                     key={item.title}
                     onPress={() => {

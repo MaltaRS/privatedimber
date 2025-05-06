@@ -336,6 +336,7 @@ const ChatsScreen = () => {
                                             ),
                                         )}
                                     <InternalMessages
+                                        isLoading={isLoading}
                                         handleSendToPayment={() => {
                                             setSendToPayment(true);
                                         }}
