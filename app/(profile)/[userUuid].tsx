@@ -80,8 +80,8 @@ export default function ProfileScreen() {
     const validatedUser = shouldGetUserData
         ? ({
               ...userData?.user,
-              price: userData?.user?.price || null,
               isFavorited: userData?.isFavorited,
+              price: userData?.user?.price || null,
               verifiedAt: userData?.user?.verifiedAt || null,
               isBlocked: !!isBlocked,
           } as ExtendedUser)
@@ -146,21 +146,20 @@ export default function ProfileScreen() {
         }
     };
 
-    if (!validatedUser) {
-        if (router.canGoBack()) {
-            toast({
-                title: "Usuário não encontrado",
-                preset: "error",
-            });
-            router.back();
-        } else {
-            router.push("/explore");
-        }
-
+    if (shouldGetUserData && userData == null && !isLoading) {
         return (
             <BaseContainer>
+                <HeaderContainer title="Perfil" />
+
                 <VStack flex={1} alignItems="center" justifyContent="center">
-                    <Text>Usuário não encontrado</Text>
+                    <Text
+                        fontSize="$lg"
+                        fontWeight="$medium"
+                        textAlign="center"
+                    >
+                        Perfil não encontrado, ou desabilitado pelo usuário ou
+                        plataforma para receber mensagens
+                    </Text>
                 </VStack>
             </BaseContainer>
         );

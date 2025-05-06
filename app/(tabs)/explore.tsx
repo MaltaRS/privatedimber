@@ -9,6 +9,7 @@ import {
     ScrollView,
     VStack,
     Text,
+    Pressable,
     FlatList,
 } from "@/gluestackComponents";
 
@@ -246,15 +247,19 @@ const ExploreScreen = () => {
                         )}
                     </VStack>
                     <VStack gap="$1" flex={1}>
-                        <Text
-                            pb="$1"
-                            fontFamily="$novaTitle"
-                            fontSize={20}
-                            color="#0f1010"
-                            lineHeight={28}
+                        <Pressable
+                            onPress={() => router.push("/(profile)/1234")}
                         >
-                            Mais populares
-                        </Text>
+                            <Text
+                                pb="$1"
+                                fontFamily="$novaTitle"
+                                fontSize={20}
+                                color="#0f1010"
+                                lineHeight={28}
+                            >
+                                Mais populares
+                            </Text>
+                        </Pressable>
                         {popularUsers.length === 0 && !isLoadingPopularUsers ? (
                             <VStack
                                 flex={1}

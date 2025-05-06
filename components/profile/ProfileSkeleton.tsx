@@ -15,30 +15,29 @@ export const ProfileSkeleton = () => {
                 <SkeletonBox width={82} height={82} borderRadius={100} />
 
                 <HStack space="md">
-                    <SkeletonBox width={48} height={48} borderRadius={100} />
-                    <SkeletonBox width={48} height={48} borderRadius={100} />
+                    <SkeletonBox width={60} height={60} borderRadius={100} />
+                    <SkeletonBox width={60} height={60} borderRadius={100} />
                 </HStack>
             </HStack>
 
-            <VStack gap={3}>
+            <VStack gap="$2">
                 <HStack alignItems="center" space="sm">
                     <SkeletonBox width={200} height={28} borderRadius={4} />
-                    <SkeletonBox width={24} height={24} borderRadius={100} />
                 </HStack>
 
                 <HStack alignItems="center" space="sm">
                     <SkeletonBox width={150} height={20} borderRadius={4} />
                     <SkeletonBox width={4} height={4} borderRadius={100} />
-                    <SkeletonBox width={180} height={20} borderRadius={4} />
+                    <SkeletonBox width={120} height={20} borderRadius={4} />
                 </HStack>
 
                 <SkeletonBox width={280} height={48} borderRadius={4} />
             </VStack>
 
-            <HStack bg="$gray100" borderRadius="$full" p="$4">
+            <HStack bg="$gray100" borderRadius="$full" p="$2">
                 <HStack width="100%" justifyContent="space-around">
-                    <SkeletonBox width={100} height={24} borderRadius={100} />
-                    <SkeletonBox width={100} height={24} borderRadius={100} />
+                    <SkeletonBox width={120} height={32} borderRadius={100} />
+                    <SkeletonBox width={120} height={32} borderRadius={100} />
                 </HStack>
             </HStack>
 
