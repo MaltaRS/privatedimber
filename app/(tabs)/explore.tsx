@@ -24,6 +24,8 @@ import { FavoriteCardSkeleton } from "@/components/tabs/explore/FavoriteCardSkel
 
 import { useNotifications } from "@/hooks/NotificationHook";
 
+import { useTranslation } from 'react-i18next';
+
 import Animated, {
     useAnimatedStyle,
     withTiming,
@@ -49,6 +51,7 @@ import { handleFavorite } from "@/utils/favorites";
 const ExploreScreen = () => {
     const router = useRouter();
     const queryClient = useQueryClient();
+    const { t } = useTranslation();
 
     const { notificationsCount } = useNotifications();
 
@@ -147,7 +150,7 @@ const ExploreScreen = () => {
     return (
         <BaseContainer gap="$2">
             <MainTitle
-                title="Explorar"
+                title={t("explore.title")}
                 onPress={() => router.push("/notifications")}
                 notificationsCount={notificationsCount}
                 hide={isSearching}
@@ -188,7 +191,7 @@ const ExploreScreen = () => {
                                     color="#000"
                                     lineHeight={28}
                                 >
-                                    Favoritos
+                                    {t("explore.favorites")}
                                 </Text>
                                 <ScrollView
                                     horizontal
@@ -227,7 +230,7 @@ const ExploreScreen = () => {
                                     color="#000"
                                     lineHeight={28}
                                 >
-                                    Favoritos
+                                    {t("explore.favorites")}
                                 </Text>
                                 <ScrollView
                                     horizontal
@@ -257,7 +260,7 @@ const ExploreScreen = () => {
                                 color="#0f1010"
                                 lineHeight={28}
                             >
-                                Mais populares
+                                {t("explore.mostPopular")}
                             </Text>
                         </Pressable>
                         {popularUsers.length === 0 && !isLoadingPopularUsers ? (
@@ -275,7 +278,7 @@ const ExploreScreen = () => {
                                     fontWeight="$bold"
                                     mt="$4"
                                 >
-                                    Nenhum usuário encontrado
+                                    {t("explore.noUsersFound")}
                                 </Text>
                             </VStack>
                         ) : (

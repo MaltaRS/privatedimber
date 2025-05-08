@@ -1,13 +1,15 @@
 import { ScrollView, VStack } from "@/gluestackComponents";
-
 import HeaderContainer from "@/components/HeaderContainer";
 import { BaseContainer } from "@/components/BaseContainer";
+import { useTranslation } from "react-i18next";
 
 const Terms = () => {
+    const { t } = useTranslation();
+
     return (
         <BaseContainer>
             <VStack gap="$4">
-                <HeaderContainer title="Termos de Uso" />
+                <HeaderContainer title={t("terms.title")} />
                 <ScrollView
                     showsVerticalScrollIndicator={false}
                     contentContainerStyle={{

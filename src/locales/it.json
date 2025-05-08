@@ -1,0 +1,261 @@
+{
+    "about": {
+        "title": "Informazioni",
+        "terms": "Termini di utilizzo",
+        "privacy": "Informativa sulla privacy"
+    },
+    "accountType": {
+        "title": "Tipo di Account",
+        "subtitle": "Scegli il profilo migliore per la tua esperienza su Dimber",
+        "save": "Salva",
+        "saving": "Salvataggio...",
+        "successTitle": "Tipo di account aggiornato",
+        "successMessage": "Il tuo tipo di account è stato aggiornato con successo.",
+        "errorTitle": "Errore",
+        "errorMessage": "Impossibile aggiornare il tipo di account. Riprova.",
+        "professional": {
+            "title": "Account Professionale",
+            "description": "Il tuo profilo sarà visibile nella pagina di esplorazione e potrà ricevere messaggi a pagamento."
+        },
+        "regular": {
+            "title": "Account Regolare",
+            "description": "Il tuo profilo sarà privato e non potrà ricevere messaggi a pagamento."
+        }
+    },
+    "blocked": {
+        "title": "Utenti Bloccati",
+        "searchPlaceholder": "Cerca utente bloccato",
+        "noSearchResults": "Nessun utente bloccato trovato per questa ricerca.",
+        "noBlockedUsers": "Non hai utenti bloccati.",
+        "unblock": "Sblocca",
+        "unblocking": "Sblocco...",
+        "successTitle": "Utente sbloccato",
+        "successMessage": "L'utente è stato sbloccato con successo.",
+        "errorTitle": "Errore",
+        "errorMessage": "Impossibile sbloccare l'utente. Riprova."
+    },
+    "changePassword": {
+        "title": "Cambia Password"
+    },
+    "chatOptions": {
+        "title": "Chat",
+        "export": "Esporta chat",
+        "archiveAll": "Archivia tutte le chat",
+        "deleteAll": "Elimina tutte le chat"
+    },
+    "chats": {
+        "title": "Chat",
+        "search": "Cerca",
+        "emptyMessage": "Invia un messaggio e attendi una nuova connessione.",
+        "viewProfile": "Vedi Profilo"
+    },
+    "config": {
+        "title": "Impostazioni",
+        "viewProfile": "Vedi profilo",
+        "sections": {
+            "messages": "Messaggi",
+            "account": "Account",
+            "app": "App"
+        },
+        "items": {
+            "notifications": "Notifiche",
+            "setValues": "Imposta valori",
+            "permissions": "Permessi",
+            "conversations": "Conversazioni",
+            "accountType": "Tipo di account",
+            "privacy": "Privacy",
+            "security": "Sicurezza",
+            "help": "Aiuto",
+            "devicePermissions": "Permessi del dispositivo",
+            "language": "Lingua",
+            "inviteFriends": "Invita amici",
+            "about": "Informazioni",
+            "signOut": "Esci"
+        },
+        "modal": {
+            "title": "Vuoi davvero uscire?",
+            "message": "Sei sicuro di voler uscire dal tuo account?"
+        }
+    },
+    "editProfile": {
+        "title": "Modifica Profilo",
+        "save": "Salva",
+        "successTitle": "Successo",
+        "imageSuccess": "Immagine del profilo aggiornata con successo!",
+        "imageErrorPrefix": "Impossibile aggiornare l'immagine del profilo a causa di:",
+        "updateSuccess": "Profilo aggiornato con successo!",
+        "usernameInUse": "Nome utente già in uso",
+        "updateError": "Impossibile aggiornare il profilo. Errore:",
+        "permissionTitle": "Permesso richiesto",
+        "cameraPermission": "Abbiamo bisogno del permesso per accedere alla fotocamera.",
+        "galleryPermission": "Abbiamo bisogno del permesso per accedere alle tue foto.",
+        "imageTooLarge": "Immagine troppo grande. Scegli un'immagine fino a 5MB.",
+        "imageCheckError": "Errore nel controllo della dimensione dell'immagine.",
+        "imageUploadError": "Impossibile caricare l'immagine.",
+        "confirmSaveTitle": "Salva modifiche",
+        "confirmSaveMessage": "Vuoi salvare le modifiche apportate al profilo?",
+        "confirmBackTitle": "Annulla modifiche",
+        "confirmBackMessage": "Sei sicuro di voler uscire? Tutte le modifiche non salvate andranno perse."
+    },
+    "error": {
+        "title": "Errore",
+        "createConversation": "Impossibile avviare la conversazione, riprova più tardi!"
+    },
+    "explore": {
+        "title": "Esplora",
+        "favorites": "Preferiti",
+        "mostPopular": "Più Popolari",
+        "noUsersFound": "Nessun utente trovato"
+    },
+    "help": {
+        "title": "Aiuto"
+    },
+    "interests": {
+        "title": "Interessi",
+        "save": "Salva",
+        "instruction": "Seleziona almeno 3 categorie per personalizzare la tua esperienza.",
+        "toastSuccess": "Interessi aggiornati con successo",
+        "errorTitle": "Seleziona più interessi",
+        "errorMessage": "Devi selezionare almeno 3 interessi per continuare."
+    },
+    "invite": {
+        "header": "Invita amici",
+        "title": "Condividi Dimber e ottieni vantaggi!",
+        "description": "Invita i tuoi amici e goditi vantaggi esclusivi (elencali qui)",
+        "codeLabel": "Il tuo codice di invito:",
+        "copiedTitle": "Copiato!",
+        "copiedMessage": "Il tuo codice di invito è stato copiato.",
+        "qrTitle": "Condividi con codice QR",
+        "saveQR": "Salva codice QR",
+        "haveQuestions": "Hai delle domande?",
+        "clickToRead": "Clicca qui e leggi i",
+        "termsLink": "termini e condizioni",
+        "shareButton": "Condividi codice"
+    },
+    "language": {
+        "title": "Lingue",
+        "autoTranslate": "Traduci automaticamente",
+        "interfaceLanguage": "Lingua dell'interfaccia",
+        "autoActivatedTitle": "Lingua automatica attivata",
+        "autoActivatedDescription": "L'app ora segue la lingua del sistema.",
+        "changedTitle": "Lingua cambiata",
+        "changedDescription": "Lingua dell'interfaccia aggiornata.",
+        "ptBR": "Portoghese BR",
+        "ptPT": "Portoghese PT",
+        "en": "Inglese",
+        "es": "Spagnolo",
+        "it": "Italiano",
+        "fr": "Francese"
+    },
+    "notifications": {
+        "title": "Notifiche",
+        "sectionMessages": "Notifiche dei messaggi",
+        "sectionEmail": "Notifiche email",
+        "showNotifications": "Mostra notifiche",
+        "solicitation": "Richiesta di messaggio",
+        "payments": "Pagamenti",
+        "support": "Supporto"
+    },
+    "password": {
+        "title": "Bentornato.",
+        "description": "Inserisci la tua password per continuare.",
+        "label": "Password",
+        "placeholder": "Inserisci la tua password",
+        "forgotPassword": "Ho dimenticato la password",
+        "loginButton": "Accedi",
+        "invalidCredentials": "Credenziali non valide. Riprova.",
+        "required": "La password è obbligatoria.",
+        "minLength": "La password deve contenere almeno 6 caratteri."
+    },
+    "permissions": {
+        "title": "Permessi",
+        "responseTitle": "Diritto di risposta",
+        "allowResponse": "Permetti risposta",
+        "attachmentsTitle": "Allegati",
+        "allowFiles": "Permetti file",
+        "allowImages": "Permetti foto",
+        "allowVideos": "Permetti video"
+    },
+    "policyPrivacy": {
+        "title": "Informativa sulla privacy"
+    },
+    "price": {
+        "title": "Imposta Prezzi",
+        "description": "Definisci il prezzo che vuoi applicare per ogni interazione.",
+        "basePriceTitle": "Prezzo base",
+        "basePriceSubtitle": "Prezzo minimo per messaggio",
+        "attachmentTitle": "Allegato",
+        "attachmentDescription": "Percentuale extra addebitata per allegato",
+        "videoTitle": "Video",
+        "videoDescription": "Percentuale extra addebitata per video",
+        "imageTitle": "Immagine",
+        "imageDescription": "Percentuale extra addebitata per immagine",
+        "saveButton": "Salva",
+        "errorTitle": "Errore",
+        "errorMin": "Il prezzo base minimo è R$ 0,50",
+        "errorGeneric": "Impossibile salvare i valori. Riprova."
+    },
+    "privacySettings": {
+        "title": "Privacy",
+        "blocked": "Bloccati",
+        "showOnline": "Mostra online",
+        "showLastUpdate": "Mostra ultima visita",
+        "showStatistics": "Mostra statistiche",
+        "vacationMode": "Modalità vacanza"
+    },
+    "profile": {
+        "title": "Profilo",
+        "about": "Informazioni",
+        "statistics": "Statistiche",
+        "notFound": "Profilo non trovato o disabilitato per i messaggi.",
+        "sendMessage": "Invia messaggio",
+        "blockedSuccess": "Utente bloccato con successo",
+        "unblockedSuccess": "Utente sbloccato con successo"
+    },
+    "security": {
+        "title": "Sicurezza",
+        "changePassword": "Cambia Password",
+        "activate2fa": "Attiva sicurezza 2FA"
+    },
+    "security2fa": {
+        "activate2fa": "Attiva sicurezza 2FA"
+    },
+    "tags": {
+        "title": "Categorie",
+        "save": "Salva",
+        "description": "Queste categorie aiutano gli utenti a scoprire profili simili al tuo. Puoi modificarle quando vuoi.",
+        "toastSuccess": "Categorie aggiornate con successo"
+    },
+    "terms": {
+        "title": "Termini di utilizzo"
+    },
+    "wallet": {
+        "title": "Portafoglio",
+        "totalBalance": "Saldo Totale",
+        "available": "Disponibile",
+        "withdraw": "Preleva",
+        "cards": "Carte",
+        "donate": "Dona",
+        "statement": "Estratto conto",
+        "viewStatement": "Visualizza estratto",
+        "noTransactions": "Nessuna transazione trovata",
+        "paidValue": "Importo pagato",
+        "sendTo": "Invia a {{name}}",
+        "paymentTo": "Pagamento a {{name}}",
+        "transaction": "Transazione"
+    },
+    "welcome": {
+        "title": "Iniziamo!",
+        "emailOrUsernameLabel": "Email o nome utente",
+        "emailOrUsernamePlaceholder": "La tua email o nome utente",
+        "continueButton": "Continua",
+        "signupLink": "Non hai ancora un account? Creane uno",
+        "or": "oppure",
+        "continueWithGoogle": "Continua con Google",
+        "userNotFound": "Nessun utente trovato con queste credenziali.",
+        "invalidEmailOrUsername": "Inserisci un'email o nome utente valido.",
+        "requiredField": "Email o nome utente è obbligatorio."
+    }
+}
+
+ 

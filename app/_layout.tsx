@@ -39,6 +39,10 @@ import { BalanceProvider } from "@/providers/BalanceProvider";
 import { ExploreSkeleton } from "@/components/skeletons/ExploreSkeleton";
 import { LoginSkeleton } from "@/components/skeletons/LoginSkeleton";
 
+import "../src/i18n"
+
+
+
 GoogleSignin.configure({
     webClientId: process.env.EXPO_PUBLIC_GOOGLE_CLIENT_ID,
     offlineAccess: true,

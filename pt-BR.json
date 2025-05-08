@@ -1,0 +1,259 @@
+{
+  "about": {
+    "title": "[PT-BR] About",
+    "terms": "[PT-BR] Terms of Use",
+    "privacy": "[PT-BR] Privacy Policy"
+  },
+  "accountType": {
+    "title": "[PT-BR] Account Type",
+    "subtitle": "[PT-BR] Choose the best profile for your experience on Dimber",
+    "save": "[PT-BR] Save",
+    "saving": "[PT-BR] Saving...",
+    "successTitle": "[PT-BR] Account type updated",
+    "successMessage": "[PT-BR] Your account type was updated successfully.",
+    "errorTitle": "[PT-BR] Error",
+    "errorMessage": "[PT-BR] Could not update your account type. Please try again.",
+    "professional": {
+      "title": "Professional Account",
+      "description": "Your profile will be shown on the explore page and can receive paid messages."
+    },
+    "regular": {
+      "title": "Regular Account",
+      "description": "Your profile will be private and hidden from receiving paid messages."
+    }
+  },
+  "blocked": {
+    "title": "[PT-BR] Blocked Users",
+    "searchPlaceholder": "[PT-BR] Search blocked user",
+    "noSearchResults": "[PT-BR] No blocked user found for this search.",
+    "noBlockedUsers": "[PT-BR] You have no blocked users.",
+    "unblock": "[PT-BR] Unblock",
+    "unblocking": "[PT-BR] Unblocking...",
+    "successTitle": "[PT-BR] User unblocked",
+    "successMessage": "[PT-BR] The user has been successfully unblocked.",
+    "errorTitle": "[PT-BR] Error",
+    "errorMessage": "[PT-BR] Could not unblock user. Please try again."
+  },
+  "changePassword": {
+    "title": "[PT-BR] Change Password"
+  },
+  "chatOptions": {
+    "title": "[PT-BR] Chats",
+    "export": "[PT-BR] Export chats",
+    "archiveAll": "[PT-BR] Archive all chats",
+    "deleteAll": "[PT-BR] Delete all chats"
+  },
+  "chats": {
+    "title": "[PT-BR] Chats",
+    "search": "[PT-BR] Search",
+    "emptyMessage": "[PT-BR] Send a message and wait for a new connection.",
+    "viewProfile": "[PT-BR] View Profile"
+  },
+  "config": {
+    "title": "[PT-BR] Settings",
+    "viewProfile": "[PT-BR] View profile",
+    "sections": {
+      "messages": "Messages",
+      "account": "Account",
+      "app": "App"
+    },
+    "items": {
+      "notifications": "Notifications",
+      "setValues": "Set values",
+      "permissions": "Permissions",
+      "conversations": "Conversations",
+      "accountType": "Account type",
+      "privacy": "Privacy",
+      "security": "Security",
+      "help": "Help",
+      "devicePermissions": "Device permissions",
+      "language": "Language",
+      "inviteFriends": "Invite friends",
+      "about": "About",
+      "signOut": "Sign out"
+    },
+    "modal": {
+      "title": "Do you really want to sign out?",
+      "message": "Are you sure you want to sign out of your account?"
+    }
+  },
+  "editProfile": {
+    "title": "[PT-BR] Edit Profile",
+    "save": "[PT-BR] Save",
+    "successTitle": "[PT-BR] Success",
+    "imageSuccess": "[PT-BR] Profile image updated successfully!",
+    "imageErrorPrefix": "[PT-BR] Could not update the profile image due to:",
+    "updateSuccess": "[PT-BR] Profile updated successfully!",
+    "usernameInUse": "[PT-BR] Username is already in use",
+    "updateError": "[PT-BR] Could not update the profile. Error:",
+    "permissionTitle": "[PT-BR] Permission required",
+    "cameraPermission": "[PT-BR] We need permission to access your camera.",
+    "galleryPermission": "[PT-BR] We need permission to access your photos.",
+    "imageTooLarge": "[PT-BR] Image too large. Please choose an image up to 5MB.",
+    "imageCheckError": "[PT-BR] Error checking image size.",
+    "imageUploadError": "[PT-BR] Could not upload the image.",
+    "confirmSaveTitle": "[PT-BR] Save changes",
+    "confirmSaveMessage": "[PT-BR] Do you want to save the changes made to the profile?",
+    "confirmBackTitle": "[PT-BR] Discard changes",
+    "confirmBackMessage": "[PT-BR] Are you sure you want to leave? All unsaved changes will be lost."
+  },
+  "error": {
+    "title": "[PT-BR] Error",
+    "createConversation": "[PT-BR] Failed to start conversation, try again later!"
+  },
+  "explore": {
+    "title": "[PT-BR] Explore",
+    "favorites": "[PT-BR] Favorites",
+    "mostPopular": "[PT-BR] Most Popular",
+    "noUsersFound": "[PT-BR] No users found"
+  },
+  "help": {
+    "title": "[PT-BR] Help"
+  },
+  "interests": {
+    "title": "[PT-BR] Interests",
+    "save": "[PT-BR] Save",
+    "instruction": "[PT-BR] Select at least 3 categories so we can personalize your experience.",
+    "toastSuccess": "[PT-BR] Interests updated successfully",
+    "errorTitle": "[PT-BR] Select more interests",
+    "errorMessage": "[PT-BR] You need to select at least 3 interests to continue."
+  },
+  "invite": {
+    "header": "[PT-BR] Invite friends",
+    "title": "[PT-BR] Share Dimber and earn benefits!",
+    "description": "[PT-BR] Invite your friends and enjoy exclusive advantages (list them here)",
+    "codeLabel": "[PT-BR] Your referral code:",
+    "copiedTitle": "[PT-BR] Copied!",
+    "copiedMessage": "[PT-BR] Your referral code has been copied.",
+    "qrTitle": "[PT-BR] Share with QR Code",
+    "saveQR": "[PT-BR] Save QR Code",
+    "haveQuestions": "[PT-BR] Have any questions?",
+    "clickToRead": "[PT-BR] Click here and read the",
+    "termsLink": "[PT-BR] terms and conditions",
+    "shareButton": "[PT-BR] Share code"
+  },
+  "language": {
+    "title": "[PT-BR] Languages",
+    "autoTranslate": "[PT-BR] Translate automatically",
+    "interfaceLanguage": "[PT-BR] Interface Language",
+    "autoActivatedTitle": "[PT-BR] Automatic language activated",
+    "autoActivatedDescription": "[PT-BR] The app now follows the system language.",
+    "changedTitle": "[PT-BR] Language changed",
+    "changedDescription": "[PT-BR] Interface language updated.",
+    "ptBR": "[PT-BR] Portuguese BR",
+    "ptPT": "[PT-BR] Portuguese PT",
+    "en": "[PT-BR] English",
+    "es": "[PT-BR] Spanish",
+    "it": "[PT-BR] Italian",
+    "fr": "[PT-BR] French"
+  },
+  "notifications": {
+    "title": "[PT-BR] Notifications",
+    "sectionMessages": "[PT-BR] Message notifications",
+    "sectionEmail": "[PT-BR] Email notifications",
+    "showNotifications": "[PT-BR] Show notifications",
+    "solicitation": "[PT-BR] Message request",
+    "payments": "[PT-BR] Payments",
+    "support": "[PT-BR] Support"
+  },
+  "password": {
+    "title": "[PT-BR] Welcome back.",
+    "description": "[PT-BR] Enter your password to continue.",
+    "label": "[PT-BR] Password",
+    "placeholder": "[PT-BR] Enter your password",
+    "forgotPassword": "[PT-BR] Forgot my password",
+    "loginButton": "[PT-BR] Log in",
+    "invalidCredentials": "[PT-BR] Invalid credentials. Please try again.",
+    "required": "[PT-BR] Password is required.",
+    "minLength": "[PT-BR] Password must be at least 6 characters."
+  },
+  "permissions": {
+    "title": "[PT-BR] Permissions",
+    "responseTitle": "[PT-BR] Right to reply",
+    "allowResponse": "[PT-BR] Allow response",
+    "attachmentsTitle": "[PT-BR] Attachments",
+    "allowFiles": "[PT-BR] Allow file",
+    "allowImages": "[PT-BR] Allow photo",
+    "allowVideos": "[PT-BR] Allow video"
+  },
+  "policyPrivacy": {
+    "title": "[PT-BR] Privacy Policy"
+  },
+  "price": {
+    "title": "[PT-BR] Set Prices",
+    "description": "[PT-BR] Define the price you want to charge for each interaction.",
+    "basePriceTitle": "[PT-BR] Base price",
+    "basePriceSubtitle": "[PT-BR] Minimum price per message",
+    "attachmentTitle": "[PT-BR] Attachment",
+    "attachmentDescription": "[PT-BR] Extra percentage charged for attachment",
+    "videoTitle": "[PT-BR] Video",
+    "videoDescription": "[PT-BR] Extra percentage charged for video",
+    "imageTitle": "[PT-BR] Image",
+    "imageDescription": "[PT-BR] Extra percentage charged for image",
+    "saveButton": "[PT-BR] Save",
+    "errorTitle": "[PT-BR] Error",
+    "errorMin": "[PT-BR] The minimum base price is R$ 0.50",
+    "errorGeneric": "[PT-BR] Unable to save the values. Please try again."
+  },
+  "privacySettings": {
+    "title": "[PT-BR] Privacy",
+    "blocked": "[PT-BR] Blocked",
+    "showOnline": "[PT-BR] Show Online",
+    "showLastUpdate": "[PT-BR] Show Last Seen",
+    "showStatistics": "[PT-BR] Show Statistics",
+    "vacationMode": "[PT-BR] Vacation Mode"
+  },
+  "profile": {
+    "title": "[PT-BR] Profile",
+    "about": "[PT-BR] About",
+    "statistics": "[PT-BR] Statistics",
+    "notFound": "[PT-BR] Profile not found or disabled for messaging.",
+    "sendMessage": "[PT-BR] Send Message",
+    "blockedSuccess": "[PT-BR] User successfully blocked",
+    "unblockedSuccess": "[PT-BR] User successfully unblocked"
+  },
+  "security": {
+    "title": "[PT-BR] Security",
+    "changePassword": "[PT-BR] Change Password",
+    "activate2fa": "[PT-BR] Enable 2FA Security"
+  },
+  "security2fa": {
+    "activate2fa": "[PT-BR] Enable 2FA Security"
+  },
+  "tags": {
+    "title": "[PT-BR] Categories",
+    "save": "[PT-BR] Save",
+    "description": "[PT-BR] These categories help users discover profiles similar to yours. You can modify them as needed.",
+    "toastSuccess": "[PT-BR] Categories updated successfully"
+  },
+  "terms": {
+    "title": "[PT-BR] Terms of Use"
+  },
+  "wallet": {
+    "title": "[PT-BR] Wallet",
+    "totalBalance": "[PT-BR] Total Balance",
+    "available": "[PT-BR] Available to use",
+    "withdraw": "[PT-BR] Withdraw",
+    "cards": "[PT-BR] Cards",
+    "donate": "[PT-BR] Donate",
+    "statement": "[PT-BR] Statement",
+    "viewStatement": "[PT-BR] View statement",
+    "noTransactions": "[PT-BR] No transactions found",
+    "paidValue": "[PT-BR] Paid value",
+    "sendTo": "[PT-BR] Send to {{name}}",
+    "paymentTo": "[PT-BR] Payment to {{name}}",
+    "transaction": "[PT-BR] Transaction"
+  },
+  "welcome": {
+    "title": "[PT-BR] Let's get started!",
+    "emailOrUsernameLabel": "[PT-BR] Email or username",
+    "emailOrUsernamePlaceholder": "[PT-BR] Your email or username",
+    "continueButton": "[PT-BR] Continue",
+    "signupLink": "[PT-BR] Don't have an account yet? Create one",
+    "or": "[PT-BR] or",
+    "continueWithGoogle": "[PT-BR] Continue with Google",
+    "userNotFound": "[PT-BR] We couldn't find a user with those credentials.",
+    "invalidEmailOrUsername": "[PT-BR] Enter a valid email or username.",
+    "requiredField": "[PT-BR] Email or username is required."
+  }
+}

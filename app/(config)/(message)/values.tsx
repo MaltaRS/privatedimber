@@ -1,7 +1,5 @@
 import { useState, useEffect, Fragment } from "react";
-
 import { useRouter } from "expo-router";
-
 import {
     ButtonText,
     Heading,
@@ -18,12 +16,13 @@ import HeaderContainer from "@/components/HeaderContainer";
 import { Button } from "@/components/ui/Button";
 
 import { useSettings } from "@/hooks/SettingsHook";
-
 import { toast } from "burnt";
+
+import { useTranslation } from "react-i18next";
 
 export default function ConfigDefinedValueMsgScreen() {
     const router = useRouter();
-
+    const { t } = useTranslation();
     const { settings, updateSettings } = useSettings();
     const [isInitialLoading, setIsInitialLoading] = useState(true);
 
@@ -40,8 +39,7 @@ export default function ConfigDefinedValueMsgScreen() {
                 basePrice: settings.priceSettings.basePrice
                     ? String(settings.priceSettings.basePrice)
                     : "",
-                attachmentPercentage: settings.priceSettings
-                    .attachmentPercentage
+                attachmentPercentage: settings.priceSettings.attachmentPercentage
                     ? String(settings.priceSettings.attachmentPercentage)
                     : "",
                 videoPercentage: settings.priceSettings.videoPercentage
@@ -52,8 +50,7 @@ export default function ConfigDefinedValueMsgScreen() {
                     : "",
             });
             setIsInitialLoading(false);
-        }
-        if (!settings?.priceSettings) {
+        } else {
             setValues({
                 basePrice: "",
                 attachmentPercentage: "",
@@ -72,8 +69,8 @@ export default function ConfigDefinedValueMsgScreen() {
 
             if (basePrice < 50) {
                 toast({
-                    title: "Erro",
-                    message: "O valor mínimo da base de preço é de R$ 0,50",
+                    title: t("price.errorTitle"),
+                    message: t("price.errorMin"),
                     haptic: "error",
                 });
                 return;
@@ -99,8 +96,8 @@ export default function ConfigDefinedValueMsgScreen() {
         } catch (error: unknown) {
             console.log(error);
             toast({
-                title: "Erro",
-                message: "Não foi possível salvar os valores. Tente novamente.",
+                title: t("price.errorTitle"),
+                message: t("price.errorGeneric"),
                 haptic: "error",
             });
         }
@@ -109,23 +106,13 @@ export default function ConfigDefinedValueMsgScreen() {
     const LoadingSkeleton = () => (
         <VStack gap="$4" flex={1} w="100%">
             <SkeletonBox width={350} height={28} />
-
             <VStack gap="$2" mt="$4" flex={1}>
                 <VStack gap="$2">
                     <SkeletonBox width={120} height={24} />
                     <SkeletonBox width={180} height={24} />
-                    <VStack
-                        bgColor="$white"
-                        pl="$4"
-                        borderRadius="$xl"
-                        elevation={2}
-                    >
+                    <VStack bgColor="$white" pl="$4" borderRadius="$xl" elevation={2}>
                         <VStack py="$4" pr="$4" gap="$2">
-                            <SkeletonBox
-                                width={200}
-                                height={48}
-                                borderRadius="$lg"
-                            />
+                            <SkeletonBox width={200} height={48} borderRadius="$lg" />
                         </VStack>
                     </VStack>
                 </VStack>
@@ -133,18 +120,9 @@ export default function ConfigDefinedValueMsgScreen() {
                 {[1, 2, 3].map((item) => (
                     <VStack mt="$2" key={item} gap="$2">
                         <SkeletonBox width={180} height={28} />
-                        <VStack
-                            bgColor="$white"
-                            pl="$4"
-                            borderRadius="$xl"
-                            elevation={2}
-                        >
+                        <VStack bgColor="$white" pl="$4" borderRadius="$xl" elevation={2}>
                             <VStack py="$4" gap="$2">
-                                <SkeletonBox
-                                    width={200}
-                                    height={42}
-                                    borderRadius="$lg"
-                                />
+                                <SkeletonBox width={200} height={42} borderRadius="$lg" />
                             </VStack>
                         </VStack>
                     </VStack>
@@ -158,28 +136,25 @@ export default function ConfigDefinedValueMsgScreen() {
             <VStack flex={1}>
                 <ScrollView
                     showsVerticalScrollIndicator={false}
-                    contentContainerStyle={{
-                        paddingBottom: 20,
-                    }}
+                    contentContainerStyle={{ paddingBottom: 20 }}
                 >
                     <VStack gap="$4" flex={1} w="100%">
-                        <HeaderContainer title="Definir valores" />
+                        <HeaderContainer title={t("price.title")} />
 
                         {isInitialLoading ? (
                             <LoadingSkeleton />
                         ) : (
                             <Fragment>
                                 <Text fontSize={17} color="#374151">
-                                    Defina o valor que você deseja cobrar por
-                                    cada interação.
+                                    {t("price.description")}
                                 </Text>
 
                                 <VStack>
                                     <VStack mt="$2">
                                         <VStack>
-                                            <Heading>Base de preço</Heading>
+                                            <Heading>{t("price.basePriceTitle")}</Heading>
                                             <Text fontSize={15} color="#374151">
-                                                Preço mínimo por mensagem
+                                                {t("price.basePriceSubtitle")}
                                             </Text>
                                         </VStack>
                                         <PriceInput
@@ -195,8 +170,8 @@ export default function ConfigDefinedValueMsgScreen() {
                                     </VStack>
 
                                     <PercentageSelect
-                                        title="Anexo"
-                                        description="Porcentagem extra a ser cobrada por anexo"
+                                        title={t("price.attachmentTitle")}
+                                        description={t("price.attachmentDescription")}
                                         placeholder="10%"
                                         value={values.attachmentPercentage}
                                         onChangeText={(value) =>
@@ -208,8 +183,8 @@ export default function ConfigDefinedValueMsgScreen() {
                                     />
 
                                     <PercentageSelect
-                                        title="Video"
-                                        description="Porcentagem extra a ser cobrada por video"
+                                        title={t("price.videoTitle")}
+                                        description={t("price.videoDescription")}
                                         placeholder="10%"
                                         value={values.videoPercentage}
                                         onChangeText={(value) =>
@@ -221,8 +196,8 @@ export default function ConfigDefinedValueMsgScreen() {
                                     />
 
                                     <PercentageSelect
-                                        title="Imagem"
-                                        description="Porcentagem extra a ser cobrada por imagem"
+                                        title={t("price.imageTitle")}
+                                        description={t("price.imageDescription")}
                                         placeholder="10%"
                                         value={values.imagePercentage}
                                         onChangeText={(value) =>
@@ -239,7 +214,7 @@ export default function ConfigDefinedValueMsgScreen() {
                 </ScrollView>
 
                 <Button mb="$4" onPress={handleSave}>
-                    <ButtonText textAlign="center">Salvar</ButtonText>
+                    <ButtonText textAlign="center">{t("price.saveButton")}</ButtonText>
                 </Button>
             </VStack>
         </BaseContainer>

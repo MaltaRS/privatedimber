@@ -1,9 +1,6 @@
 import { Fragment, useEffect, useState } from "react";
-
 import { useLocalSearchParams, useRouter } from "expo-router";
-
 import { Alert } from "react-native";
-
 import {
     Text,
     VStack,
@@ -27,18 +24,13 @@ import { BlockUser } from "@/components/tabs/conversations/BlockUser";
 import { useAuth, User } from "@/Context/AuthProvider";
 import { useSocket } from "@/Context/SocketProvider";
 import { useBlockUser } from "@/hooks/BlockUser";
-
 import { useQuery, useQueryClient } from "@tanstack/react-query";
-
-import {
-    GetUserProfile,
-    isUserBlocked,
-} from "@/connection/auth/UserConnection";
+import { GetUserProfile, isUserBlocked } from "@/connection/auth/UserConnection";
 
 import { formatCentsToMoney } from "@/utils/money";
 import { handleFavorite } from "@/utils/favorites";
-
 import { toast } from "burnt";
+import { useTranslation } from "react-i18next";
 
 interface ExtendedUser extends User {
     isFavorited?: boolean;
@@ -47,18 +39,17 @@ interface ExtendedUser extends User {
 }
 
 export default function ProfileScreen() {
+    const { t } = useTranslation();
     const router = useRouter();
     const queryClient = useQueryClient();
-
     const { userUuid } = useLocalSearchParams<{ userUuid: string }>();
-
     const { user } = useAuth();
     const { block, unblock } = useBlockUser();
-
     const { socket } = useSocket();
 
     const [creatingConversation, setCreatingConversation] = useState(false);
     const [showBlockModal, setShowBlockModal] = useState(false);
+    const [activeTab, setActiveTab] = useState("tab1");
 
     let shouldGetUserData = false;
     if (userUuid && user?.uuid !== userUuid) {
@@ -87,8 +78,6 @@ export default function ProfileScreen() {
           } as ExtendedUser)
         : ({ ...user, price: user?.price || null } as ExtendedUser);
 
-    const [activeTab, setActiveTab] = useState("tab1");
-
     const handleCreateConversation = () => {
         if (!socket || !validatedUser || creatingConversation) return;
 
@@ -99,19 +88,10 @@ export default function ProfileScreen() {
             { participantId: validatedUser.id },
             (response: any) => {
                 if (response.error) {
-                    console.error(
-                        "Error creating conversation: ",
-                        response.error,
-                    );
-                    Alert.alert(
-                        "Erro",
-                        "Erro ao criar conversa, tente novamente mais tarde!",
-                    );
+                    console.error("Error creating conversation: ", response.error);
+                    Alert.alert(t("error.title"), t("error.createConversation"));
                 } else {
-                    queryClient.invalidateQueries({
-                        queryKey: ["conversations"],
-                    });
-
+                    queryClient.invalidateQueries({ queryKey: ["conversations"] });
                     router.replace(`/(conversations)/${response.id}`);
                 }
             },
@@ -121,44 +101,31 @@ export default function ProfileScreen() {
     const handleBlock = () => {
         if (!validatedUser.id) return;
 
-        if (validatedUser.isBlocked) {
-            unblock.mutate(validatedUser.id.toString(), {
-                onSuccess: () => {
-                    queryClient.setQueryData(["isBlocked", userUuid], false);
-                    setShowBlockModal(false);
-                    toast({
-                        title: "Usuário desbloqueado com sucesso",
-                        haptic: "success",
-                    });
-                },
+        const id = validatedUser.id.toString();
+
+        const onSuccess = () => {
+            queryClient.setQueryData(["isBlocked", userUuid], !validatedUser.isBlocked);
+            setShowBlockModal(false);
+            toast({
+                title: validatedUser.isBlocked
+                    ? t("profile.unblockedSuccess")
+                    : t("profile.blockedSuccess"),
+                haptic: "success",
             });
-        } else {
-            block.mutate(validatedUser.id.toString(), {
-                onSuccess: () => {
-                    queryClient.setQueryData(["isBlocked", userUuid], true);
-                    setShowBlockModal(false);
-                    toast({
-                        title: "Usuário bloqueado com sucesso",
-                        haptic: "success",
-                    });
-                },
-            });
-        }
+        };
+
+        validatedUser.isBlocked
+            ? unblock.mutate(id, { onSuccess })
+            : block.mutate(id, { onSuccess });
     };
 
     if (shouldGetUserData && userData == null && !isLoading) {
         return (
             <BaseContainer>
-                <HeaderContainer title="Perfil" />
-
+                <HeaderContainer title={t("profile.title")} />
                 <VStack flex={1} alignItems="center" justifyContent="center">
-                    <Text
-                        fontSize="$lg"
-                        fontWeight="$medium"
-                        textAlign="center"
-                    >
-                        Perfil não encontrado, ou desabilitado pelo usuário ou
-                        plataforma para receber mensagens
+                    <Text fontSize="$lg" fontWeight="$medium" textAlign="center">
+                        {t("profile.notFound")}
                     </Text>
                 </VStack>
             </BaseContainer>
@@ -169,11 +136,8 @@ export default function ProfileScreen() {
         return (
             <BaseContainer>
                 <VStack flex={1}>
-                    <HeaderContainer title="Perfil" />
-                    <ScrollView
-                        showsVerticalScrollIndicator={false}
-                        contentContainerStyle={{ paddingBottom: 86 }}
-                    >
+                    <HeaderContainer title={t("profile.title")} />
+                    <ScrollView showsVerticalScrollIndicator={false} contentContainerStyle={{ paddingBottom: 86 }}>
                         <ProfileSkeleton />
                     </ScrollView>
                 </VStack>
@@ -184,30 +148,17 @@ export default function ProfileScreen() {
     return (
         <BaseContainer>
             <VStack flex={1}>
-                <HeaderContainer title="Perfil" />
+                <HeaderContainer title={t("profile.title")} />
 
-                <ScrollView
-                    showsVerticalScrollIndicator={false}
-                    contentContainerStyle={{
-                        paddingBottom: 86,
-                    }}
-                >
+                <ScrollView showsVerticalScrollIndicator={false} contentContainerStyle={{ paddingBottom: 86 }}>
                     <VStack mt="$2">
                         <ProfileHeader
                             name={validatedUser.name}
                             username={validatedUser.username}
                             icon={validatedUser.icon}
                             bio={validatedUser.bio}
-                            lastAccessAt={
-                                validatedUser.lastAccessAt
-                                    ? validatedUser.lastAccessAt
-                                    : undefined
-                            }
-                            verifiedAt={
-                                validatedUser.verifiedAt
-                                    ? validatedUser.verifiedAt
-                                    : null
-                            }
+                            lastAccessAt={validatedUser.lastAccessAt}
+                            verifiedAt={validatedUser.verifiedAt}
                             shouldGetUserData={shouldGetUserData}
                             isFavorited={validatedUser.isFavorited}
                             onFavorite={() => {
@@ -218,63 +169,29 @@ export default function ProfileScreen() {
                                     isFavorited: !!validatedUser.isFavorited,
                                     queryClient,
                                     onSuccess: () => {
-                                        queryClient.invalidateQueries({
-                                            queryKey: ["popularUsers"],
-                                        });
-                                        queryClient.invalidateQueries({
-                                            queryKey: ["userFavorites"],
-                                        });
+                                        queryClient.invalidateQueries({ queryKey: ["popularUsers"] });
+                                        queryClient.invalidateQueries({ queryKey: ["userFavorites"] });
                                     },
                                 });
                             }}
                             userId={validatedUser.id?.toString()}
                             isBlocked={validatedUser.isBlocked}
                             onBlock={() => setShowBlockModal(true)}
-                            onPayments={() => {
-                                // Handle payments
-                            }}
-                            onReport={() => {
-                                // Handle report
-                            }}
+                            onPayments={() => {}}
+                            onReport={() => {}}
                         />
 
                         <HStack bg="$gray100" borderRadius="$full" mt="$6">
-                            <HStack
-                                backgroundColor="$gray100"
-                                p={4}
-                                borderRadius="$full"
-                                alignItems="center"
-                                justifyContent="center"
-                                alignSelf="center"
-                                width="$full"
-                            >
-                                <TabButton
-                                    title="Sobre"
-                                    isActive={activeTab === "tab1"}
-                                    onPress={() => setActiveTab("tab1")}
-                                />
-                                <TabButton
-                                    title="Estatísticas"
-                                    isActive={activeTab === "tab2"}
-                                    onPress={() => setActiveTab("tab2")}
-                                />
+                            <HStack backgroundColor="$gray100" p={4} borderRadius="$full" alignItems="center" justifyContent="center" alignSelf="center" width="$full">
+                                <TabButton title={t("profile.about")} isActive={activeTab === "tab1"} onPress={() => setActiveTab("tab1")} />
+                                <TabButton title={t("profile.statistics")} isActive={activeTab === "tab2"} onPress={() => setActiveTab("tab2")} />
                             </HStack>
                         </HStack>
 
                         {activeTab === "tab1" ? (
                             <Fragment>
-                                <ProfileAbout
-                                    content={validatedUser.about}
-                                    tags={validatedUser.tags}
-                                    interests={validatedUser.interests}
-                                />
-                                <Box
-                                    my="$2"
-                                    width="100%"
-                                    height={6}
-                                    bg="$gray100"
-                                    borderRadius="$sm"
-                                />
+                                <ProfileAbout content={validatedUser.about} tags={validatedUser.tags} interests={validatedUser.interests} />
+                                <Box my="$2" width="100%" height={6} bg="$gray100" borderRadius="$sm" />
                                 <SocialLinks links={validatedUser.links} />
                             </Fragment>
                         ) : (
@@ -284,16 +201,7 @@ export default function ProfileScreen() {
                 </ScrollView>
 
                 {shouldGetUserData && (
-                    <Box
-                        position="absolute"
-                        bottom={0}
-                        left={0}
-                        right={0}
-                        bg="$white"
-                        width="100%"
-                        borderTopColor="$gray200"
-                        pb="$2"
-                    >
+                    <Box position="absolute" bottom={0} left={0} right={0} bg="$white" width="100%" borderTopColor="$gray200" pb="$2">
                         <Pressable
                             onPress={handleCreateConversation}
                             bg="$primaryDefault"
@@ -302,38 +210,19 @@ export default function ProfileScreen() {
                             flexDirection="row"
                             alignItems="center"
                             p="$4"
-                            justifyContent={
-                                creatingConversation
-                                    ? "center"
-                                    : "space-between"
-                            }
+                            justifyContent={creatingConversation ? "center" : "space-between"}
                         >
                             {creatingConversation ? (
-                                <VStack
-                                    alignItems="center"
-                                    justifyContent="center"
-                                >
+                                <VStack alignItems="center" justifyContent="center">
                                     <Spinner size="small" color="$white" />
                                 </VStack>
                             ) : (
                                 <Fragment>
-                                    <Text
-                                        color="$white"
-                                        fontSize="$lg"
-                                        fontWeight="$medium"
-                                    >
-                                        Enviar mensagem
+                                    <Text color="$white" fontSize="$lg" fontWeight="$medium">
+                                        {t("profile.sendMessage")}
                                     </Text>
-                                    <Text
-                                        color="$white"
-                                        fontSize="$lg"
-                                        fontWeight="$medium"
-                                    >
-                                        {validatedUser.price === null
-                                            ? "R$ 100,00"
-                                            : formatCentsToMoney(
-                                                  validatedUser.price,
-                                              )}
+                                    <Text color="$white" fontSize="$lg" fontWeight="$medium">
+                                        {validatedUser.price === null ? "R$ 100,00" : formatCentsToMoney(validatedUser.price)}
                                     </Text>
                                 </Fragment>
                             )}

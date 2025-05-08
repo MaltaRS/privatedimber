@@ -21,6 +21,7 @@ import { BaseContainer } from "@/components/BaseContainer";
 import HeaderContainer from "@/components/HeaderContainer";
 
 import { toast } from "burnt";
+import { useTranslation } from "react-i18next";
 
 const interests = [
     "Finanças e Economia",
@@ -40,6 +41,7 @@ const InterestsScreen = () => {
     const router = useRouter();
     const { user } = useAuth();
     const queryClient = useQueryClient();
+    const { t } = useTranslation();
 
     const [selectedInterests, setSelectedInterests] = useState<string[]>(
         user?.interests || [],
@@ -52,7 +54,7 @@ const InterestsScreen = () => {
             router.back();
 
             toast({
-                title: "Interesses atualizados com sucesso",
+                title: t("interests.toastSuccess"),
                 duration: 3000,
             });
         },
@@ -61,8 +63,8 @@ const InterestsScreen = () => {
     const handleSave = () => {
         if (selectedInterests.length < 3) {
             Alert.alert(
-                "Selecione mais interesses",
-                "Você precisa selecionar pelo menos 3 interesses para continuar.",
+                t("interests.errorTitle"),
+                t("interests.errorMessage"),
             );
             return;
         }
@@ -83,15 +85,14 @@ const InterestsScreen = () => {
         <BaseContainer>
             <VStack flex={1}>
                 <HeaderContainer
-                    title="Interesses"
-                    namebuttontab="Salvar"
+                    title={t("interests.title")}
+                    namebuttontab={t("interests.save")}
                     onSave={handleSave}
                     isLoading={isPending}
                 />
 
                 <Text fontSize={18} color="$gray900" mt="$5" mb="$8">
-                    Selecione pelo menos 3 categorias para personalizarmos sua
-                    experiência.
+                    {t("interests.instruction")}
                 </Text>
 
                 <ScrollView

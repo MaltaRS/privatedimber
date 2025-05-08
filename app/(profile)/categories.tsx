@@ -1,7 +1,5 @@
 import { useState } from "react";
-
 import { useRouter } from "expo-router";
-
 import {
     VStack,
     Text,
@@ -10,19 +8,14 @@ import {
     HStack,
     Box,
 } from "@/gluestackComponents";
-
 import { Check } from "lucide-react-native";
-
 import { BaseContainer } from "@/components/BaseContainer";
 import HeaderContainer from "@/components/HeaderContainer";
-
 import { useAuth } from "@/Context/AuthProvider";
-
 import { useMutation, useQueryClient } from "@tanstack/react-query";
-
 import { updateProfile } from "@/connection/auth/UserConnection";
-
 import { toast } from "burnt";
+import { useTranslation } from "react-i18next";
 
 const tags = [
     "Artista",
@@ -36,13 +29,12 @@ const tags = [
 ];
 
 const TagsScreen = () => {
+    const { t } = useTranslation();
     const router = useRouter();
     const { user } = useAuth();
     const queryClient = useQueryClient();
 
-    const [selectedTags, setSelectedTags] = useState<string[]>(
-        user?.tags || [],
-    );
+    const [selectedTags, setSelectedTags] = useState<string[]>(user?.tags || []);
 
     const { mutate: updateUserProfile, isPending } = useMutation({
         mutationFn: updateProfile,
@@ -53,12 +45,9 @@ const TagsScreen = () => {
     });
 
     const handleSave = () => {
-        updateUserProfile({
-            tags: selectedTags,
-        });
-
+        updateUserProfile({ tags: selectedTags });
         toast({
-            title: "Categorias atualizadas com sucesso",
+            title: t("tags.toastSuccess"),
             duration: 3000,
         });
     };
@@ -73,16 +62,14 @@ const TagsScreen = () => {
         <BaseContainer>
             <VStack flex={1}>
                 <HeaderContainer
-                    title="Categorias"
-                    namebuttontab="Salvar"
+                    title={t("tags.title")}
+                    namebuttontab={t("tags.save")}
                     onSave={handleSave}
                     isLoading={isPending}
                 />
 
                 <Text fontSize={17} color="$gray900" lineHeight={25} my="$5">
-                    Essas categorias ajudam os usuários a descobrir perfis
-                    semelhantes ao seu. Você pode modificá-las conforme
-                    necessário.
+                    {t("tags.description")}
                 </Text>
 
                 <ScrollView

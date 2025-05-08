@@ -2,7 +2,6 @@ import { useState, useEffect, Fragment } from "react";
 import { VStack } from "@/gluestackComponents";
 
 import { useSocket } from "@/Context/SocketProvider";
-
 import { useSettings } from "@/hooks/SettingsHook";
 
 import { ConfigCardSwitch } from "@/components/tabs/config/configCardSwitch";
@@ -11,9 +10,13 @@ import { SkeletonBox } from "@/components/utils/SkeletonBox";
 import HeaderContainer from "@/components/HeaderContainer";
 import { BaseContainer } from "@/components/BaseContainer";
 
+import { useTranslation } from "react-i18next";
+
 const PrivacyScreen = () => {
+    const { t } = useTranslation();
     const { settings, updateSettings } = useSettings();
     const { socket } = useSocket();
+
     const [isInitialLoading, setIsInitialLoading] = useState(true);
     const [localSettings, setLocalSettings] = useState({
         showOnline: true,
@@ -85,13 +88,13 @@ const PrivacyScreen = () => {
     return (
         <BaseContainer backgroundColor="$gray50">
             <VStack gap="$4">
-                <HeaderContainer title="Privacidade" />
+                <HeaderContainer title={t("privacySettings.title")} />
 
                 <VStack p="$1" gap="$6">
                     <ConfigCard
                         items={[
                             {
-                                title: "Bloqueados",
+                                title: t("privacySettings.blocked"),
                                 href: "/(config)/(account)/listblockusers",
                             },
                         ]}
@@ -103,25 +106,25 @@ const PrivacyScreen = () => {
                         <ConfigCardSwitch
                             items={[
                                 {
-                                    title: "Mostrar Online",
+                                    title: t("privacySettings.showOnline"),
                                     value: localSettings.showOnline,
                                     onToggle: (value) =>
                                         handleToggle("showOnline", value),
                                 },
                                 {
-                                    title: "Mostrar última atualização",
+                                    title: t("privacySettings.showLastUpdate"),
                                     value: localSettings.showLastUpdate,
                                     onToggle: (value) =>
                                         handleToggle("showLastUpdate", value),
                                 },
                                 {
-                                    title: "Exibir estatísticas",
+                                    title: t("privacySettings.showStatistics"),
                                     value: localSettings.showStatistics,
                                     onToggle: (value) =>
                                         handleToggle("showStatistics", value),
                                 },
                                 {
-                                    title: "Modo férias",
+                                    title: t("privacySettings.vacationMode"),
                                     value: localSettings.vacationMode,
                                     onToggle: (value) =>
                                         handleToggle("vacationMode", value),

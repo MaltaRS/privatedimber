@@ -1,7 +1,6 @@
 import { Link, Redirect, useRouter } from "expo-router";
-
 import { Controller, useForm } from "react-hook-form";
-
+import { useTranslation } from 'react-i18next';
 import {
     Box,
     ButtonIcon,
@@ -14,44 +13,38 @@ import {
     Text,
     VStack,
 } from "@/gluestackComponents";
-
 import { useKeyboardVisibility } from "@/hooks/KeyboardVisibilityHook";
-
 import DimberLogo from "@/assets/icons/dimberLogo.svg";
 import GoogleLogo from "@/assets/icons/google.svg";
-
 import { BaseContainer } from "@/components/BaseContainer";
 import { Button } from "@/components/ui/Button";
 import { Terms } from "@/components/Terms";
-
 import { z } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
-
 import api from "@/utils/api";
-
 import { useAuth } from "@/Context/AuthProvider";
 import { useGoogleAuth } from "@/Context/GoogleAuthProvider";
 import React from "react";
 
-const loginSchema = z.object({
-    emailOrUsername: z
-        .string({
-            message: "O campo de email ou nome de usuário é obrigatório.",
-        })
-        .min(1, "O campo de email ou nome de usuário é obrigatório.")
-        .refine(
-            (value) =>
-                /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(value) ||
-                /^[a-zA-Z0-9_.-]+$/.test(value),
-            {
-                message: "Insira um email válido ou nome de usuário.",
-            },
-        ),
-});
-
-type LoginData = z.infer<typeof loginSchema>;
-
 const WelcomeScreen = () => {
+    const { t } = useTranslation();
+
+    const loginSchema = z.object({
+        emailOrUsername: z
+            .string({ message: t('welcome.requiredField') })
+            .min(1, t('welcome.requiredField'))
+            .refine(
+                (value) =>
+                    /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(value) ||
+                    /^[a-zA-Z0-9_.-]+$/.test(value),
+                {
+                    message: t('welcome.invalidEmailOrUsername'),
+                },
+            ),
+    });
+
+    type LoginData = z.infer<typeof loginSchema>;
+
     const {
         control,
         handleSubmit,
@@ -63,27 +56,19 @@ const WelcomeScreen = () => {
     });
 
     const { user: googleUser, signIn: googleSignIn } = useGoogleAuth();
-
     const { user, isSigningOut, loading } = useAuth();
-
     const isKeyboardVisible = useKeyboardVisibility();
-
     const router = useRouter();
 
     const HandleLogin = async (data: LoginData) => {
         try {
-            const isEmail = /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(
-                data.emailOrUsername,
-            );
-
+            const isEmail = /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(data.emailOrUsername);
             let response;
 
             if (isEmail) {
                 response = await api.get(`/user/email/${data.emailOrUsername}`);
             } else {
-                response = await api.get(
-                    `/user/username/${data.emailOrUsername}`,
-                );
+                response = await api.get(`/user/username/${data.emailOrUsername}`);
             }
 
             const notFound = response.data.available;
@@ -91,23 +76,17 @@ const WelcomeScreen = () => {
             if (notFound) {
                 setError("emailOrUsername", {
                     type: "manual",
-                    message:
-                        "Não encontramos um usuário com essas credenciais.",
+                    message: t('welcome.userNotFound'),
                 });
-
                 return;
             }
 
-            router.push(
-                // @ts-expect-error
-                "/(auth)/password?emailOrUsername=" + data.emailOrUsername,
-            );
+            router.push("/(auth)/password?emailOrUsername=" + data.emailOrUsername);
         } catch (error: any) {
             console.error("Erro durante o login:", error);
-
             setError("emailOrUsername", {
                 type: "manual",
-                message: "Não encontramos um usuário com essas credenciais.",
+                message: t('welcome.userNotFound'),
             });
         }
     };
@@ -140,10 +119,10 @@ const WelcomeScreen = () => {
                         color="#000"
                         letterSpacing="$lg"
                     >
-                        Vamos começar!
+                        {t('welcome.title')}
                     </Text>
                     <VStack gap="$4">
-                        <Text fontWeight="bold">Email ou nome do usuário</Text>
+                        <Text fontWeight="bold">{t('welcome.emailOrUsernameLabel')}</Text>
                         <VStack gap="$2">
                             <Controller
                                 control={control}
@@ -158,7 +137,7 @@ const WelcomeScreen = () => {
                                         $invalid-borderColor="$negative"
                                     >
                                         <InputField
-                                            placeholder="Seu email ou nome de usuário"
+                                            placeholder={t('welcome.emailOrUsernamePlaceholder')}
                                             value={value}
                                             onChangeText={onChange}
                                         />
@@ -175,10 +154,7 @@ const WelcomeScreen = () => {
                     <Button
                         mt="$4"
                         onPress={handleSubmit(HandleLogin)}
-                        isDisabled={
-                            watch("emailOrUsername") === "" ||
-                            watch("emailOrUsername") == null
-                        }
+                        isDisabled={!watch("emailOrUsername")}
                     >
                         <ButtonText
                             textAlign="center"
@@ -186,7 +162,7 @@ const WelcomeScreen = () => {
                             size="lg"
                             fontWeight="$bold"
                         >
-                            Continuar
+                            {t('welcome.continueButton')}
                         </ButtonText>
                     </Button>
                     <Link href="/(auth)/signup" asChild>
@@ -197,7 +173,7 @@ const WelcomeScreen = () => {
                             textDecorationLine="underline"
                             color="$primaryDefault"
                         >
-                            Não possui conta ainda? Crie uma conta
+                            {t('welcome.signupLink')}
                         </Text>
                     </Link>
                 </VStack>
@@ -205,14 +181,10 @@ const WelcomeScreen = () => {
             {!isKeyboardVisible && (
                 <VStack gap="$12" pb="$4" pt="$2">
                     <VStack gap="$8">
-                        <HStack
-                            alignItems="center"
-                            gap="$3"
-                            justifyContent="center"
-                        >
+                        <HStack alignItems="center" gap="$3" justifyContent="center">
                             <Divider w="45%" bgColor="$gray300" />
                             <Text color="$gray500" size="md" mb="$1">
-                                ou
+                                {t('welcome.or')}
                             </Text>
                             <Divider w="45%" bgColor="$gray300" />
                         </HStack>
@@ -234,7 +206,7 @@ const WelcomeScreen = () => {
                                     size="md"
                                     fontFamily="$jakartMedium"
                                 >
-                                    Continuar com o Google
+                                    {t('welcome.continueWithGoogle')}
                                 </ButtonText>
                             </Button>
                         </VStack>

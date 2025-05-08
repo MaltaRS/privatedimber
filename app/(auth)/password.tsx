@@ -94,7 +94,7 @@ const PasswordScreen = () => {
 
             setError("password", {
                 type: "manual",
-                message: "Credenciais inválidas. Tente novamente.",
+                message: t("password.invalidCredentials"),
             });
         } finally {
             setIsLoading(false);
@@ -118,9 +118,9 @@ const PasswordScreen = () => {
                     />
                 </HStack>
                 <VStack gap="$4">
-                    <Heading size="xl">Bem vindo de volta.</Heading>
+                    <Heading size="xl">{t("password.title")}</Heading>
                     <Text fontFamily="$arialBody" lineHeight="$md" mb="$3">
-                        Insira sua senha para continuar.
+                        {t("password.description")}
                     </Text>
                     <VStack gap="$4">
                         <Text fontWeight="bold">Senha</Text>
@@ -142,7 +142,7 @@ const PasswordScreen = () => {
                                         type={
                                             showPassword ? "text" : "password"
                                         }
-                                        placeholder="Insira sua senha"
+                                        placeholder={t("password.placeholder")}
                                         onChangeText={onChange}
                                         onBlur={onBlur}
                                         value={value}
@@ -182,7 +182,7 @@ const PasswordScreen = () => {
                                 router.push("/(auth)/reset-password");
                             }}
                         >
-                            Esqueci minha senha
+                            {t("password.forgotPassword")}
                         </Text>
                     </VStack>
                 </VStack>
@@ -209,7 +209,7 @@ const PasswordScreen = () => {
                             size="lg"
                             fontWeight="$bold"
                         >
-                            Entrar
+                            {t("password.loginButton")}
                         </ButtonText>
                     )}
                 </Button>

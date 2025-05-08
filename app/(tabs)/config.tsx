@@ -2,6 +2,8 @@ import { useState } from "react";
 
 import { ScrollView, View } from "react-native";
 
+import { useTranslation } from 'react-i18next';
+
 import {
     Avatar,
     AvatarFallbackText,
@@ -24,10 +26,13 @@ import { BaseContainer } from "@/components/BaseContainer";
 import { ConfirmationModal } from "@/components/ui/ConfirmationModal";
 import { GoBack } from "@/components/utils/GoBack";
 
+// ... (imports permanecem os mesmos)
+
 const ConfigScreen = () => {
     const router = useRouter();
     const { user } = useAuth();
     const { signOut } = useGoogleAuth();
+    const { t } = useTranslation();
 
     const [modalVisible, setModalVisible] = useState(false);
 
@@ -62,7 +67,7 @@ const ConfigScreen = () => {
     return (
         <BaseContainer backgroundColor="$gray50">
             <VStack gap="$4">
-                <HeaderContainer title="Configurações" />
+                <HeaderContainer title={t("config.title")} />
 
                 <ScrollView
                     showsVerticalScrollIndicator={false}
@@ -107,7 +112,7 @@ const ConfigScreen = () => {
                                         fontFamily="$novaBody"
                                         lineHeight={20}
                                     >
-                                        Ver perfil
+                                        {t("config.viewProfile")}
                                     </Text>
                                 </VStack>
                             </HStack>
@@ -126,24 +131,24 @@ const ConfigScreen = () => {
                             color="#000"
                             lineHeight={24}
                         >
-                            Mensagens
+                            {t("config.sections.messages")}
                         </Text>
                         <ConfigCard
                             items={[
                                 {
-                                    title: "Notificações",
+                                    title: t("config.items.notifications"),
                                     href: "/(config)/(message)/notifications",
                                 },
                                 {
-                                    title: "Definir valores",
+                                    title: t("config.items.setValues"),
                                     href: "/(config)/(message)/values",
                                 },
                                 {
-                                    title: "Permissões",
+                                    title: t("config.items.permissions"),
                                     href: "/(config)/(message)/permissions",
                                 },
                                 {
-                                    title: "Conversas",
+                                    title: t("config.items.conversations"),
                                     href: "/(config)/(message)/chatoptions",
                                 },
                             ]}
@@ -156,20 +161,20 @@ const ConfigScreen = () => {
                             color="#000"
                             lineHeight={24}
                         >
-                            Conta
+                            {t("config.sections.account")}
                         </Text>
                         <ConfigCard
                             items={[
                                 {
-                                    title: "Tipo de conta",
+                                    title: t("config.items.accountType"),
                                     href: "/(config)/(account)/accountType",
                                 },
                                 {
-                                    title: "Privacidade",
+                                    title: t("config.items.privacy"),
                                     href: "/(config)/(account)/privacy",
                                 },
                                 {
-                                    title: "Segurança",
+                                    title: t("config.items.security"),
                                     href: "/(config)/(account)/security",
                                 },
                             ]}
@@ -182,32 +187,32 @@ const ConfigScreen = () => {
                             color="#000"
                             lineHeight={24}
                         >
-                            Aplicativo
+                            {t("config.sections.app")}
                         </Text>
                         <ConfigCard
                             items={[
                                 {
-                                    title: "Ajuda",
+                                    title: t("config.items.help"),
                                     href: "/(config)/(app)/help",
                                 },
                                 {
-                                    title: "Permissões do dispositivo",
+                                    title: t("config.items.devicePermissions"),
                                     href: "/(config)/(message)/permissions",
                                 },
                                 {
-                                    title: "Idioma",
+                                    title: t("config.items.language"),
                                     href: "/(config)/(app)/languages",
                                 },
                                 {
-                                    title: "Convidar amigos",
+                                    title: t("config.items.inviteFriends"),
                                     href: "/(config)/(app)/invitefriends",
                                 },
                                 {
-                                    title: "Sobre",
+                                    title: t("config.items.about"),
                                     href: "/(config)/(app)/about",
                                 },
                                 {
-                                    title: "Sair",
+                                    title: t("config.items.signOut"),
                                     color: "$negative",
                                     action: () => setModalVisible(true),
                                 },
@@ -221,8 +226,8 @@ const ConfigScreen = () => {
                 isOpen={modalVisible}
                 onClose={() => setModalVisible(false)}
                 onConfirm={handleSignOut}
-                title="Deseja realmente sair?"
-                message="Você realmente deseja sair da sua conta?"
+                title={t("config.modal.title")}
+                message={t("config.modal.message")}
             />
         </BaseContainer>
     );

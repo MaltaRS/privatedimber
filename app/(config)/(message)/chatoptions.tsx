@@ -1,21 +1,23 @@
 import { VStack } from "@/gluestackComponents";
-
 import HeaderContainer from "@/components/HeaderContainer";
 import { ConfigCardNoIcon } from "@/components/tabs/config/configCardNoIcon";
 import { BaseContainer } from "@/components/BaseContainer";
+import { useTranslation } from "react-i18next";
 
-const PrivacyScreen = () => {
+const ChatOptions = () => {
+    const { t } = useTranslation();
+
     return (
         <BaseContainer backgroundColor="$gray50">
             <VStack gap="$4">
-                <HeaderContainer title="Conversas" />
+                <HeaderContainer title={t("chatOptions.title")} />
                 <VStack>
                     <ConfigCardNoIcon
                         items={[
-                            { title: "Exportar conversas" },
-                            { title: "Arquivar todas as conversas" },
+                            { title: t("chatOptions.export") },
+                            { title: t("chatOptions.archiveAll") },
                             {
-                                title: "Apagar todas as conversas",
+                                title: t("chatOptions.deleteAll"),
                                 color: "$negative",
                             },
                         ]}
@@ -26,4 +28,4 @@ const PrivacyScreen = () => {
     );
 };
 
-export default PrivacyScreen;
+export default ChatOptions;

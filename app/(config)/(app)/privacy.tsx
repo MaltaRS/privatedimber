@@ -1,13 +1,15 @@
 import { ScrollView, VStack } from "@/gluestackComponents";
-
 import HeaderContainer from "@/components/HeaderContainer";
 import { BaseContainer } from "@/components/BaseContainer";
+import { useTranslation } from "react-i18next";
 
 const Policy = () => {
+    const { t } = useTranslation();
+
     return (
         <BaseContainer>
             <VStack gap="$4">
-                <HeaderContainer title="Política de Privacidade" />
+                <HeaderContainer title={t("policyPrivacy.title")} />
                 <ScrollView
                     showsVerticalScrollIndicator={false}
                     contentContainerStyle={{

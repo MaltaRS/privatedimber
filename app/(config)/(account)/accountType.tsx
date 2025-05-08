@@ -1,5 +1,4 @@
 import { useState, useEffect, Fragment } from "react";
-
 import {
     VStack,
     ScrollView,
@@ -8,25 +7,24 @@ import {
     HStack,
     Spinner,
 } from "@/gluestackComponents";
-
 import HeaderContainer from "@/components/HeaderContainer";
 import { BaseContainer } from "@/components/BaseContainer";
 import { SkeletonBox } from "@/components/utils/SkeletonBox";
 import { AccountTypeCard } from "@/components/config/AccountTypeCard";
-
 import UserProfessional from "@/assets/icons/appIcons/userProfessional.svg";
 import Globe from "@/assets/icons/appIcons/globe.svg";
-
 import { useAuth } from "@/Context/AuthProvider";
 import { toast } from "burnt";
-
 import { updateUserAccountType } from "@/connection/auth/UserConnection";
 import { Button } from "@/components/ui/Button";
 import { useQueryClient } from "@tanstack/react-query";
+import { useTranslation } from "react-i18next";
 
 const AccountType = () => {
     const { user } = useAuth();
     const queryClient = useQueryClient();
+    const { t } = useTranslation();
+
     const [isSaving, setIsSaving] = useState(false);
     const [selectedAccountType, setSelectedAccountType] = useState<
         "REGULAR" | "PROFESSIONAL" | null
@@ -59,19 +57,18 @@ const AccountType = () => {
                 );
 
                 toast({
-                    title: "Tipo de conta atualizado",
-                    message: "Seu tipo de conta foi atualizado com sucesso.",
+                    title: t("accountType.successTitle"),
+                    message: t("accountType.successMessage"),
                     haptic: "success",
                 });
             } else {
-                throw new Error("Falha ao atualizar tipo de conta");
+                throw new Error("Failed");
             }
         } catch (error) {
             console.error("Erro ao atualizar tipo de conta:", error);
             toast({
-                title: "Erro",
-                message:
-                    "Não foi possível atualizar seu tipo de conta. Tente novamente.",
+                title: t("accountType.errorTitle"),
+                message: t("accountType.errorMessage"),
                 haptic: "error",
             });
         } finally {
@@ -124,15 +121,14 @@ const AccountType = () => {
     return (
         <BaseContainer>
             <VStack flex={1}>
-                <HeaderContainer title="Tipo de conta" />
+                <HeaderContainer title={t("accountType.title")} />
                 <ScrollView
                     contentContainerStyle={{ flexGrow: 1 }}
                     showsVerticalScrollIndicator={false}
                 >
                     <VStack mt="$6" px="$1">
                         <Text fontSize={18} color="$gray800">
-                            Defina o perfil ideal para a sua experiência no
-                            Dimber
+                            {t("accountType.subtitle")}
                         </Text>
 
                         {selectedAccountType == null ? (
@@ -141,23 +137,20 @@ const AccountType = () => {
                             <Fragment>
                                 <VStack gap="$4" mt="$6">
                                     <AccountTypeCard
-                                        title="Conta Profissional"
-                                        description="Seu perfil será exibido na página de exploração, permitindo receber mensagens pagas."
+                                        title={t("accountType.professional.title")}
+                                        description={t("accountType.professional.description")}
                                         icon={UserProfessional}
                                         isSelected={
-                                            selectedAccountType ===
-                                            "PROFESSIONAL"
+                                            selectedAccountType === "PROFESSIONAL"
                                         }
                                         onSelect={() =>
-                                            handleSelectAccountType(
-                                                "PROFESSIONAL",
-                                            )
+                                            handleSelectAccountType("PROFESSIONAL")
                                         }
                                     />
 
                                     <AccountTypeCard
-                                        title="Conta Comum"
-                                        description="Seu perfil será privado e não estará visível para receber mensagens pagas."
+                                        title={t("accountType.regular.title")}
+                                        description={t("accountType.regular.description")}
                                         icon={Globe}
                                         isSelected={
                                             selectedAccountType === "REGULAR"
@@ -187,10 +180,12 @@ const AccountType = () => {
                     {isSaving ? (
                         <HStack space="sm" alignItems="center">
                             <Spinner color="white" />
-                            <ButtonText>Salvando...</ButtonText>
+                            <ButtonText>{t("accountType.saving")}</ButtonText>
                         </HStack>
                     ) : (
-                        <ButtonText textAlign="center">Salvar</ButtonText>
+                        <ButtonText textAlign="center">
+                            {t("accountType.save")}
+                        </ButtonText>
                     )}
                 </Button>
             </VStack>

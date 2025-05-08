@@ -1,9 +1,6 @@
 import React, { Fragment, useState } from "react";
-
 import { useRouter } from "expo-router";
-
 import { Search, X } from "lucide-react-native";
-
 import {
     VStack,
     HStack,
@@ -23,18 +20,15 @@ import {
 import HeaderContainer from "@/components/HeaderContainer";
 import { BaseContainer } from "@/components/BaseContainer";
 import { SkeletonBox } from "@/components/utils/SkeletonBox";
-
 import { useBlockedUsers } from "@/hooks/useBlockedUsers";
-
 import { useMutation, useQueryClient } from "@tanstack/react-query";
-
 import { unblockUser } from "@/connection/auth/UserConnection";
-
 import { MaterialIcons } from "@expo/vector-icons";
-
 import { toast } from "burnt";
+import { useTranslation } from "react-i18next";
 
 const ListBlockUsersScreen = () => {
+    const { t } = useTranslation();
     const queryClient = useQueryClient();
     const router = useRouter();
 
@@ -61,17 +55,16 @@ const ListBlockUsersScreen = () => {
         try {
             await removeBlockedUserMutation.mutateAsync(userId);
             toast({
-                title: "Usuário desbloqueado",
-                message: "O usuário foi desbloqueado com sucesso.",
+                title: t("blocked.successTitle"),
+                message: t("blocked.successMessage"),
                 haptic: "success",
             });
             refetch();
         } catch (error) {
             console.error("Erro ao desbloquear usuário:", error);
             toast({
-                title: "Erro",
-                message:
-                    "Não foi possível desbloquear o usuário. Tente novamente.",
+                title: t("blocked.errorTitle"),
+                message: t("blocked.errorMessage"),
                 haptic: "error",
             });
         } finally {
@@ -83,12 +76,7 @@ const ListBlockUsersScreen = () => {
         <VStack gap="$4">
             <VStack gap="$2">
                 <SkeletonBox width={220} height={28} />
-                <VStack
-                    bgColor="$white"
-                    pl="$4"
-                    borderRadius="$xl"
-                    elevation={2}
-                >
+                <VStack bgColor="$white" pl="$4" borderRadius="$xl" elevation={2}>
                     {[1, 2, 3].map((item) => (
                         <HStack
                             key={item}
@@ -98,11 +86,7 @@ const ListBlockUsersScreen = () => {
                             justifyContent="space-between"
                         >
                             <SkeletonBox width={180} height={24} />
-                            <SkeletonBox
-                                width={80}
-                                height={32}
-                                borderRadius="$lg"
-                            />
+                            <SkeletonBox width={80} height={32} borderRadius="$lg" />
                         </HStack>
                     ))}
                 </VStack>
@@ -113,7 +97,7 @@ const ListBlockUsersScreen = () => {
     return (
         <BaseContainer backgroundColor="$gray50">
             <VStack gap="$4" flex={1}>
-                <HeaderContainer title="Usuários Bloqueados" />
+                <HeaderContainer title={t("blocked.title")} />
 
                 <VStack p="$1" gap="$4" flex={1}>
                     <Input variant="rounded" size="xl" borderWidth={0}>
@@ -125,7 +109,7 @@ const ListBlockUsersScreen = () => {
                         <InputField
                             pl="$3"
                             bgColor="$gray200"
-                            placeholder="Pesquisar usuário bloqueado"
+                            placeholder={t("blocked.searchPlaceholder")}
                             placeholderTextColor="#6B7280"
                             size="lg"
                             onChangeText={setSearchTerm}
@@ -144,32 +128,21 @@ const ListBlockUsersScreen = () => {
                         <LoadingSkeleton />
                     ) : filteredUsers.length === 0 ? (
                         <VStack alignItems="center" py="$8">
-                            <Text
-                                fontSize={16}
-                                color="$gray500"
-                                textAlign="center"
-                            >
+                            <Text fontSize={16} color="$gray500" textAlign="center">
                                 {searchTerm
-                                    ? "Nenhum usuário bloqueado encontrado para esta pesquisa."
-                                    : "Você não tem nenhum usuário bloqueado."}
+                                    ? t("blocked.noSearchResults")
+                                    : t("blocked.noBlockedUsers")}
                             </Text>
                         </VStack>
                     ) : (
-                        <VStack
-                            bgColor="$white"
-                            borderRadius="$xl"
-                            elevation={2}
-                            flex={1}
-                        >
+                        <VStack bgColor="$white" borderRadius="$xl" elevation={2} flex={1}>
                             <FlatList
                                 data={filteredUsers}
                                 renderItem={({ item }: { item: any }) => (
                                     <Fragment>
                                         <Pressable
                                             onPress={() =>
-                                                router.push(
-                                                    `/myprofile?userUuid=${item.uuid}`,
-                                                )
+                                                router.push(`/myprofile?userUuid=${item.uuid}`)
                                             }
                                         >
                                             <HStack
@@ -179,10 +152,7 @@ const ListBlockUsersScreen = () => {
                                                 py="$2"
                                                 px="$3"
                                             >
-                                                <HStack
-                                                    alignItems="center"
-                                                    gap="$3"
-                                                >
+                                                <HStack alignItems="center" gap="$3">
                                                     <Avatar
                                                         margin={3}
                                                         borderRadius={10}
@@ -190,63 +160,43 @@ const ListBlockUsersScreen = () => {
                                                         height={60}
                                                         rounded="$full"
                                                     >
-                                                        <AvatarFallbackText
-                                                            fontSize={30}
-                                                        >
+                                                        <AvatarFallbackText fontSize={30}>
                                                             {item.name}
                                                         </AvatarFallbackText>
                                                         <AvatarImage
-                                                            source={{
-                                                                uri: item.icon,
-                                                            }}
+                                                            source={{ uri: item.icon }}
                                                             alt={`Foto de perfil de ${item.name}`}
                                                         />
                                                     </Avatar>
 
                                                     <VStack gap={3}>
                                                         <HStack alignItems="center">
-                                                            <Text
-                                                                bold
-                                                                fontSize={18}
-                                                            >
+                                                            <Text bold fontSize={18}>
                                                                 {item.name}
                                                             </Text>
                                                             {item.verifiedAt && (
                                                                 <MaterialIcons
-                                                                    style={{
-                                                                        paddingLeft: 4,
-                                                                    }}
+                                                                    style={{ paddingLeft: 4 }}
                                                                     name="verified"
                                                                     size={14}
                                                                     color="#00A8FF"
                                                                 />
                                                             )}
                                                         </HStack>
-                                                        <Text
-                                                            fontSize={16}
-                                                            color="$gray500"
-                                                        >
+                                                        <Text fontSize={16} color="$gray500">
                                                             @{item.username}
                                                         </Text>
                                                     </VStack>
                                                 </HStack>
 
                                                 <Pressable
-                                                    onPress={() =>
-                                                        handleUnblock(item.id)
-                                                    }
-                                                    disabled={
-                                                        isUnblocking === item.id
-                                                    }
+                                                    onPress={() => handleUnblock(item.id)}
+                                                    disabled={isUnblocking === item.id}
                                                 >
-                                                    <Text
-                                                        fontSize={17}
-                                                        color="$primaryDefault"
-                                                    >
-                                                        {isUnblocking ===
-                                                        item.id
-                                                            ? "Desbloqueando..."
-                                                            : "Desbloquear"}
+                                                    <Text fontSize={17} color="$primaryDefault">
+                                                        {isUnblocking === item.id
+                                                            ? t("blocked.unblocking")
+                                                            : t("blocked.unblock")}
                                                     </Text>
                                                 </Pressable>
                                             </HStack>

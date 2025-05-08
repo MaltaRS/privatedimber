@@ -1,0 +1,259 @@
+{
+  "about": {
+    "title": "[EN-US] About",
+    "terms": "[EN-US] Terms of Use",
+    "privacy": "[EN-US] Privacy Policy"
+  },
+  "accountType": {
+    "title": "[EN-US] Account Type",
+    "subtitle": "[EN-US] Choose the best profile for your experience on Dimber",
+    "save": "[EN-US] Save",
+    "saving": "[EN-US] Saving...",
+    "successTitle": "[EN-US] Account type updated",
+    "successMessage": "[EN-US] Your account type was updated successfully.",
+    "errorTitle": "[EN-US] Error",
+    "errorMessage": "[EN-US] Could not update your account type. Please try again.",
+    "professional": {
+      "title": "Professional Account",
+      "description": "Your profile will be shown on the explore page and can receive paid messages."
+    },
+    "regular": {
+      "title": "Regular Account",
+      "description": "Your profile will be private and hidden from receiving paid messages."
+    }
+  },
+  "blocked": {
+    "title": "[EN-US] Blocked Users",
+    "searchPlaceholder": "[EN-US] Search blocked user",
+    "noSearchResults": "[EN-US] No blocked user found for this search.",
+    "noBlockedUsers": "[EN-US] You have no blocked users.",
+    "unblock": "[EN-US] Unblock",
+    "unblocking": "[EN-US] Unblocking...",
+    "successTitle": "[EN-US] User unblocked",
+    "successMessage": "[EN-US] The user has been successfully unblocked.",
+    "errorTitle": "[EN-US] Error",
+    "errorMessage": "[EN-US] Could not unblock user. Please try again."
+  },
+  "changePassword": {
+    "title": "[EN-US] Change Password"
+  },
+  "chatOptions": {
+    "title": "[EN-US] Chats",
+    "export": "[EN-US] Export chats",
+    "archiveAll": "[EN-US] Archive all chats",
+    "deleteAll": "[EN-US] Delete all chats"
+  },
+  "chats": {
+    "title": "[EN-US] Chats",
+    "search": "[EN-US] Search",
+    "emptyMessage": "[EN-US] Send a message and wait for a new connection.",
+    "viewProfile": "[EN-US] View Profile"
+  },
+  "config": {
+    "title": "[EN-US] Settings",
+    "viewProfile": "[EN-US] View profile",
+    "sections": {
+      "messages": "Messages",
+      "account": "Account",
+      "app": "App"
+    },
+    "items": {
+      "notifications": "Notifications",
+      "setValues": "Set values",
+      "permissions": "Permissions",
+      "conversations": "Conversations",
+      "accountType": "Account type",
+      "privacy": "Privacy",
+      "security": "Security",
+      "help": "Help",
+      "devicePermissions": "Device permissions",
+      "language": "Language",
+      "inviteFriends": "Invite friends",
+      "about": "About",
+      "signOut": "Sign out"
+    },
+    "modal": {
+      "title": "Do you really want to sign out?",
+      "message": "Are you sure you want to sign out of your account?"
+    }
+  },
+  "editProfile": {
+    "title": "[EN-US] Edit Profile",
+    "save": "[EN-US] Save",
+    "successTitle": "[EN-US] Success",
+    "imageSuccess": "[EN-US] Profile image updated successfully!",
+    "imageErrorPrefix": "[EN-US] Could not update the profile image due to:",
+    "updateSuccess": "[EN-US] Profile updated successfully!",
+    "usernameInUse": "[EN-US] Username is already in use",
+    "updateError": "[EN-US] Could not update the profile. Error:",
+    "permissionTitle": "[EN-US] Permission required",
+    "cameraPermission": "[EN-US] We need permission to access your camera.",
+    "galleryPermission": "[EN-US] We need permission to access your photos.",
+    "imageTooLarge": "[EN-US] Image too large. Please choose an image up to 5MB.",
+    "imageCheckError": "[EN-US] Error checking image size.",
+    "imageUploadError": "[EN-US] Could not upload the image.",
+    "confirmSaveTitle": "[EN-US] Save changes",
+    "confirmSaveMessage": "[EN-US] Do you want to save the changes made to the profile?",
+    "confirmBackTitle": "[EN-US] Discard changes",
+    "confirmBackMessage": "[EN-US] Are you sure you want to leave? All unsaved changes will be lost."
+  },
+  "error": {
+    "title": "[EN-US] Error",
+    "createConversation": "[EN-US] Failed to start conversation, try again later!"
+  },
+  "explore": {
+    "title": "[EN-US] Explore",
+    "favorites": "[EN-US] Favorites",
+    "mostPopular": "[EN-US] Most Popular",
+    "noUsersFound": "[EN-US] No users found"
+  },
+  "help": {
+    "title": "[EN-US] Help"
+  },
+  "interests": {
+    "title": "[EN-US] Interests",
+    "save": "[EN-US] Save",
+    "instruction": "[EN-US] Select at least 3 categories so we can personalize your experience.",
+    "toastSuccess": "[EN-US] Interests updated successfully",
+    "errorTitle": "[EN-US] Select more interests",
+    "errorMessage": "[EN-US] You need to select at least 3 interests to continue."
+  },
+  "invite": {
+    "header": "[EN-US] Invite friends",
+    "title": "[EN-US] Share Dimber and earn benefits!",
+    "description": "[EN-US] Invite your friends and enjoy exclusive advantages (list them here)",
+    "codeLabel": "[EN-US] Your referral code:",
+    "copiedTitle": "[EN-US] Copied!",
+    "copiedMessage": "[EN-US] Your referral code has been copied.",
+    "qrTitle": "[EN-US] Share with QR Code",
+    "saveQR": "[EN-US] Save QR Code",
+    "haveQuestions": "[EN-US] Have any questions?",
+    "clickToRead": "[EN-US] Click here and read the",
+    "termsLink": "[EN-US] terms and conditions",
+    "shareButton": "[EN-US] Share code"
+  },
+  "language": {
+    "title": "[EN-US] Languages",
+    "autoTranslate": "[EN-US] Translate automatically",
+    "interfaceLanguage": "[EN-US] Interface Language",
+    "autoActivatedTitle": "[EN-US] Automatic language activated",
+    "autoActivatedDescription": "[EN-US] The app now follows the system language.",
+    "changedTitle": "[EN-US] Language changed",
+    "changedDescription": "[EN-US] Interface language updated.",
+    "ptBR": "[EN-US] Portuguese BR",
+    "ptPT": "[EN-US] Portuguese PT",
+    "en": "[EN-US] English",
+    "es": "[EN-US] Spanish",
+    "it": "[EN-US] Italian",
+    "fr": "[EN-US] French"
+  },
+  "notifications": {
+    "title": "[EN-US] Notifications",
+    "sectionMessages": "[EN-US] Message notifications",
+    "sectionEmail": "[EN-US] Email notifications",
+    "showNotifications": "[EN-US] Show notifications",
+    "solicitation": "[EN-US] Message request",
+    "payments": "[EN-US] Payments",
+    "support": "[EN-US] Support"
+  },
+  "password": {
+    "title": "[EN-US] Welcome back.",
+    "description": "[EN-US] Enter your password to continue.",
+    "label": "[EN-US] Password",
+    "placeholder": "[EN-US] Enter your password",
+    "forgotPassword": "[EN-US] Forgot my password",
+    "loginButton": "[EN-US] Log in",
+    "invalidCredentials": "[EN-US] Invalid credentials. Please try again.",
+    "required": "[EN-US] Password is required.",
+    "minLength": "[EN-US] Password must be at least 6 characters."
+  },
+  "permissions": {
+    "title": "[EN-US] Permissions",
+    "responseTitle": "[EN-US] Right to reply",
+    "allowResponse": "[EN-US] Allow response",
+    "attachmentsTitle": "[EN-US] Attachments",
+    "allowFiles": "[EN-US] Allow file",
+    "allowImages": "[EN-US] Allow photo",
+    "allowVideos": "[EN-US] Allow video"
+  },
+  "policyPrivacy": {
+    "title": "[EN-US] Privacy Policy"
+  },
+  "price": {
+    "title": "[EN-US] Set Prices",
+    "description": "[EN-US] Define the price you want to charge for each interaction.",
+    "basePriceTitle": "[EN-US] Base price",
+    "basePriceSubtitle": "[EN-US] Minimum price per message",
+    "attachmentTitle": "[EN-US] Attachment",
+    "attachmentDescription": "[EN-US] Extra percentage charged for attachment",
+    "videoTitle": "[EN-US] Video",
+    "videoDescription": "[EN-US] Extra percentage charged for video",
+    "imageTitle": "[EN-US] Image",
+    "imageDescription": "[EN-US] Extra percentage charged for image",
+    "saveButton": "[EN-US] Save",
+    "errorTitle": "[EN-US] Error",
+    "errorMin": "[EN-US] The minimum base price is R$ 0.50",
+    "errorGeneric": "[EN-US] Unable to save the values. Please try again."
+  },
+  "privacySettings": {
+    "title": "[EN-US] Privacy",
+    "blocked": "[EN-US] Blocked",
+    "showOnline": "[EN-US] Show Online",
+    "showLastUpdate": "[EN-US] Show Last Seen",
+    "showStatistics": "[EN-US] Show Statistics",
+    "vacationMode": "[EN-US] Vacation Mode"
+  },
+  "profile": {
+    "title": "[EN-US] Profile",
+    "about": "[EN-US] About",
+    "statistics": "[EN-US] Statistics",
+    "notFound": "[EN-US] Profile not found or disabled for messaging.",
+    "sendMessage": "[EN-US] Send Message",
+    "blockedSuccess": "[EN-US] User successfully blocked",
+    "unblockedSuccess": "[EN-US] User successfully unblocked"
+  },
+  "security": {
+    "title": "[EN-US] Security",
+    "changePassword": "[EN-US] Change Password",
+    "activate2fa": "[EN-US] Enable 2FA Security"
+  },
+  "security2fa": {
+    "activate2fa": "[EN-US] Enable 2FA Security"
+  },
+  "tags": {
+    "title": "[EN-US] Categories",
+    "save": "[EN-US] Save",
+    "description": "[EN-US] These categories help users discover profiles similar to yours. You can modify them as needed.",
+    "toastSuccess": "[EN-US] Categories updated successfully"
+  },
+  "terms": {
+    "title": "[EN-US] Terms of Use"
+  },
+  "wallet": {
+    "title": "[EN-US] Wallet",
+    "totalBalance": "[EN-US] Total Balance",
+    "available": "[EN-US] Available to use",
+    "withdraw": "[EN-US] Withdraw",
+    "cards": "[EN-US] Cards",
+    "donate": "[EN-US] Donate",
+    "statement": "[EN-US] Statement",
+    "viewStatement": "[EN-US] View statement",
+    "noTransactions": "[EN-US] No transactions found",
+    "paidValue": "[EN-US] Paid value",
+    "sendTo": "[EN-US] Send to {{name}}",
+    "paymentTo": "[EN-US] Payment to {{name}}",
+    "transaction": "[EN-US] Transaction"
+  },
+  "welcome": {
+    "title": "[EN-US] Let's get started!",
+    "emailOrUsernameLabel": "[EN-US] Email or username",
+    "emailOrUsernamePlaceholder": "[EN-US] Your email or username",
+    "continueButton": "[EN-US] Continue",
+    "signupLink": "[EN-US] Don't have an account yet? Create one",
+    "or": "[EN-US] or",
+    "continueWithGoogle": "[EN-US] Continue with Google",
+    "userNotFound": "[EN-US] We couldn't find a user with those credentials.",
+    "invalidEmailOrUsername": "[EN-US] Enter a valid email or username.",
+    "requiredField": "[EN-US] Email or username is required."
+  }
+}

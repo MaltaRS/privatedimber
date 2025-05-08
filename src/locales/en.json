@@ -1,0 +1,259 @@
+{
+    "about": {
+        "title": "About",
+        "terms": "Terms of Use",
+        "privacy": "Privacy Policy"
+    },
+    "accountType": {
+        "title": "Account Type",
+        "subtitle": "Choose the best profile for your experience on Dimber",
+        "save": "Save",
+        "saving": "Saving...",
+        "successTitle": "Account type updated",
+        "successMessage": "Your account type was updated successfully.",
+        "errorTitle": "Error",
+        "errorMessage": "Could not update your account type. Please try again.",
+        "professional": {
+            "title": "Professional Account",
+            "description": "Your profile will be shown on the explore page and can receive paid messages."
+        },
+        "regular": {
+            "title": "Regular Account",
+            "description": "Your profile will be private and hidden from receiving paid messages."
+        }
+    },
+    "blocked": {
+        "title": "Blocked Users",
+        "searchPlaceholder": "Search blocked user",
+        "noSearchResults": "No blocked user found for this search.",
+        "noBlockedUsers": "You have no blocked users.",
+        "unblock": "Unblock",
+        "unblocking": "Unblocking...",
+        "successTitle": "User unblocked",
+        "successMessage": "The user has been successfully unblocked.",
+        "errorTitle": "Error",
+        "errorMessage": "Could not unblock user. Please try again."
+    },
+    "changePassword": {
+        "title": "Change Password"
+    },
+    "chatOptions": {
+        "title": "Chats",
+        "export": "Export chats",
+        "archiveAll": "Archive all chats",
+        "deleteAll": "Delete all chats"
+    },
+    "chats": {
+        "title": "Chats",
+        "search": "Search",
+        "emptyMessage": "Send a message and wait for a new connection.",
+        "viewProfile": "View Profile"
+    },
+    "config": {
+        "title": "Settings",
+        "viewProfile": "View profile",
+        "sections": {
+            "messages": "Messages",
+            "account": "Account",
+            "app": "App"
+        },
+        "items": {
+            "notifications": "Notifications",
+            "setValues": "Set values",
+            "permissions": "Permissions",
+            "conversations": "Conversations",
+            "accountType": "Account type",
+            "privacy": "Privacy",
+            "security": "Security",
+            "help": "Help",
+            "devicePermissions": "Device permissions",
+            "language": "Language",
+            "inviteFriends": "Invite friends",
+            "about": "About",
+            "signOut": "Sign out"
+        },
+        "modal": {
+            "title": "Do you really want to sign out?",
+            "message": "Are you sure you want to sign out of your account?"
+        }
+    },
+    "editProfile": {
+        "title": "Edit Profile",
+        "save": "Save",
+        "successTitle": "Success",
+        "imageSuccess": "Profile image updated successfully!",
+        "imageErrorPrefix": "Could not update the profile image due to:",
+        "updateSuccess": "Profile updated successfully!",
+        "usernameInUse": "Username is already in use",
+        "updateError": "Could not update the profile. Error:",
+        "permissionTitle": "Permission required",
+        "cameraPermission": "We need permission to access your camera.",
+        "galleryPermission": "We need permission to access your photos.",
+        "imageTooLarge": "Image too large. Please choose an image up to 5MB.",
+        "imageCheckError": "Error checking image size.",
+        "imageUploadError": "Could not upload the image.",
+        "confirmSaveTitle": "Save changes",
+        "confirmSaveMessage": "Do you want to save the changes made to the profile?",
+        "confirmBackTitle": "Discard changes",
+        "confirmBackMessage": "Are you sure you want to leave? All unsaved changes will be lost."
+    },
+    "error": {
+        "createConversation": "Failed to start conversation, try again later!",
+        "title": "Error"
+    },
+    "explore": {
+        "title": "Explore",
+        "favorites": "Favorites",
+        "mostPopular": "Most Popular",
+        "noUsersFound": "No users found"
+    },
+    "help": {
+        "title": "Help"
+    },
+    "interests": {
+        "title": "Interests",
+        "save": "Save",
+        "instruction": "Select at least 3 categories so we can personalize your experience.",
+        "toastSuccess": "Interests updated successfully",
+        "errorTitle": "Select more interests",
+        "errorMessage": "You need to select at least 3 interests to continue."
+    },
+    "invite": {
+        "header": "Invite friends",
+        "title": "Share Dimber and earn benefits!",
+        "description": "Invite your friends and enjoy exclusive advantages (list them here)",
+        "codeLabel": "Your referral code:",
+        "copiedTitle": "Copied!",
+        "copiedMessage": "Your referral code has been copied.",
+        "qrTitle": "Share with QR Code",
+        "saveQR": "Save QR Code",
+        "haveQuestions": "Have any questions?",
+        "clickToRead": "Click here and read the",
+        "termsLink": "terms and conditions",
+        "shareButton": "Share code"
+    },
+    "language": {
+        "title": "Languages",
+        "autoTranslate": "Translate automatically",
+        "interfaceLanguage": "Interface Language",
+        "autoActivatedTitle": "Automatic language activated",
+        "autoActivatedDescription": "The app now follows the system language.",
+        "changedTitle": "Language changed",
+        "changedDescription": "Interface language updated.",
+        "ptBR": "Portuguese BR",
+        "ptPT": "Portuguese PT",
+        "en": "English",
+        "es": "Spanish",
+        "it": "Italian",
+        "fr": "French"
+    },
+    "notifications": {
+        "title": "Notifications",
+        "sectionMessages": "Message notifications",
+        "sectionEmail": "Email notifications",
+        "showNotifications": "Show notifications",
+        "solicitation": "Message request",
+        "payments": "Payments",
+        "support": "Support"
+    },
+    "password": {
+        "title": "Welcome back.",
+        "description": "Enter your password to continue.",
+        "label": "Password",
+        "placeholder": "Enter your password",
+        "forgotPassword": "Forgot my password",
+        "loginButton": "Log in",
+        "invalidCredentials": "Invalid credentials. Please try again.",
+        "required": "Password is required.",
+        "minLength": "Password must be at least 6 characters."
+    },
+    "permissions": {
+        "title": "Permissions",
+        "responseTitle": "Right to reply",
+        "allowResponse": "Allow response",
+        "attachmentsTitle": "Attachments",
+        "allowFiles": "Allow file",
+        "allowImages": "Allow photo",
+        "allowVideos": "Allow video"
+    },
+    "policyPrivacy": {
+        "title": "Privacy Policy"
+    },
+    "price": {
+        "title": "Set Prices",
+        "description": "Define the price you want to charge for each interaction.",
+        "basePriceTitle": "Base price",
+        "basePriceSubtitle": "Minimum price per message",
+        "attachmentTitle": "Attachment",
+        "attachmentDescription": "Extra percentage charged for attachment",
+        "videoTitle": "Video",
+        "videoDescription": "Extra percentage charged for video",
+        "imageTitle": "Image",
+        "imageDescription": "Extra percentage charged for image",
+        "saveButton": "Save",
+        "errorTitle": "Error",
+        "errorMin": "The minimum base price is R$ 0.50",
+        "errorGeneric": "Unable to save the values. Please try again."
+    },
+    "privacySettings": {
+        "title": "Privacy",
+        "blocked": "Blocked",
+        "showOnline": "Show Online",
+        "showLastUpdate": "Show Last Seen",
+        "showStatistics": "Show Statistics",
+        "vacationMode": "Vacation Mode"
+    },
+    "profile": {
+        "title": "Profile",
+        "about": "About",
+        "statistics": "Statistics",
+        "notFound": "Profile not found or disabled for messaging.",
+        "sendMessage": "Send Message",
+        "blockedSuccess": "User successfully blocked",
+        "unblockedSuccess": "User successfully unblocked"
+    },
+    "security": {
+        "title": "Security",
+        "changePassword": "Change Password",
+        "activate2fa": "Enable 2FA Security"
+    },
+    "security2fa": {
+        "activate2fa": "Enable 2FA Security"
+    },
+    "tags": {
+        "title": "Categories",
+        "save": "Save",
+        "description": "These categories help users discover profiles similar to yours. You can modify them as needed.",
+        "toastSuccess": "Categories updated successfully"
+    },
+    "terms": {
+        "title": "Terms of Use"
+    },
+    "wallet": {
+        "title": "Wallet",
+        "totalBalance": "Total Balance",
+        "available": "Available to use",
+        "withdraw": "Withdraw",
+        "cards": "Cards",
+        "donate": "Donate",
+        "statement": "Statement",
+        "viewStatement": "View statement",
+        "noTransactions": "No transactions found",
+        "paidValue": "Paid value",
+        "sendTo": "Send to {{name}}",
+        "paymentTo": "Payment to {{name}}",
+        "transaction": "Transaction"
+    },
+    "welcome": {
+        "title": "Let's get started!",
+        "emailOrUsernameLabel": "Email or username",
+        "emailOrUsernamePlaceholder": "Your email or username",
+        "continueButton": "Continue",
+        "signupLink": "Don't have an account yet? Create one",
+        "or": "or",
+        "continueWithGoogle": "Continue with Google",
+        "userNotFound": "We couldn't find a user with those credentials.",
+        "invalidEmailOrUsername": "Enter a valid email or username.",
+        "requiredField": "Email or username is required."
+    }
+}

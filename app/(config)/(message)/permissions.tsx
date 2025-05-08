@@ -1,18 +1,17 @@
 import { useState, useEffect, Fragment } from "react";
-
 import { ScrollView } from "react-native";
-
 import { HStack, VStack } from "@/gluestackComponents";
 
 import { useSettings } from "@/hooks/SettingsHook";
-
 import { ConfigCardSwitch } from "@/components/tabs/config/configCardSwitch";
 import HeaderContainer from "@/components/HeaderContainer";
 import { BaseContainer } from "@/components/BaseContainer";
 import { SkeletonBox } from "@/components/utils/SkeletonBox";
 import TitleContainer from "@/components/TitleContainer";
+import { useTranslation } from "react-i18next";
 
 const Permissions = () => {
+    const { t } = useTranslation();
     const { settings, updateSettings } = useSettings();
     const [isInitialLoading, setIsInitialLoading] = useState(true);
     const [localSettings, setLocalSettings] = useState({
@@ -29,12 +28,9 @@ const Permissions = () => {
             setLocalSettings({
                 allowResponse: settings.chatSettings?.allowResponse ?? true,
                 allowAttachments: {
-                    files:
-                        settings.chatSettings?.allowAttachments?.files ?? true,
-                    images:
-                        settings.chatSettings?.allowAttachments?.images ?? true,
-                    videos:
-                        settings.chatSettings?.allowAttachments?.videos ?? true,
+                    files: settings.chatSettings?.allowAttachments?.files ?? true,
+                    images: settings.chatSettings?.allowAttachments?.images ?? true,
+                    videos: settings.chatSettings?.allowAttachments?.videos ?? true,
                 },
             });
             setIsInitialLoading(false);
@@ -69,36 +65,17 @@ const Permissions = () => {
         <VStack gap="$6">
             <VStack gap="$2">
                 <SkeletonBox width={220} height={28} />
-                <VStack
-                    bgColor="$white"
-                    pl="$4"
-                    borderRadius="$xl"
-                    elevation={2}
-                >
-                    <HStack
-                        py="$4"
-                        pr="$4"
-                        alignItems="center"
-                        justifyContent="space-between"
-                    >
+                <VStack bgColor="$white" pl="$4" borderRadius="$xl" elevation={2}>
+                    <HStack py="$4" pr="$4" alignItems="center" justifyContent="space-between">
                         <SkeletonBox width={160} height={24} />
-                        <SkeletonBox
-                            width={40}
-                            height={24}
-                            borderRadius="$full"
-                        />
+                        <SkeletonBox width={40} height={24} borderRadius="$full" />
                     </HStack>
                 </VStack>
             </VStack>
 
             <VStack gap="$2">
                 <SkeletonBox width={200} height={28} />
-                <VStack
-                    bgColor="$white"
-                    pl="$4"
-                    borderRadius="$xl"
-                    elevation={2}
-                >
+                <VStack bgColor="$white" pl="$4" borderRadius="$xl" elevation={2}>
                     {[1, 2, 3].map((item) => (
                         <HStack
                             key={item}
@@ -108,11 +85,7 @@ const Permissions = () => {
                             justifyContent="space-between"
                         >
                             <SkeletonBox width={160} height={24} />
-                            <SkeletonBox
-                                width={40}
-                                height={24}
-                                borderRadius="$full"
-                            />
+                            <SkeletonBox width={40} height={24} borderRadius="$full" />
                         </HStack>
                     ))}
                 </VStack>
@@ -123,7 +96,7 @@ const Permissions = () => {
     return (
         <BaseContainer backgroundColor="$gray50">
             <VStack gap="$4">
-                <HeaderContainer title="Permissões" />
+                <HeaderContainer title={t("permissions.title")} />
 
                 <ScrollView
                     showsVerticalScrollIndicator={false}
@@ -134,42 +107,36 @@ const Permissions = () => {
                             <LoadingSkeleton />
                         ) : (
                             <Fragment>
-                                <TitleContainer name="Direito de resposta" />
+                                <TitleContainer name={t("permissions.responseTitle")} />
                                 <ConfigCardSwitch
                                     items={[
                                         {
-                                            title: "Conceder resposta",
+                                            title: t("permissions.allowResponse"),
                                             value: localSettings.allowResponse,
                                             onToggle: (value) =>
-                                                handleToggle(
-                                                    "allowResponse",
-                                                    value,
-                                                ),
+                                                handleToggle("allowResponse", value),
                                         },
                                     ]}
                                 />
 
-                                <TitleContainer name="Anexos" />
+                                <TitleContainer name={t("permissions.attachmentsTitle")} />
                                 <ConfigCardSwitch
                                     items={[
                                         {
-                                            title: "Permitir arquivo",
-                                            value: localSettings
-                                                .allowAttachments.files,
+                                            title: t("permissions.allowFiles"),
+                                            value: localSettings.allowAttachments.files,
                                             onToggle: (value) =>
                                                 handleToggle("files", value),
                                         },
                                         {
-                                            title: "Permitir foto",
-                                            value: localSettings
-                                                .allowAttachments.images,
+                                            title: t("permissions.allowImages"),
+                                            value: localSettings.allowAttachments.images,
                                             onToggle: (value) =>
                                                 handleToggle("images", value),
                                         },
                                         {
-                                            title: "Permitir vídeo",
-                                            value: localSettings
-                                                .allowAttachments.videos,
+                                            title: t("permissions.allowVideos"),
+                                            value: localSettings.allowAttachments.videos,
                                             onToggle: (value) =>
                                                 handleToggle("videos", value),
                                         },

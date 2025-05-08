@@ -1,14 +1,14 @@
 import { useState, useEffect, Fragment } from "react";
-
 import { VStack, HStack, Text } from "@/gluestackComponents";
-
 import HeaderContainer from "@/components/HeaderContainer";
 import { ConfigCardSwitch } from "@/components/tabs/config/configCardSwitch";
 import { BaseContainer } from "@/components/BaseContainer";
 import { useSettings } from "@/hooks/SettingsHook";
 import { SkeletonBox } from "@/components/utils/SkeletonBox";
+import { useTranslation } from "react-i18next";
 
 const ConfigNotifications = () => {
+    const { t } = useTranslation();
     const { settings, updateSettings } = useSettings();
     const [isInitialLoading, setIsInitialLoading] = useState(true);
     const [localSettings, setLocalSettings] = useState({
@@ -115,7 +115,7 @@ const ConfigNotifications = () => {
     return (
         <BaseContainer backgroundColor="$white">
             <VStack>
-                <HeaderContainer title="Notificações" />
+                <HeaderContainer title={t("notifications.title")} />
 
                 <VStack px="$1" gap="$6" mt="$4">
                     {isInitialLoading ? (
@@ -128,12 +128,12 @@ const ConfigNotifications = () => {
                                     fontSize={20}
                                     fontFamily="$heading"
                                 >
-                                    Notificações de mensagens
+                                    {t("notifications.sectionMessages")}
                                 </Text>
                                 <ConfigCardSwitch
                                     items={[
                                         {
-                                            title: "Mostrar notificações",
+                                            title: t("notifications.showNotifications"),
                                             value: localSettings.messageNotifications,
                                             onToggle: (value) =>
                                                 handleToggle(
@@ -151,12 +151,12 @@ const ConfigNotifications = () => {
                                     fontSize={20}
                                     fontFamily="$heading"
                                 >
-                                    Notificações de email
+                                    {t("notifications.sectionEmail")}
                                 </Text>
                                 <ConfigCardSwitch
                                     items={[
                                         {
-                                            title: "Solicitação de mensagem",
+                                            title: t("notifications.solicitation"),
                                             value: localSettings.messageSolicitationNotifications,
                                             onToggle: (value) =>
                                                 handleToggle(
@@ -165,7 +165,7 @@ const ConfigNotifications = () => {
                                                 ),
                                         },
                                         {
-                                            title: "Pagamentos",
+                                            title: t("notifications.payments"),
                                             value: localSettings.paymentNotifications,
                                             onToggle: (value) =>
                                                 handleToggle(
@@ -174,7 +174,7 @@ const ConfigNotifications = () => {
                                                 ),
                                         },
                                         {
-                                            title: "Suporte",
+                                            title: t("notifications.support"),
                                             value: localSettings.supportNotifications,
                                             onToggle: (value) =>
                                                 handleToggle(

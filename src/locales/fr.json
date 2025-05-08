@@ -1,0 +1,259 @@
+{
+    "about": {
+        "title": "À propos",
+        "terms": "Conditions d'utilisation",
+        "privacy": "Politique de confidentialité"
+    },
+    "accountType": {
+        "title": "Type de compte",
+        "subtitle": "Choisissez le meilleur profil pour votre expérience sur Dimber",
+        "save": "Enregistrer",
+        "saving": "Enregistrement...",
+        "successTitle": "Type de compte mis à jour",
+        "successMessage": "Votre type de compte a été mis à jour avec succès.",
+        "errorTitle": "Erreur",
+        "errorMessage": "Impossible de mettre à jour votre type de compte. Veuillez réessayer.",
+        "professional": {
+            "title": "Compte Professionnel",
+            "description": "Votre profil sera visible sur la page d'exploration et pourra recevoir des messages payants."
+        },
+        "regular": {
+            "title": "Compte Régulier",
+            "description": "Votre profil sera privé et ne pourra pas recevoir de messages payants."
+        }
+    },
+    "blocked": {
+        "title": "Utilisateurs bloqués",
+        "searchPlaceholder": "Rechercher un utilisateur bloqué",
+        "noSearchResults": "Aucun utilisateur bloqué trouvé pour cette recherche.",
+        "noBlockedUsers": "Vous n'avez aucun utilisateur bloqué.",
+        "unblock": "Débloquer",
+        "unblocking": "Déblocage...",
+        "successTitle": "Utilisateur débloqué",
+        "successMessage": "L'utilisateur a été débloqué avec succès.",
+        "errorTitle": "Erreur",
+        "errorMessage": "Impossible de débloquer l'utilisateur. Veuillez réessayer."
+    },
+    "changePassword": {
+        "title": "Changer le mot de passe"
+    },
+    "chatOptions": {
+        "title": "Discussions",
+        "export": "Exporter les discussions",
+        "archiveAll": "Archiver toutes les discussions",
+        "deleteAll": "Supprimer toutes les discussions"
+    },
+    "chats": {
+        "title": "Discussions",
+        "search": "Rechercher",
+        "emptyMessage": "Envoyez un message et attendez une nouvelle connexion.",
+        "viewProfile": "Voir le profil"
+    },
+    "config": {
+        "title": "Paramètres",
+        "viewProfile": "Voir le profil",
+        "sections": {
+            "messages": "Messages",
+            "account": "Compte",
+            "app": "Application"
+        },
+        "items": {
+            "notifications": "Notifications",
+            "setValues": "Définir les valeurs",
+            "permissions": "Autorisations",
+            "conversations": "Conversations",
+            "accountType": "Type de compte",
+            "privacy": "Confidentialité",
+            "security": "Sécurité",
+            "help": "Aide",
+            "devicePermissions": "Autorisations de l'appareil",
+            "language": "Langue",
+            "inviteFriends": "Inviter des amis",
+            "about": "À propos",
+            "signOut": "Se déconnecter"
+        },
+        "modal": {
+            "title": "Voulez-vous vraiment vous déconnecter ?",
+            "message": "Êtes-vous sûr de vouloir vous déconnecter de votre compte ?"
+        }
+    },
+    "editProfile": {
+        "title": "Modifier le profil",
+        "save": "Enregistrer",
+        "successTitle": "Succès",
+        "imageSuccess": "Image de profil mise à jour avec succès !",
+        "imageErrorPrefix": "Impossible de mettre à jour l'image de profil en raison de :",
+        "updateSuccess": "Profil mis à jour avec succès !",
+        "usernameInUse": "Nom d'utilisateur déjà utilisé",
+        "updateError": "Impossible de mettre à jour le profil. Erreur :",
+        "permissionTitle": "Autorisation requise",
+        "cameraPermission": "Nous avons besoin de l'autorisation pour accéder à votre appareil photo.",
+        "galleryPermission": "Nous avons besoin de l'autorisation pour accéder à vos photos.",
+        "imageTooLarge": "Image trop grande. Veuillez choisir une image jusqu'à 5 Mo.",
+        "imageCheckError": "Erreur lors de la vérification de la taille de l'image.",
+        "imageUploadError": "Impossible de télécharger l'image.",
+        "confirmSaveTitle": "Enregistrer les modifications",
+        "confirmSaveMessage": "Souhaitez-vous enregistrer les modifications apportées au profil ?",
+        "confirmBackTitle": "Annuler les modifications",
+        "confirmBackMessage": "Êtes-vous sûr de vouloir quitter ? Toutes les modifications non enregistrées seront perdues."
+    },
+    "error": {
+        "title": "Erreur",
+        "createConversation": "Échec du démarrage de la conversation, veuillez réessayer plus tard !"
+    },
+    "explore": {
+        "title": "Explorer",
+        "favorites": "Favoris",
+        "mostPopular": "Les plus populaires",
+        "noUsersFound": "Aucun utilisateur trouvé"
+    },
+    "help": {
+        "title": "Aide"
+    },
+    "interests": {
+        "title": "Centres d'intérêt",
+        "save": "Enregistrer",
+        "instruction": "Sélectionnez au moins 3 catégories pour personnaliser votre expérience.",
+        "toastSuccess": "Centres d'intérêt mis à jour avec succès",
+        "errorTitle": "Sélectionnez plus d'intérêts",
+        "errorMessage": "Vous devez sélectionner au moins 3 centres d'intérêt pour continuer."
+    },
+    "invite": {
+        "header": "Inviter des amis",
+        "title": "Partagez Dimber et gagnez des avantages !",
+        "description": "Invitez vos amis et profitez d'avantages exclusifs (à lister ici)",
+        "codeLabel": "Votre code d'invitation :",
+        "copiedTitle": "Copié !",
+        "copiedMessage": "Votre code d'invitation a été copié.",
+        "qrTitle": "Partager avec un code QR",
+        "saveQR": "Enregistrer le code QR",
+        "haveQuestions": "Vous avez des questions ?",
+        "clickToRead": "Cliquez ici pour lire les",
+        "termsLink": "conditions générales",
+        "shareButton": "Partager le code"
+    },
+    "language": {
+        "title": "Langues",
+        "autoTranslate": "Traduire automatiquement",
+        "interfaceLanguage": "Langue de l'interface",
+        "autoActivatedTitle": "Langue automatique activée",
+        "autoActivatedDescription": "L'application suit maintenant la langue du système.",
+        "changedTitle": "Langue modifiée",
+        "changedDescription": "Langue de l'interface mise à jour.",
+        "ptBR": "Portugais BR",
+        "ptPT": "Portugais PT",
+        "en": "Anglais",
+        "es": "Espagnol",
+        "it": "Italien",
+        "fr": "Français"
+    },
+    "notifications": {
+        "title": "Notifications",
+        "sectionMessages": "Notifications de messages",
+        "sectionEmail": "Notifications par e-mail",
+        "showNotifications": "Afficher les notifications",
+        "solicitation": "Demande de message",
+        "payments": "Paiements",
+        "support": "Support"
+    },
+    "password": {
+        "title": "Bon retour.",
+        "description": "Saisissez votre mot de passe pour continuer.",
+        "label": "Mot de passe",
+        "placeholder": "Entrez votre mot de passe",
+        "forgotPassword": "Mot de passe oublié",
+        "loginButton": "Se connecter",
+        "invalidCredentials": "Identifiants invalides. Veuillez réessayer.",
+        "required": "Le mot de passe est requis.",
+        "minLength": "Le mot de passe doit comporter au moins 6 caractères."
+    },
+    "permissions": {
+        "title": "Autorisations",
+        "responseTitle": "Droit de réponse",
+        "allowResponse": "Autoriser la réponse",
+        "attachmentsTitle": "Pièces jointes",
+        "allowFiles": "Autoriser les fichiers",
+        "allowImages": "Autoriser les photos",
+        "allowVideos": "Autoriser les vidéos"
+    },
+    "policyPrivacy": {
+        "title": "Politique de confidentialité"
+    },
+    "price": {
+        "title": "Définir les prix",
+        "description": "Définissez le prix que vous souhaitez facturer pour chaque interaction.",
+        "basePriceTitle": "Prix de base",
+        "basePriceSubtitle": "Prix minimum par message",
+        "attachmentTitle": "Pièce jointe",
+        "attachmentDescription": "Pourcentage supplémentaire facturé pour une pièce jointe",
+        "videoTitle": "Vidéo",
+        "videoDescription": "Pourcentage supplémentaire facturé pour une vidéo",
+        "imageTitle": "Image",
+        "imageDescription": "Pourcentage supplémentaire facturé pour une image",
+        "saveButton": "Enregistrer",
+        "errorTitle": "Erreur",
+        "errorMin": "Le prix de base minimum est de R$ 0,50",
+        "errorGeneric": "Impossible d'enregistrer les valeurs. Veuillez réessayer."
+    },
+    "privacySettings": {
+        "title": "Confidentialité",
+        "blocked": "Bloqués",
+        "showOnline": "Afficher en ligne",
+        "showLastUpdate": "Afficher la dernière activité",
+        "showStatistics": "Afficher les statistiques",
+        "vacationMode": "Mode vacances"
+    },
+    "profile": {
+        "title": "Profil",
+        "about": "À propos",
+        "statistics": "Statistiques",
+        "notFound": "Profil introuvable ou désactivé pour les messages.",
+        "sendMessage": "Envoyer un message",
+        "blockedSuccess": "Utilisateur bloqué avec succès",
+        "unblockedSuccess": "Utilisateur débloqué avec succès"
+    },
+    "security": {
+        "title": "Sécurité",
+        "changePassword": "Changer le mot de passe",
+        "activate2fa": "Activer la sécurité 2FA"
+    },
+    "security2fa": {
+        "activate2fa": "Activer la sécurité 2FA"
+    },
+    "tags": {
+        "title": "Catégories",
+        "save": "Enregistrer",
+        "description": "Ces catégories aident les utilisateurs à découvrir des profils similaires au vôtre. Vous pouvez les modifier à tout moment.",
+        "toastSuccess": "Catégories mises à jour avec succès"
+    },
+    "terms": {
+        "title": "Conditions d'utilisation"
+    },
+    "wallet": {
+        "title": "Portefeuille",
+        "totalBalance": "Solde total",
+        "available": "Disponible",
+        "withdraw": "Retirer",
+        "cards": "Cartes",
+        "donate": "Faire un don",
+        "statement": "Relevé",
+        "viewStatement": "Voir le relevé",
+        "noTransactions": "Aucune transaction trouvée",
+        "paidValue": "Montant payé",
+        "sendTo": "Envoyer à {{name}}",
+        "paymentTo": "Paiement à {{name}}",
+        "transaction": "Transaction"
+    },
+    "welcome": {
+        "title": "Commençons !",
+        "emailOrUsernameLabel": "Email ou nom d'utilisateur",
+        "emailOrUsernamePlaceholder": "Votre email ou nom d'utilisateur",
+        "continueButton": "Continuer",
+        "signupLink": "Vous n'avez pas encore de compte ? Créez-en un",
+        "or": "ou",
+        "continueWithGoogle": "Continuer avec Google",
+        "userNotFound": "Aucun utilisateur trouvé avec ces identifiants.",
+        "invalidEmailOrUsername": "Veuillez entrer un email ou nom d'utilisateur valide.",
+        "requiredField": "L'email ou le nom d'utilisateur est requis."
+    }
+}

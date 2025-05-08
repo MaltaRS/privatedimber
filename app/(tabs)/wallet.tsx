@@ -42,10 +42,12 @@ import { useBalance } from "@/providers/BalanceProvider";
 
 import Ionicons from "@expo/vector-icons/Ionicons";
 
+import { useTranslation } from 'react-i18next';
+
 const WalletScreen = () => {
     const router = useRouter();
     const { notificationsCount } = useNotifications();
-
+    const { t } = useTranslation(); 
     const {
         balance,
         isLoading: isBalanceLoading,
@@ -99,7 +101,7 @@ const WalletScreen = () => {
                     }}
                 >
                     <Text fontSize={13} color="#999" bold>
-                        Saldo Total
+                         {t('wallet.totalBalance')}
                     </Text>
                 </TouchableOpacity>
 
@@ -147,7 +149,7 @@ const WalletScreen = () => {
                         fontFamily="$novaBody"
                         lineHeight={20}
                     >
-                        Disponível para uso
+                         {t('wallet.available')}
                     </Text>
                     <Text
                         fontFamily="$body"
@@ -382,7 +384,7 @@ const WalletScreen = () => {
                         justifyContent: "space-between",
                     }}
                 >
-                    <Heading size="xl">Extrato</Heading>
+                    <Heading size="xl"> {t('wallet.statement')}</Heading>
 
                     <TouchableOpacity
                         onPress={() => router.push("/(wallet)/extract")}
@@ -457,7 +459,7 @@ const WalletScreen = () => {
                         fontWeight="$bold"
                         color={"#000"}
                     >
-                        Carteira
+                      {t('wallet.title')}
                     </Text>
                 </HStack>
                 <HStack>

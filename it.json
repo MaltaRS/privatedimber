@@ -1,0 +1,259 @@
+{
+  "about": {
+    "title": "[IT] About",
+    "terms": "[IT] Terms of Use",
+    "privacy": "[IT] Privacy Policy"
+  },
+  "accountType": {
+    "title": "[IT] Account Type",
+    "subtitle": "[IT] Choose the best profile for your experience on Dimber",
+    "save": "[IT] Save",
+    "saving": "[IT] Saving...",
+    "successTitle": "[IT] Account type updated",
+    "successMessage": "[IT] Your account type was updated successfully.",
+    "errorTitle": "[IT] Error",
+    "errorMessage": "[IT] Could not update your account type. Please try again.",
+    "professional": {
+      "title": "Professional Account",
+      "description": "Your profile will be shown on the explore page and can receive paid messages."
+    },
+    "regular": {
+      "title": "Regular Account",
+      "description": "Your profile will be private and hidden from receiving paid messages."
+    }
+  },
+  "blocked": {
+    "title": "[IT] Blocked Users",
+    "searchPlaceholder": "[IT] Search blocked user",
+    "noSearchResults": "[IT] No blocked user found for this search.",
+    "noBlockedUsers": "[IT] You have no blocked users.",
+    "unblock": "[IT] Unblock",
+    "unblocking": "[IT] Unblocking...",
+    "successTitle": "[IT] User unblocked",
+    "successMessage": "[IT] The user has been successfully unblocked.",
+    "errorTitle": "[IT] Error",
+    "errorMessage": "[IT] Could not unblock user. Please try again."
+  },
+  "changePassword": {
+    "title": "[IT] Change Password"
+  },
+  "chatOptions": {
+    "title": "[IT] Chats",
+    "export": "[IT] Export chats",
+    "archiveAll": "[IT] Archive all chats",
+    "deleteAll": "[IT] Delete all chats"
+  },
+  "chats": {
+    "title": "[IT] Chats",
+    "search": "[IT] Search",
+    "emptyMessage": "[IT] Send a message and wait for a new connection.",
+    "viewProfile": "[IT] View Profile"
+  },
+  "config": {
+    "title": "[IT] Settings",
+    "viewProfile": "[IT] View profile",
+    "sections": {
+      "messages": "Messages",
+      "account": "Account",
+      "app": "App"
+    },
+    "items": {
+      "notifications": "Notifications",
+      "setValues": "Set values",
+      "permissions": "Permissions",
+      "conversations": "Conversations",
+      "accountType": "Account type",
+      "privacy": "Privacy",
+      "security": "Security",
+      "help": "Help",
+      "devicePermissions": "Device permissions",
+      "language": "Language",
+      "inviteFriends": "Invite friends",
+      "about": "About",
+      "signOut": "Sign out"
+    },
+    "modal": {
+      "title": "Do you really want to sign out?",
+      "message": "Are you sure you want to sign out of your account?"
+    }
+  },
+  "editProfile": {
+    "title": "[IT] Edit Profile",
+    "save": "[IT] Save",
+    "successTitle": "[IT] Success",
+    "imageSuccess": "[IT] Profile image updated successfully!",
+    "imageErrorPrefix": "[IT] Could not update the profile image due to:",
+    "updateSuccess": "[IT] Profile updated successfully!",
+    "usernameInUse": "[IT] Username is already in use",
+    "updateError": "[IT] Could not update the profile. Error:",
+    "permissionTitle": "[IT] Permission required",
+    "cameraPermission": "[IT] We need permission to access your camera.",
+    "galleryPermission": "[IT] We need permission to access your photos.",
+    "imageTooLarge": "[IT] Image too large. Please choose an image up to 5MB.",
+    "imageCheckError": "[IT] Error checking image size.",
+    "imageUploadError": "[IT] Could not upload the image.",
+    "confirmSaveTitle": "[IT] Save changes",
+    "confirmSaveMessage": "[IT] Do you want to save the changes made to the profile?",
+    "confirmBackTitle": "[IT] Discard changes",
+    "confirmBackMessage": "[IT] Are you sure you want to leave? All unsaved changes will be lost."
+  },
+  "error": {
+    "title": "[IT] Error",
+    "createConversation": "[IT] Failed to start conversation, try again later!"
+  },
+  "explore": {
+    "title": "[IT] Explore",
+    "favorites": "[IT] Favorites",
+    "mostPopular": "[IT] Most Popular",
+    "noUsersFound": "[IT] No users found"
+  },
+  "help": {
+    "title": "[IT] Help"
+  },
+  "interests": {
+    "title": "[IT] Interests",
+    "save": "[IT] Save",
+    "instruction": "[IT] Select at least 3 categories so we can personalize your experience.",
+    "toastSuccess": "[IT] Interests updated successfully",
+    "errorTitle": "[IT] Select more interests",
+    "errorMessage": "[IT] You need to select at least 3 interests to continue."
+  },
+  "invite": {
+    "header": "[IT] Invite friends",
+    "title": "[IT] Share Dimber and earn benefits!",
+    "description": "[IT] Invite your friends and enjoy exclusive advantages (list them here)",
+    "codeLabel": "[IT] Your referral code:",
+    "copiedTitle": "[IT] Copied!",
+    "copiedMessage": "[IT] Your referral code has been copied.",
+    "qrTitle": "[IT] Share with QR Code",
+    "saveQR": "[IT] Save QR Code",
+    "haveQuestions": "[IT] Have any questions?",
+    "clickToRead": "[IT] Click here and read the",
+    "termsLink": "[IT] terms and conditions",
+    "shareButton": "[IT] Share code"
+  },
+  "language": {
+    "title": "[IT] Languages",
+    "autoTranslate": "[IT] Translate automatically",
+    "interfaceLanguage": "[IT] Interface Language",
+    "autoActivatedTitle": "[IT] Automatic language activated",
+    "autoActivatedDescription": "[IT] The app now follows the system language.",
+    "changedTitle": "[IT] Language changed",
+    "changedDescription": "[IT] Interface language updated.",
+    "ptBR": "[IT] Portuguese BR",
+    "ptPT": "[IT] Portuguese PT",
+    "en": "[IT] English",
+    "es": "[IT] Spanish",
+    "it": "[IT] Italian",
+    "fr": "[IT] French"
+  },
+  "notifications": {
+    "title": "[IT] Notifications",
+    "sectionMessages": "[IT] Message notifications",
+    "sectionEmail": "[IT] Email notifications",
+    "showNotifications": "[IT] Show notifications",
+    "solicitation": "[IT] Message request",
+    "payments": "[IT] Payments",
+    "support": "[IT] Support"
+  },
+  "password": {
+    "title": "[IT] Welcome back.",
+    "description": "[IT] Enter your password to continue.",
+    "label": "[IT] Password",
+    "placeholder": "[IT] Enter your password",
+    "forgotPassword": "[IT] Forgot my password",
+    "loginButton": "[IT] Log in",
+    "invalidCredentials": "[IT] Invalid credentials. Please try again.",
+    "required": "[IT] Password is required.",
+    "minLength": "[IT] Password must be at least 6 characters."
+  },
+  "permissions": {
+    "title": "[IT] Permissions",
+    "responseTitle": "[IT] Right to reply",
+    "allowResponse": "[IT] Allow response",
+    "attachmentsTitle": "[IT] Attachments",
+    "allowFiles": "[IT] Allow file",
+    "allowImages": "[IT] Allow photo",
+    "allowVideos": "[IT] Allow video"
+  },
+  "policyPrivacy": {
+    "title": "[IT] Privacy Policy"
+  },
+  "price": {
+    "title": "[IT] Set Prices",
+    "description": "[IT] Define the price you want to charge for each interaction.",
+    "basePriceTitle": "[IT] Base price",
+    "basePriceSubtitle": "[IT] Minimum price per message",
+    "attachmentTitle": "[IT] Attachment",
+    "attachmentDescription": "[IT] Extra percentage charged for attachment",
+    "videoTitle": "[IT] Video",
+    "videoDescription": "[IT] Extra percentage charged for video",
+    "imageTitle": "[IT] Image",
+    "imageDescription": "[IT] Extra percentage charged for image",
+    "saveButton": "[IT] Save",
+    "errorTitle": "[IT] Error",
+    "errorMin": "[IT] The minimum base price is R$ 0.50",
+    "errorGeneric": "[IT] Unable to save the values. Please try again."
+  },
+  "privacySettings": {
+    "title": "[IT] Privacy",
+    "blocked": "[IT] Blocked",
+    "showOnline": "[IT] Show Online",
+    "showLastUpdate": "[IT] Show Last Seen",
+    "showStatistics": "[IT] Show Statistics",
+    "vacationMode": "[IT] Vacation Mode"
+  },
+  "profile": {
+    "title": "[IT] Profile",
+    "about": "[IT] About",
+    "statistics": "[IT] Statistics",
+    "notFound": "[IT] Profile not found or disabled for messaging.",
+    "sendMessage": "[IT] Send Message",
+    "blockedSuccess": "[IT] User successfully blocked",
+    "unblockedSuccess": "[IT] User successfully unblocked"
+  },
+  "security": {
+    "title": "[IT] Security",
+    "changePassword": "[IT] Change Password",
+    "activate2fa": "[IT] Enable 2FA Security"
+  },
+  "security2fa": {
+    "activate2fa": "[IT] Enable 2FA Security"
+  },
+  "tags": {
+    "title": "[IT] Categories",
+    "save": "[IT] Save",
+    "description": "[IT] These categories help users discover profiles similar to yours. You can modify them as needed.",
+    "toastSuccess": "[IT] Categories updated successfully"
+  },
+  "terms": {
+    "title": "[IT] Terms of Use"
+  },
+  "wallet": {
+    "title": "[IT] Wallet",
+    "totalBalance": "[IT] Total Balance",
+    "available": "[IT] Available to use",
+    "withdraw": "[IT] Withdraw",
+    "cards": "[IT] Cards",
+    "donate": "[IT] Donate",
+    "statement": "[IT] Statement",
+    "viewStatement": "[IT] View statement",
+    "noTransactions": "[IT] No transactions found",
+    "paidValue": "[IT] Paid value",
+    "sendTo": "[IT] Send to {{name}}",
+    "paymentTo": "[IT] Payment to {{name}}",
+    "transaction": "[IT] Transaction"
+  },
+  "welcome": {
+    "title": "[IT] Let's get started!",
+    "emailOrUsernameLabel": "[IT] Email or username",
+    "emailOrUsernamePlaceholder": "[IT] Your email or username",
+    "continueButton": "[IT] Continue",
+    "signupLink": "[IT] Don't have an account yet? Create one",
+    "or": "[IT] or",
+    "continueWithGoogle": "[IT] Continue with Google",
+    "userNotFound": "[IT] We couldn't find a user with those credentials.",
+    "invalidEmailOrUsername": "[IT] Enter a valid email or username.",
+    "requiredField": "[IT] Email or username is required."
+  }
+}
