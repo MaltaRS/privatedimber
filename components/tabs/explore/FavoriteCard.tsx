@@ -5,12 +5,14 @@ import {
     AvatarBadge,
     Text,
     Pressable,
+    Box,
 } from "@/gluestackComponents";
 
 export type FavoriteCardProps = {
     icon: string;
     name: string;
     isOnline: boolean;
+    positionRank?: number; // novo campo opcional
     onPress: () => void;
 };
 
@@ -18,39 +20,55 @@ export const FavoriteCard = ({
     icon,
     name,
     isOnline,
+    positionRank,
     onPress,
 }: FavoriteCardProps) => {
     return (
         <Pressable
             onPress={onPress}
-            width={76}
-            height={100}
+            width={60}
+            height={80}
             alignItems="center"
         >
-            <Avatar width={70} height={70} rounded="$full">
-                <AvatarFallbackText size="2xl">{name}</AvatarFallbackText>
-                <AvatarImage
-                    rounded="$full"
-                    source={
-                        icon
-                            ? {
-                                  uri: icon,
-                              }
-                            : undefined
-                    }
-                    alt="Foto de perfil"
-                />
-                {isOnline && <AvatarBadge bgColor="#339058" />}
-            </Avatar>
+            <Box position="relative">
+                <Avatar width={60} height={60} rounded="$full" bg="$gray200">
+                    <AvatarFallbackText size="xl">{name}</AvatarFallbackText>
+                    <AvatarImage
+                        rounded="$full"
+                        source={icon ? { uri: icon } : undefined}
+                        alt="Foto de perfil"
+                    />
+                    {isOnline && <AvatarBadge bgColor="#339058" />}
+                </Avatar>
+
+                {positionRank !== undefined && (
+                    <Box
+                        position="absolute"
+                        top={1}
+                        right={-2}
+                        bg="#00A8FF"
+                        px={4}
+                        py={1}
+                        borderBottomLeftRadius={8}
+                        borderTopRightRadius={10}
+                        zIndex={1}
+                    >
+                        <Text fontSize={10} fontWeight="bold" color="#FFF">
+                            {positionRank}º
+                        </Text>
+                    </Box>
+                )}
+            </Box>
+
             <Text
                 width="$full"
-                maxWidth={76}
+                maxWidth={80}
                 textAlign="center"
-                fontFamily="$novaBody"
-                color="$gray900"
-                lineHeight={20}
+                fontFamily="$Inter_500Medium"
+                color="$gray800"
+                lineHeight={14}
                 numberOfLines={1}
-                fontSize={15}
+                size="2xs"
                 mt="$1"
             >
                 {name}

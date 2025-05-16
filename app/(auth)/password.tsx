@@ -33,6 +33,8 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { Button } from "@/components/ui/Button";
 import { Colors } from "@/constants/Colors";
 
+import { useTranslation } from 'react-i18next';
+
 const passwordSchema = z.object({
     password: z
         .string({ message: "A senha é obrigatória." })
@@ -43,6 +45,7 @@ type PasswordSchema = z.infer<typeof passwordSchema>;
 
 const PasswordScreen = () => {
     const router = useRouter();
+    const { t } = useTranslation();
 
     const { emailOrUsername } = useLocalSearchParams<{
         emailOrUsername?: string;

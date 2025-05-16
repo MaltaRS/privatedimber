@@ -164,7 +164,7 @@ export const SearchInput = ({
                 >
                     <InputSlot bgColor="$gray100" pl="$5" pt="$1">
                         <InputIcon>
-                            <Search size={20} color="#6B7280" />
+                            <Search size={20} color="#00a8ff" />
                         </InputIcon>
                     </InputSlot>
                     <InputField

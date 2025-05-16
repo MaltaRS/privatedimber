@@ -102,14 +102,12 @@
         "title": "Error"
     },
     "explore": {
-        "title": "Explore",
+        "title": "Dimber",
         "favorites": "Favorites",
         "mostPopular": "Most Popular",
         "noUsersFound": "No users found"
     },
-    "help": {
-        "title": "Help"
-    },
+    
     "interests": {
         "title": "Interests",
         "save": "Save",
@@ -255,5 +253,25 @@
         "userNotFound": "We couldn't find a user with those credentials.",
         "invalidEmailOrUsername": "Enter a valid email or username.",
         "requiredField": "Email or username is required."
+    },
+
+    "help": {
+        "title": "Help",
+        "search": "Search...",
+        "changePassword": "How do I change my password?",
+        "changePasswordDesc": "Go to settings and select 'Change password'.",
+        "deleteAccount": "How do I delete my account?",
+        "deleteAccountDesc": "Contact support to request account deletion.",
+        "useOffline": "Can I use the app offline?",
+        "useOfflineDesc": "Yes, some features work offline, like reading previously received messages.",
+        "sendPaidMessage": "How do I send a paid message?",
+        "sendPaidMessageDesc": "Open the person's profile and tap 'Send message'.",
+        "changeLanguage": "How do I change the app language?",
+        "changeLanguageDesc": "Go to settings > language.",
+        "account": "Account",
+        "all": "All",
+        "function": "Function",
+        "messages": "Messages"
     }
+
 }

@@ -102,14 +102,12 @@
         "createConversation": "Falha ao iniciar a conversa, tente novamente mais tarde!"
     },
     "explore": {
-        "title": "Explorar",
+        "title": "Dimber",
         "favorites": "Favoritos",
         "mostPopular": "Mais Populares",
         "noUsersFound": "Nenhum usuário encontrado"
     },
-    "help": {
-        "title": "Ajuda"
-    },
+
     "interests": {
         "title": "Interesses",
         "save": "Salvar",
@@ -255,5 +253,23 @@
         "userNotFound": "Não encontramos um usuário com essas credenciais.",
         "invalidEmailOrUsername": "Digite um e-mail ou nome de usuário válido.",
         "requiredField": "E-mail ou nome de usuário é obrigatório."
+    },
+    "help": {
+        "title": "Ajuda",
+        "search": "Buscar...",
+        "changePassword": "Como trocar minha senha?",
+        "changePasswordDesc": "Vá até as configurações e selecione 'Trocar senha'.",
+        "deleteAccount": "Como excluir minha conta?",
+        "deleteAccountDesc": "Entre em contato com o suporte para solicitar a exclusão.",
+        "useOffline": "Posso usar o app offline?",
+        "useOfflineDesc": "Sim, algumas funções funcionam offline, como leitura de mensagens já recebidas.",
+        "sendPaidMessage": "Como enviar uma mensagem paga?",
+        "sendPaidMessageDesc": "Abra o perfil da pessoa e clique em 'Enviar mensagem'.",
+        "changeLanguage": "Como mudar o idioma do app?",
+        "changeLanguageDesc": "Vá em configurações > idioma.",
+        "account": "Conta",
+        "all": "Todos",
+        "function": "Funções",
+        "messages": "Mensagens"
     }
 }

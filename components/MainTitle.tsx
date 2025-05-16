@@ -1,7 +1,11 @@
 import { Box, HStack, Text } from "@/gluestackComponents";
 import { Bell } from "lucide-react-native";
 
-import { Pressable } from "react-native";
+import { Pressable, Image } from "react-native";
+import dimberLogoo from "@/assets/icons/dimberLogo.svg";
+import DimberLogo from "@/assets/icons/dimberLogo.svg";
+
+
 
 type MainTitleProps = {
     title: string;
@@ -18,7 +22,9 @@ export const MainTitle = ({
 }: MainTitleProps) => {
     return (
         <HStack justifyContent="space-between" alignItems="center" zIndex={3}>
-            <HStack>
+            <HStack alignItems="center" justifyContent="center" >
+                
+                
                 <Text
                     fontSize={28}
                     fontFamily="$heading"
@@ -27,6 +33,8 @@ export const MainTitle = ({
                 >
                     {title}
                 </Text>
+                    <DimberLogo width={24} height={24} marginLeft={6} alignItems="center" marginTop={5}/>
+
             </HStack>
             {!hide && (
                 <Pressable onPress={onPress}>

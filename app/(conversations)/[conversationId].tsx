@@ -223,7 +223,7 @@ const ChatsScreen = () => {
                     onPress={() => {
                         if (!contact || isLoading) return;
 
-                        router.push(`/myprofile?userUuid=${contact.uuid}`);
+                        router.push(`/(profile)/${contact.uuid}`);
                     }}
                 >
                     {isLoading ? (
